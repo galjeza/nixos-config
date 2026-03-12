@@ -63,6 +63,7 @@
       "wheel"
     ];
     packages = with pkgs; [ ];
+    shell = pkgs.zsh;
   };
 
   # Allow unfree packages
@@ -82,6 +83,7 @@
   services.xserver.enable = true;
   #enable sway windows manager
   programs.sway.enable = true;
+  programs.zsh.enable = true;
   #enable extra featuresw  in sway wrapper
   programs.sway.wrapperFeatures.gtk = true;
   #enable policykit so that graphical programs can request elevated privileges

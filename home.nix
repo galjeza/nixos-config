@@ -10,8 +10,6 @@
   # let home-manager manage itself
   programs.home-manager.enable = true;
 
-  programs.bash.enable = true;
-
   programs.git = {
     enable = true;
     userName = "Gal Jeza";
@@ -53,8 +51,6 @@
     initContent = ''
       	    setopt inc_append_history
       	    eval "$(zoxide init zsh)"
-      	    autoload -U colors && colors
-      	    PS1="%{$fg[magenta]%}%~ %{$reset_color%}$ "
       	  '';
 
     shellAliases = {
@@ -74,10 +70,8 @@
     waybar
     wofi
     wdisplays
+    zoxide
     nixfmt-rfc-style # formatting for nix files until i have neovim configured
   ];
 
-  home.shellAliases = {
-    rebuild = "sudo nixos-rebuild switch --flake /etc/nixos#nixos";
-  };
 }
