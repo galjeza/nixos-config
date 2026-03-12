@@ -66,16 +66,29 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
 
+
+
   environment.systemPackages = with pkgs; [
 	vim
-	neovim
-	git
-	fastfetch
 	wget
 	curl
-  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  #  wget
+	sway
   ];
+
+  # enable x11 for legacy desktop apps
+  services.xserver.enable = true;
+  #enable sway windows manager
+  programs.sway.enable=true;
+  #enable extra featuresw  in sway wrapper
+  programs.sway.wrapperFeatures.gtk = true;
+  #enable policykit so that graphical programs can request elevated privileges 
+  security.polkit.enable=true;
+  services.spice-vdagentd.enable = true;
+	
+
+
+
+
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
