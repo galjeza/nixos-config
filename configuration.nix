@@ -4,14 +4,16 @@
 
 { config, pkgs, ... }:
 
-
 {
 
-  nix.settings.experimental-features = ["nix-command" "flakes"];
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+  ];
 
   # Bootloader.
   boot.loader.grub.enable = true;
@@ -56,8 +58,11 @@
   users.users.galjeza = {
     isNormalUser = true;
     description = "Gal Jeza";
-    extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
+    packages = with pkgs; [ ];
   };
 
   # Allow unfree packages
@@ -66,29 +71,22 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
 
-
-
   environment.systemPackages = with pkgs; [
-	vim
-	wget
-	curl
-	sway
+    vim
+    wget
+    curl
+    sway
   ];
 
   # enable x11 for legacy desktop apps
   services.xserver.enable = true;
   #enable sway windows manager
-  programs.sway.enable=true;
+  programs.sway.enable = true;
   #enable extra featuresw  in sway wrapper
   programs.sway.wrapperFeatures.gtk = true;
-  #enable policykit so that graphical programs can request elevated privileges 
-  security.polkit.enable=true;
+  #enable policykit so that graphical programs can request elevated privileges
+  security.polkit.enable = true;
   services.spice-vdagentd.enable = true;
-	
-
-
-
-
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
