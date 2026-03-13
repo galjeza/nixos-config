@@ -4,6 +4,7 @@
     ./git.nix
     ./neovim.nix
     ./sway.nix
+    ./zellij.nix
     ./zsh.nix
   ];
 

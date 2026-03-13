@@ -31,6 +31,7 @@
             home-manager.useUserPackages = true;
             # point to your personal home-manager config file
             home-manager.users.galjeza = import ./modules/home/default.nix;
+            home-manager.backupFileExtension = "bak";
           }
         ];
       };
