@@ -39,8 +39,7 @@
           "${mod}+Shift+c" = "reload";
           "${mod}+Shift+e" = "exec swaynag -t warning -m 'Exit sway?' -B 'Yes' 'swaymsg exit'";
           "${mod}+Shift+s" =
-            "exec sh -c \"mkdir -p ~/Pictures/Screenshots && file=~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png && grim -g \\\"$(slurp)\\\" - | tee \\\"$file\\\" | wl-copy\"";
-
+            ''exec sh -c 'mkdir -p ~/Pictures/Screenshots && file=~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png && grim -g "$(slurp)" "$file" && wl-copy -t image/png < "$file"' '';
           "${mod}+${left}" = "focus left";
 
           "${mod}+${down}" = "focus down";
