@@ -17,7 +17,7 @@
 
       output = {
         "*".bg =
-          "${pkgs.nixos-artwork.wallpapers.binary-red}/share/wallpapers/binary-red-2024-02-15/contents/images/nix-wallpaper-binary-red.png fill";
+          "${pkgs.nixos-artwork.wallpapers.nineish-catppuccin-mocha-alt}/share/wallpapers/nineish-catppuccin-mocha-alt-2025-01-27/contents/images/nix-wallpaper-nineish-catppuccin-mocha-alt.png fill";
         "Virtual-1".mode = "1920x1080@60Hz";
       };
 
@@ -40,6 +40,8 @@
           "${mod}+Shift+e" = "exec swaynag -t warning -m 'Exit sway?' -B 'Yes' 'swaymsg exit'";
           "${mod}+Shift+s" =
             ''exec sh -c 'mkdir -p ~/Pictures/Screenshots && file=~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png && grim -g "$(slurp)" "$file" && wl-copy -t image/png < "$file"' '';
+          "${mod}+Shift+v" = "exec sh -c 'cliphist list | wmenu -i -l 20 | cliphist decode | wl-copy' ";
+
           "${mod}+${left}" = "focus left";
 
           "${mod}+${down}" = "focus down";
@@ -109,6 +111,15 @@
           "Escape" = "mode default";
         };
       };
+
+      startup = [
+        {
+          command = "wl-paste --type text --watch cliphist store";
+        }
+        {
+          command = "wl-paste --type image --watch cliphist store";
+        }
+      ];
 
       bars = [
         {
