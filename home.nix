@@ -48,6 +48,12 @@
         "Virtual-1".mode = "1920x1080@60Hz";
       };
 
+      input = {
+        "type:tablet" = {
+          map_to_output = "Virtual-1";
+        };
+      };
+
       # keybindings
       keybindings =
         let
@@ -219,6 +225,7 @@
     nodejs
     nerd-fonts.jetbrains-mono
     xfce.thunar # gui file manager
+    opencode
   ];
 
 }
