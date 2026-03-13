@@ -1,36 +1,5 @@
 { config, pkgs, ... }:
 {
-  # this must match your username home.username = "galjeza";
-  home.homeDirectory = "/home/galjeza";
-
-  # this must match system.stateVersion in configuration.nix
-  home.stateVersion = "25.11";
-  fonts.fontconfig = {
-    enable = true;
-    defaultFonts = {
-      monospace = [ "JetBrainsMono Nerd Font" ];
-    };
-  };
-
-  # let home-manager manage itself
-  programs.home-manager.enable = true;
-
-  programs.git = {
-    enable = true;
-    settings = {
-      user.name = "Gal Jeza";
-      user.email = "gal.jeza55@gmail.com";
-    };
-  };
-  programs.foot = {
-    enable = true;
-    settings = {
-      main = {
-        font = "JetBrainsMono Nerd Font:size=11";
-      };
-    };
-  };
-
   wayland.windowManager.sway = {
     enable = true;
     config = rec {
@@ -41,6 +10,10 @@
       right = "l";
       terminal = "foot";
       menu = "wmenu-run";
+      fonts = {
+        names = [ "JetBrainsMono Nerd Font" ];
+        size = 10.0;
+      };
 
       output = {
         "*".bg =
@@ -65,8 +38,11 @@
           "${mod}+d" = "exec ${menu}";
           "${mod}+Shift+c" = "reload";
           "${mod}+Shift+e" = "exec swaynag -t warning -m 'Exit sway?' -B 'Yes' 'swaymsg exit'";
+          "${mod}+Shift+s" =
+            "exec sh -c \"mkdir -p ~/Pictures/Screenshots && file=~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png && grim -g \\\"$(slurp)\\\" - | tee \\\"$file\\\" | wl-copy\"";
 
           "${mod}+${left}" = "focus left";
+
           "${mod}+${down}" = "focus down";
           "${mod}+${up}" = "focus up";
           "${mod}+${right}" = "focus right";
@@ -139,6 +115,10 @@
         {
           position = "top";
           statusCommand = "while date +'%Y-%m-%d %X'; do sleep 1; done";
+          fonts = {
+            names = [ "JetBrainsMono Nerd Font" ];
+            size = 10.0;
+          };
           colors = {
             statusline = "#ffffff";
             background = "#323232";
@@ -152,80 +132,4 @@
       ];
     };
   };
-
-  programs.neovim = {
-    enable = true;
-    defaultEditor = true; # sets $EDITOR to nvim
-    viAlias = true; # lets you type 'vi' to open nvim
-    vimAlias = true; # lets you type 'vim' to open nvim
-  };
-
-  # symlink /etc/nixos/nvim into ~/.config/nvim
-  # so your existing init.lua and lazy.nvim config is picked up by nvim
-  xdg.configFile."nvim" = {
-    source = ./nvim; # points to /etc/nixos/nvim
-    recursive = true; # symlink each file individually instead of the whole folder
-  };
-  programs.zsh = {
-    enable = true;
-    autosuggestion.enable = true;
-    syntaxHighlighting.enable = true;
-
-    history = {
-      path = "$HOME/.zsh_history";
-      size = 10000;
-      save = 10000;
-      ignoreDups = true;
-      share = true;
-    };
-
-    sessionVariables = {
-      EDITOR = "nvim";
-      TERM = "xterm-256color";
-      PNPM_HOME = "$HOME/.local/share/pnpm";
-    };
-
-    envExtra = ''
-      	    path=(
-      	      $HOME/.opencode/bin
-      	      $HOME/.local/bin
-      	      $HOME/bin
-      	      $HOME/go/bin
-      	      $HOME/.cargo/bin
-      	      $HOME/.local/share/pnpm
-      	      $path
-      	    )
-
-      	    [[ -f $HOME/.cargo/env ]] && source $HOME/.cargo/env
-      	  '';
-
-    initContent = ''
-      	    setopt inc_append_history
-      	    eval "$(zoxide init zsh)"
-      	  '';
-
-    shellAliases = {
-      vim = "nvim";
-      vi = "nvim";
-      im = "nvim";
-      rebuild = "sudo nixos-rebuild switch --flake /etc/nixos#nixos";
-    };
-  };
-
-  # user-specific packages (things only you need, not system-wide)
-  home.packages = with pkgs; [
-    fastfetch
-    firefox
-    zellij
-    waybar
-    wdisplays
-    zoxide
-    lazygit
-    nixfmt-rfc-style # formatting for nix files until i have neovim configured
-    nodejs
-    nerd-fonts.jetbrains-mono
-    xfce.thunar # gui file manager
-    opencode
-  ];
-
 }
