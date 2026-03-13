@@ -17,7 +17,7 @@
 
       output = {
         "*".bg =
-          "${pkgs.nixos-artwork.wallpapers.nineish-catppuccin-mocha-alt}/share/wallpapers/nineish-catppuccin-mocha-alt-2025-01-27/contents/images/nix-wallpaper-nineish-catppuccin-mocha-alt.png fill";
+          "${pkgs.nixos-artwork.wallpapers.waterfall}/share/wallpapers/waterfall-2022-04-19/contents/images/nix-wallpaper-waterfall.png fill";
         "Virtual-1".mode = "1920x1080@60Hz";
       };
 
@@ -130,12 +130,12 @@
             size = 10.0;
           };
           colors = {
-            statusline = "#ffffff";
-            background = "#323232";
+            statusline = "#cdcdcd";
+            background = "#141415";
             inactiveWorkspace = {
-              background = "#32323200";
-              border = "#32323200";
-              text = "#5c5c5c";
+              background = "#252530";
+              border = "#252530";
+              text = "#606079";
             };
           };
         }
