@@ -15,6 +15,45 @@
         size = 10.0;
       };
 
+      colors = {
+        focused = {
+          border = "#8ba9c1";
+          background = "#8ba9c1";
+          text = "#141415";
+          indicator = "#f3be7c";
+          childBorder = "#8ba9c1";
+        };
+        focusedInactive = {
+          border = "#252530";
+          background = "#252530";
+          text = "#606079";
+          indicator = "#252530";
+          childBorder = "#252530";
+        };
+        unfocused = {
+          border = "#141415";
+          background = "#141415";
+          text = "#606079";
+          indicator = "#141415";
+          childBorder = "#141415";
+        };
+        urgent = {
+          border = "#d8647e";
+          background = "#d8647e";
+          text = "#141415";
+          indicator = "#d8647e";
+          childBorder = "#d8647e";
+        };
+        placeholder = {
+          border = "#141415";
+          background = "#141415";
+          text = "#606079";
+          indicator = "#141415";
+          childBorder = "#141415";
+        };
+        background = "#141415";
+      };
+
       output = {
         "*".bg =
           "${pkgs.nixos-artwork.wallpapers.waterfall}/share/wallpapers/waterfall-2022-04-19/contents/images/nix-wallpaper-waterfall.png fill";
@@ -133,9 +172,19 @@
             statusline = "#cdcdcd";
             background = "#141415";
             inactiveWorkspace = {
-              background = "#252530";
-              border = "#252530";
+              background = "#141415";
+              border = "#141415";
               text = "#606079";
+            };
+            activeWorkspace = {
+              background = "#e08398";
+              border = "#e08398";
+              text = "#141415";
+            };
+            focusedWorkspace = {
+              background = "#8ba9c1";
+              border = "#8ba9c1";
+              text = "#141415";
             };
           };
         }
