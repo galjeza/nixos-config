@@ -17,23 +17,35 @@
   # outputs is what this flake produces - in our case a NixOS system
   outputs =
     { nixpkgs, home-manager, ... }:
+    let
+      # shared home-manager config used by all machines
+      homeManagerModule = {
+        home-manager.useGlobalPkgs = true;
+        home-manager.useUserPackages = true;
+        home-manager.users.galjeza = import ./modules/home/default.nix;
+        home-manager.backupFileExtension = "bak";
+      };
+    in
     {
-      # "nixos" here must match your hostname in configuration.nix
-      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          ./hosts/nixos-vm/configuration.nix # your main system config
-          home-manager.nixosModules.home-manager # plug home-manager into nixos
-          {
-            # use the same pkgs as the system (no duplicate downloads)
-            home-manager.useGlobalPkgs = true;
-            # install user packages into the user profile instead of system
-            home-manager.useUserPackages = true;
-            # point to your personal home-manager config file
-            home-manager.users.galjeza = import ./modules/home/default.nix;
-            home-manager.backupFileExtension = "bak";
-          }
-        ];
+      nixosConfigurations = {
+
+        nixos-vm = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            ./hosts/nixos-vm/configuration.nix # your main system config
+            home-manager.nixosModules.home-manager
+            homeManagerModule
+          ];
+        };
+
+        arch-nixos-vm = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            ./hosts/arch-nixos-vm/configuration.nix # your main system config
+            home-manager.nixosModules.home-manager
+            homeManagerModule
+          ];
+        };
       };
     };
 }
