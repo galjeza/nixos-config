@@ -17,41 +17,41 @@
 
       colors = {
         focused = {
-          border = "#8ba9c1";
-          background = "#8ba9c1";
-          text = "#141415";
-          indicator = "#f3be7c";
-          childBorder = "#8ba9c1";
+          border = "#31748f";
+          background = "#31748f";
+          text = "#e0def4";
+          indicator = "#f6c177";
+          childBorder = "#31748f";
         };
         focusedInactive = {
-          border = "#252530";
-          background = "#252530";
-          text = "#606079";
-          indicator = "#252530";
-          childBorder = "#252530";
+          border = "#26233a";
+          background = "#26233a";
+          text = "#6e6a86";
+          indicator = "#26233a";
+          childBorder = "#26233a";
         };
         unfocused = {
-          border = "#141415";
-          background = "#141415";
-          text = "#606079";
-          indicator = "#141415";
-          childBorder = "#141415";
+          border = "#191724";
+          background = "#191724";
+          text = "#6e6a86";
+          indicator = "#191724";
+          childBorder = "#191724";
         };
         urgent = {
-          border = "#d8647e";
-          background = "#d8647e";
-          text = "#141415";
-          indicator = "#d8647e";
-          childBorder = "#d8647e";
+          border = "#eb6f92";
+          background = "#eb6f92";
+          text = "#191724";
+          indicator = "#eb6f92";
+          childBorder = "#eb6f92";
         };
         placeholder = {
-          border = "#141415";
-          background = "#141415";
-          text = "#606079";
-          indicator = "#141415";
-          childBorder = "#141415";
+          border = "#191724";
+          background = "#191724";
+          text = "#6e6a86";
+          indicator = "#191724";
+          childBorder = "#191724";
         };
-        background = "#141415";
+        background = "#191724";
       };
 
       output = {
@@ -169,22 +169,22 @@
             size = 10.0;
           };
           colors = {
-            statusline = "#cdcdcd";
-            background = "#141415";
+            statusline = "#e0def4";
+            background = "#191724";
             inactiveWorkspace = {
-              background = "#141415";
-              border = "#141415";
-              text = "#606079";
+              background = "#191724";
+              border = "#191724";
+              text = "#6e6a86";
             };
             activeWorkspace = {
-              background = "#e08398";
-              border = "#e08398";
-              text = "#141415";
+              background = "#c4a7e7";
+              border = "#c4a7e7";
+              text = "#191724";
             };
             focusedWorkspace = {
-              background = "#8ba9c1";
-              border = "#8ba9c1";
-              text = "#141415";
+              background = "#31748f";
+              border = "#31748f";
+              text = "#191724";
             };
           };
         }
