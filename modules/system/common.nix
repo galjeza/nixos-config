@@ -46,6 +46,7 @@
     extraGroups = [
       "networkmanager"
       "wheel"
+      "docker"
     ];
     packages = with pkgs; [ ];
     shell = pkgs.zsh;
@@ -69,6 +70,8 @@
   #enable sway windows manager
   programs.sway.enable = true;
   programs.zsh.enable = true;
+
+  virtualisation.docker.enable = true;
   #enable extra featuresw  in sway wrapper
   programs.sway.wrapperFeatures.gtk = true;
   #enable policykit so that graphical programs can request elevated privileges
