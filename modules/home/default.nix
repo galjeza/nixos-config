@@ -60,7 +60,6 @@
     fastfetch
     firefox
     zellij
-    waybar
     wdisplays
     zoxide
     lazygit
