@@ -42,7 +42,7 @@
       vim = "nvim";
       vi = "nvim";
       im = "nvim";
-      rebuild = "sudo nixos-rebuild switch --flake /etc/nixos#nixos";
+      rebuild = "sudo nixos-rebuild switch --flake /etc/nixos#nixos-vm";
     };
   };
 }

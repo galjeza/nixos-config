@@ -2,8 +2,9 @@ return {
   {
     'rose-pine/neovim',
     name = 'rose-pine',
+    lazy = false,
     config = function()
-      -- vim.cmd('colorscheme rose-pine')
+      vim.cmd('colorscheme rose-pine-main')
     end,
   },
   {
@@ -12,13 +13,11 @@ return {
   },
   {
     'vague2k/vague.nvim',
-    lazy = false,
+    lazy = true,
     config = function()
       require('vague').setup({
         transparent = true,
-        vim.cmd.colorscheme("vague")
       })
-      vim.cmd('colorscheme vague')
     end,
   },
 }
