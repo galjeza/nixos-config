@@ -74,5 +74,6 @@
     nerd-fonts.jetbrains-mono
     xfce.thunar # gui file manager
     opencode
+    htop
   ];
 }

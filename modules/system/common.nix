@@ -70,6 +70,7 @@
   #enable sway windows manager
   programs.sway.enable = true;
   programs.zsh.enable = true;
+  programs.steam.enable = true;
 
   virtualisation.docker.enable = true;
   #enable extra featuresw  in sway wrapper
