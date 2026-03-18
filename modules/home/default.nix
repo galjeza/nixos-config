@@ -24,6 +24,8 @@
   # let home-manager manage itself
   programs.home-manager.enable = true;
 
+  home.file.".wallpaper.png".source = ../../wallpaper.png;
+
   programs.foot = {
     enable = true;
     settings = {

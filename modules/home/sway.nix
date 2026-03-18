@@ -9,7 +9,7 @@
       up = "k";
       right = "l";
       terminal = "foot";
-      menu = "wmenu-run";
+      menu = "wmenu-run -N 191724 -n e0def4 -M 26233a -m e0def4 -S 31748f -s 191724";
       fonts = {
         names = [ "JetBrainsMono Nerd Font" ];
         size = 10.0;
@@ -55,8 +55,8 @@
       };
 
       output = {
-        "*".bg =
-          "${pkgs.nixos-artwork.wallpapers.waterfall}/share/wallpapers/waterfall-2022-04-19/contents/images/nix-wallpaper-waterfall.png fill";
+        "*".bg = "${config.home.homeDirectory}/.wallpaper.png fill #191724";
+
         "Virtual-1".mode = "1920x1080@60Hz";
       };
 
@@ -79,7 +79,8 @@
           "${mod}+Shift+e" = "exec swaynag -t warning -m 'Exit sway?' -B 'Yes' 'swaymsg exit'";
           "${mod}+Shift+s" =
             ''exec sh -c 'mkdir -p ~/Pictures/Screenshots && file=~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png && grim -g "$(slurp)" "$file" && wl-copy -t image/png < "$file"' '';
-          "${mod}+Shift+v" = "exec sh -c 'cliphist list | wmenu -i -l 20 | cliphist decode | wl-copy' ";
+          "${mod}+Shift+v" =
+            "exec sh -c 'cliphist list | wmenu -i -l 20 -N 191724 -n e0def4 -M 26233a -m e0def4 -S 31748f -s 191724 | cliphist decode | wl-copy' ";
 
           "${mod}+${left}" = "focus left";
 
@@ -179,7 +180,7 @@
             activeWorkspace = {
               background = "#c4a7e7";
               border = "#c4a7e7";
-              text = "#191724";
+              text = "#e0def4";
             };
             focusedWorkspace = {
               background = "#31748f";
