@@ -1,4 +1,1 @@
-{
-  "local": { "prefix": "l", "body": "local $1 = $0" },
-  "Remove prefixes": { "prefix": ["lfu", "ll", "lpca"] }
-}
+/nix/store/9xfpdxdi4nh79nxif653h957q560xrfg-home-manager-files/.config/nvim/after/snippets/lua.json

@@ -1,8 +1,0 @@
--- -- Ensure statusline blends with window background
--- local set_statusline_hl = function()
---   vim.api.nvim_set_hl(0, 'StatusLine', { bg = 'none' })
---   vim.api.nvim_set_hl(0, 'StatusLineNC', { bg = 'none' })
--- end
---
--- set_statusline_hl()
--- _G.Config.new_autocmd('ColorScheme', nil, set_statusline_hl, 'Statusline highlight')
