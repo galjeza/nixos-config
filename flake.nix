@@ -12,11 +12,18 @@
       # instead of downloading its own copy
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
   };
 
   # outputs is what this flake produces - in our case a NixOS system
   outputs =
-    { nixpkgs, home-manager, ... }:
+    {
+      nixpkgs,
+      home-manager,
+      neovim-nightly-overlay,
+      ...
+    }:
     let
       # shared home-manager config used by all machines
       homeManagerModule = {
@@ -24,6 +31,10 @@
         home-manager.useUserPackages = true;
         home-manager.users.galjeza = import ./modules/home/default.nix;
         home-manager.backupFileExtension = "bak";
+      };
+
+      neovimNightlyModule = {
+        nixpkgs.overlays = [ neovim-nightly-overlay.overlays.default ];
       };
     in
     {
@@ -33,6 +44,7 @@
           system = "x86_64-linux";
           modules = [
             ./hosts/nixos-vm/configuration.nix # your main system config
+            neovimNightlyModule
             home-manager.nixosModules.home-manager
             homeManagerModule
           ];
@@ -42,6 +54,7 @@
           system = "x86_64-linux";
           modules = [
             ./hosts/arch-nixos-vm/configuration.nix # your main system config
+            neovimNightlyModule
             home-manager.nixosModules.home-manager
             homeManagerModule
           ];
