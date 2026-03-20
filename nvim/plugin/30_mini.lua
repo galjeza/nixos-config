@@ -169,22 +169,6 @@ end)
 -- - `:h MiniExtra.gen_highlighter` - 'mini.hipatterns' highlighters
 later(function() require('mini.extra').setup() end)
 
--- Extend and create a/i textobjects, like `:h a(`, `:h a'`, and more).
--- Contains not only `a` and `i` type of textobjects, but also their "next" and
--- "last" variants that will explicitly search for textobjects after and before
--- cursor. Example usage:
--- - `ci)` - *c*hange *i*inside parenthesis (`)`)
--- - `di(` - *d*elete *i*inside padded parenthesis (`(`)
--- - `yaq` - *y*ank *a*round *q*uote (any of "", '', or ``)
--- - `vif` - *v*isually select *i*inside *f*unction call
--- - `cina` - *c*hange *i*nside *n*ext *a*rgument
--- - `valaala` - *v*isually select *a*round *l*ast (i.e. previous) *a*rgument
---   and then again reselect *a*round new *l*ast *a*rgument
---
--- See also:
--- - `:h text-objects` - general info about what textobjects are
--- - `:h MiniAi-builtin-textobjects` - list of all supported textobjects
--- - `:h MiniAi-textobject-specification` - examples of custom textobjects
 later(function()
   local ai = require('mini.ai')
   ai.setup({
@@ -322,50 +306,6 @@ later(function() require('mini.cmdline').setup() end)
 -- The built-in `:h commenting` is based on 'mini.comment'. Yet this module is
 -- still enabled as it provides more customization opportunities.
 later(function() require('mini.comment').setup() end)
-
--- Autohighlight word under cursor with a customizable delay.
--- Word boundaries are defined based on `:h 'iskeyword'` option.
---
--- It is not enabled by default because its effects are a matter of taste.
--- Uncomment next line (use `gcc`) to enable.
--- later(function() require('mini.cursorword').setup() end)
-
--- Work with diff hunks that represent the difference between the buffer text and
--- some reference text set by a source. Default source uses text from Git index.
--- Also provides summary info used in developer section of 'mini.statusline'.
--- Example usage:
--- - `ghip` - apply hunks (`gh`) within *i*nside *p*aragraph
--- - `gHG` - reset hunks (`gH`) from cursor until end of buffer (`G`)
--- - `ghgh` - apply (`gh`) hunk at cursor (`gh`)
--- - `gHgh` - reset (`gH`) hunk at cursor (`gh`)
--- - `<Leader>go` - toggle overlay
---
--- See also:
--- - `:h MiniDiff-overview` - overview of how module works
--- - `:h MiniDiff-diff-summary` - available summary information
--- - `:h MiniDiff.gen_source` - available built-in sources
-later(function() require('mini.diff').setup() end)
-
--- Git integration for more straightforward Git actions based on Neovim's state.
--- It is not meant as a fully featured Git client, only to provide helpers that
--- integrate better with Neovim. Example usage:
--- - `<Leader>gs` - show information at cursor
--- - `<Leader>gd` - show unstaged changes as a patch in separate tabpage
--- - `<Leader>gL` - show Git log of current file
--- - `:Git help git` - show output of `git help git` inside Neovim
---
--- See also:
--- - `:h MiniGit-examples` - examples of common setups
--- - `:h :Git` - more details about `:Git` user command
--- - `:h MiniGit.show_at_cursor()` - what information at cursor is shown
-later(function() require('mini.git').setup() end)
-
--- Highlight patterns in text. Like `TODO`/`NOTE` or color hex codes.
--- Example usage:
--- - `:Pick hipatterns` - pick among all highlighted patterns
---
--- See also:
--- - `:h MiniHipatterns-examples` - examples of common setups
 later(function()
   local hipatterns = require('mini.hipatterns')
   local hi_words = MiniExtra.gen_highlighter.words
@@ -438,40 +378,6 @@ later(function()
   MiniKeymap.map_multistep('i', '<BS>', { 'minipairs_bs' })
 end)
 
--- Window with text overview. It is displayed on the right hand side. Can be used
--- for quick overview and navigation. Hidden by default. Example usage:
--- - `<Leader>mt` - toggle map window
--- - `<Leader>mf` - focus on the map for fast navigation
--- - `<Leader>ms` - change map's side (if it covers something underneath)
---
--- See also:
--- - `:h MiniMap.gen_encode_symbols` - list of symbols to use for text encoding
--- - `:h MiniMap.gen_integration` - list of integrations to show in the map
---
--- NOTE: Might introduce lag on very big buffers (10000+ lines)
-later(function()
-  local map = require('mini.map')
-  map.setup({
-    -- Use Braille dots to encode text
-    symbols = { encode = map.gen_encode_symbols.dot('4x2') },
-    -- Show built-in search matches, 'mini.diff' hunks, and diagnostic entries
-    integrations = {
-      map.gen_integration.builtin_search(),
-      map.gen_integration.diff(),
-      map.gen_integration.diagnostic(),
-    },
-  })
-
-  -- Map built-in navigation characters to force map refresh
-  for _, key in ipairs({ 'n', 'N', '*', '#' }) do
-    local rhs = key
-      -- Also open enough folds when jumping to the next match
-      .. 'zv'
-      .. '<Cmd>lua MiniMap.refresh({}, { lines = false, scrollbar = false })<CR>'
-    vim.keymap.set('n', key, rhs)
-  end
-end)
-
 -- Move any selection in any direction. Example usage in Normal mode:
 -- - `<M-j>`/`<M-k>` - move current line down / up
 -- - `<M-h>`/`<M-l>` - decrease / increase indent of current line
@@ -480,36 +386,6 @@ end)
 -- - `<M-h>`/`<M-j>`/`<M-k>`/`<M-l>` - move selection left/down/up/right
 later(function() require('mini.move').setup() end)
 
--- Text edit operators. All operators have mappings for:
--- - Regular operator (waits for motion/textobject to use)
--- - Current line action (repeat second character of operator to activate)
--- - Act on visual selection (type operator in Visual mode)
---
--- Example usage:
--- - `griw` - replace (`gr`) *i*inside *w*ord
--- - `gmm` - multiple/duplicate (`gm`) current line (extra `m`)
--- - `vipgs` - *v*isually select *i*nside *p*aragraph and sort it (`gs`)
--- - `gxiww.` - exchange (`gx`) *i*nside *w*ord with next word (`w` to navigate
---   to it and `.` to repeat exchange operator)
--- - `g==` - execute current line as Lua code and replace with its output.
---   For example, typing `g==` over line `vim.lsp.get_clients()` shows
---   information about all available LSP clients.
---
--- See also:
--- - `:h MiniOperators-mappings` - overview of how mappings are created
--- - `:h MiniOperators-overview` - overview of present operators
-later(function()
-  require('mini.operators').setup()
-
-  -- Create mappings for swapping adjacent arguments. Notes:
-  -- - Relies on `a` argument textobject from 'mini.ai'.
-  -- - It is not 100% reliable, but mostly works.
-  -- - It overrides `:h (` and `:h )`.
-  -- Explanation: `gx`-`ia`-`gx`-`ila` <=> exchange current and last argument
-  -- Usage: when on `a` in `(aa, bb)` press `)` followed by `(`.
-  vim.keymap.set('n', '(', 'gxiagxila', { remap = true, desc = 'Swap arg left' })
-  vim.keymap.set('n', ')', 'gxiagxina', { remap = true, desc = 'Swap arg right' })
-end)
 
 -- Autopairs functionality. Insert pair when typing opening character and go over
 -- right character if it is already to cursor's right. Also provides mappings for
@@ -623,64 +499,4 @@ later(function()
   -- that will provide them. To have that, uncomment next line (use `gcc`).
   -- MiniSnippets.start_lsp_server()
 end)
-
--- Split and join arguments (regions inside brackets between allowed separators).
--- It uses Lua patterns to find arguments, which means it works in comments and
--- strings but can be not as accurate as tree-sitter based solutions.
--- Each action can be configured with hooks (like add/remove trailing comma).
--- Example usage:
--- - `gS` - toggle between joined (all in one line) and split (each on a separate
---   line and indented) arguments. It is dot-repeatable (see `:h .`).
---
--- See also:
--- - `:h MiniSplitjoin.gen_hook` - list of available hooks
-later(function() require('mini.splitjoin').setup() end)
-
--- Surround actions: add/delete/replace/find/highlight. Working with surroundings
--- is surprisingly common: surround word with quotes, replace `)` with `]`, etc.
--- This module comes with many built-in surroundings, each identified by a single
--- character. It searches only for surrounding that covers cursor and comes with
--- a special "next" / "last" versions of actions to search forward or backward
--- (just like 'mini.ai'). All text editing actions are dot-repeatable (see `:h .`).
---
--- Example usage (this may feel intimidating at first, but after practice it
--- becomes second nature during text editing):
--- - `saiw)` - *s*urround *a*dd for *i*nside *w*ord parenthesis (`)`)
--- - `sdf`   - *s*urround *d*elete *f*unction call (like `f(var)` -> `var`)
--- - `srb[`  - *s*urround *r*eplace *b*racket (any of [], (), {}) with padded `[`
--- - `sf*`   - *s*urround *f*ind right part of `*` pair (like bold in markdown)
--- - `shf`   - *s*urround *h*ighlight current *f*unction call
--- - `srn{{` - *s*urround *r*eplace *n*ext curly bracket `{` with padded `{`
--- - `sdl'`  - *s*urround *d*elete *l*ast quote pair (`'`)
--- - `vaWsa<Space>` - *v*isually select *a*round *W*ORD and *s*urround *a*dd
---                    spaces (`<Space>`)
---
--- See also:
--- - `:h MiniSurround-builtin-surroundings` - list of all supported surroundings
--- - `:h MiniSurround-surrounding-specification` - examples of custom surroundings
--- - `:h MiniSurround-vim-surround-config` - alternative set of action mappings
-later(function() require('mini.surround').setup() end)
-
--- Highlight and remove trailspace. Temporarily stops highlighting in Insert mode
--- to reduce noise when typing. Example usage:
--- - `<Leader>ot` - trim all trailing whitespace in a buffer
 later(function() require('mini.trailspace').setup() end)
-
--- Track and reuse file system visits. Every file/directory visit is persistently
--- tracked on disk to later reuse: show in special frecency order, etc. It also
--- supports adding labels to visited paths to quickly navigate between them.
--- Example usage:
--- - `<Leader>fv` - find across all visits
--- - `<Leader>vv` / `<Leader>vV` - add/remove special "core" label to current file
--- - `<Leader>vc` / `<Leader>vC` - show files with "core" label; all or added within
---   current working directory
---
--- See also:
--- - `:h MiniVisits-overview` - overview of how module works
--- - `:h MiniVisits-examples` - examples of common setups
-later(function() require('mini.visits').setup() end)
-
--- Not mentioned here, but can be useful:
--- - 'mini.doc' - needed only for plugin developers.
--- - 'mini.fuzzy' - not really needed on a daily basis.
--- - 'mini.test' - needed only for plugin developers.
