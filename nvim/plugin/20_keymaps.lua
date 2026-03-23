@@ -20,7 +20,6 @@ nmap('[p', '<Cmd>exe "iput! " . v:register<CR>', 'Paste Above')
 nmap(']p', '<Cmd>exe "iput "  . v:register<CR>', 'Paste Below')
 
 -- Many general mappings are created by 'mini.basics'. See 'plugin/30_mini.lua'
-
 -- stylua: ignore start
 -- The next part (until `-- stylua: ignore end`) is aligned manually for easier
 -- reading. Consider preserving this or remove `-- stylua` lines to autoformat.
