@@ -61,6 +61,10 @@
       };
 
       input = {
+        "*" = {
+          repeat_delay = "200";
+          repeat_rate = "50";
+        };
         "type:tablet" = {
           map_to_output = "Virtual-1";
         };
