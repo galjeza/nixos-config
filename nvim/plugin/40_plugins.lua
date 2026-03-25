@@ -70,11 +70,12 @@ now_if_args(function()
   require('mason').setup()
 end)
 
+-- Colorschemes ======
 Config.now(function()
  -- Install only those that you need
- add({
-   'https://github.com/ellisonleao/gruvbox.nvim',
- })
+ -- add({
+ --   'https://github.com/ellisonleao/gruvbox.nvim',
+ -- })
 
   -- vim.cmd('color everfo')
 end)
