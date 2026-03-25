@@ -74,6 +74,7 @@
     wget
     curl
     sway
+    meld
   ];
 
   # enable x11 for legacy desktop apps
