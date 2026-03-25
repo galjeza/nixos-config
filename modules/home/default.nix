@@ -67,6 +67,8 @@
     defaultTimeout = 5000;
   };
 
+  services.polkit-gnome.enable = true;
+
   # user-specific packages (things only you need, not system-wide)
   home.packages = with pkgs; [
     fastfetch
