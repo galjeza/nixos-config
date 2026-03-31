@@ -17,6 +17,12 @@ now_if_args(function()
     'lua',
     'vimdoc',
     'markdown',
+    'javascript',
+    'typescript',
+    'typescript',
+    'tsx',
+    'prisma',
+    'rust',
     -- Add here more languages with which you want to use tree-sitter
     -- To see available languages:
     -- - Execute `:=require('nvim-treesitter').get_available()`
