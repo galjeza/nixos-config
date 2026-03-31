@@ -51,10 +51,11 @@ now_if_args(function()
   -- Use `:h vim.lsp.enable()` to automatically enable language server based on
   -- the rules provided by 'nvim-lspconfig'.
   -- Use `:h vim.lsp.config()` or 'after/lsp/' directory to configure servers.
-  -- Uncomment and tweak the following `vim.lsp.enable()` call to enable servers.
-  -- vim.lsp.enable({
-  --   -- For example, if `lua-language-server` is installed, use `'lua_ls'` entry
-  -- })
+  vim.lsp.enable({
+    'ts_ls',
+    'prismals',
+    'rust_analyzer',
+  })
 end)
 
 -- Formatting =================================================================
@@ -65,15 +66,42 @@ later(function()
       -- Allow formatting from LSP server if no dedicated formatter is available
       lsp_format = 'fallback',
     },
-    -- Map of filetype to formatters
-    -- Make sure that necessary CLI tool is available
-    -- formatters_by_ft = { lua = { 'stylua' } },
+    format_on_save = {
+      timeout_ms = 5000,
+      lsp_format = 'fallback',
+    },
+    formatters_by_ft = {
+      css = { 'prettier' },
+      html = { 'prettier' },
+      javascript = { 'prettier' },
+      javascriptreact = { 'prettier' },
+      json = { 'prettier' },
+      jsonc = { 'prettier' },
+      less = { 'prettier' },
+      markdown = { 'prettier' },
+      rust = { 'rustfmt' },
+      scss = { 'prettier' },
+      typescript = { 'prettier' },
+      typescriptreact = { 'prettier' },
+      yaml = { 'prettier' },
+    },
   })
 end)
 
 now_if_args(function()
-  add({ 'https://github.com/mason-org/mason.nvim' })
+  add({
+    'https://github.com/mason-org/mason.nvim',
+    'https://github.com/mason-org/mason-lspconfig.nvim',
+  })
   require('mason').setup()
+  require('mason-lspconfig').setup({
+    ensure_installed = {
+      'ts_ls',
+      'prismals',
+      'rust_analyzer',
+    },
+    automatic_installation = true,
+  })
 end)
 
 -- Colorschemes ======
