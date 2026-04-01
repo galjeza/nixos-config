@@ -310,36 +310,6 @@ later(function()
 	require("mini.cmdline").setup()
 end)
 
--- Comment lines. Provides functionality to work with commented lines.
--- Uses `:h 'commentstring'` option to infer comment structure.
--- Example usage:
--- - `gcip` - toggle comment (`gc`) *i*inside *p*aragraph
--- - `vapgc` - *v*isually select *a*round *p*aragraph and toggle comment (`gc`)
--- - `gcgc` - uncomment (`gc`, operator) comment block at cursor (`gc`, textobject)
---
--- The built-in `:h commenting` is based on 'mini.comment'. Yet this module is
--- still enabled as it provides more customization opportunities.
-later(function()
-	require("mini.comment").setup()
-end)
-later(function()
-	local hipatterns = require("mini.hipatterns")
-	local hi_words = MiniExtra.gen_highlighter.words
-	hipatterns.setup({
-		highlighters = {
-			-- Highlight a fixed set of common words. Will be highlighted in any place,
-			-- not like "only in comments".
-			fixme = hi_words({ "FIXME", "Fixme", "fixme" }, "MiniHipatternsFixme"),
-			hack = hi_words({ "HACK", "Hack", "hack" }, "MiniHipatternsHack"),
-			todo = hi_words({ "TODO", "Todo", "todo" }, "MiniHipatternsTodo"),
-			note = hi_words({ "NOTE", "Note", "note" }, "MiniHipatternsNote"),
-
-			-- Highlight hex color string (#aabbcc) with that color as a background
-			hex_color = hipatterns.gen_highlighter.hex_color(),
-		},
-	})
-end)
-
 -- Visualize and work with indent scope. It visualizes indent scope "at cursor"
 -- with animated vertical line. Provides relevant motions and textobjects.
 -- Example usage:
@@ -431,8 +401,4 @@ end)
 --   one of `<Leader>f` mappings defined in 'plugin/20_keymaps.lua'
 later(function()
 	require("mini.pick").setup()
-end)
-
-later(function()
-	require("mini.trailspace").setup()
 end)
