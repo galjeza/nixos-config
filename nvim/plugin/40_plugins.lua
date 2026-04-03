@@ -1,6 +1,6 @@
 local add = vim.pack.add
 local now_if_args, later = Config.now_if_args, Config.later
-now_if_args(function()
+Config.now(function()
   -- Define hook to update tree-sitter parsers after plugin is updated
   local ts_update = function() vim.cmd('TSUpdate') end
   Config.on_packchanged('nvim-treesitter', { 'update' }, ts_update, ':TSUpdate')
@@ -10,6 +10,17 @@ now_if_args(function()
     'https://github.com/nvim-treesitter/nvim-treesitter-textobjects',
   })
 
+  -- `nvim-treesitter` ships queries under `runtime/queries`. With `vim.pack`
+  -- this subdirectory is not always added automatically, so ensure it is on
+  -- runtimepath; otherwise parser starts but highlights can be missing.
+  local ts_plugin_files = vim.api.nvim_get_runtime_file('plugin/nvim-treesitter.lua', false)
+  for _, plugin_file in ipairs(ts_plugin_files) do
+    local runtime_dir = vim.fn.fnamemodify(plugin_file, ':h:h') .. '/runtime'
+    if vim.fn.isdirectory(runtime_dir) == 1 and not vim.tbl_contains(vim.opt.rtp:get(), runtime_dir) then
+      vim.opt.rtp:append(runtime_dir)
+    end
+  end
+
   -- Define languages which will have parsers installed and auto enabled
   -- After changing this, restart Neovim once to install necessary parsers. Wait
   -- for the installation to finish before opening a file for added language(s).
@@ -18,7 +29,6 @@ now_if_args(function()
     'vimdoc',
     'markdown',
     'javascript',
-    'typescript',
     'typescript',
     'tsx',
     'prisma',
@@ -35,7 +45,7 @@ now_if_args(function()
   local to_install = vim.tbl_filter(isnt_installed, languages)
   if #to_install > 0 then require('nvim-treesitter').install(to_install) end
 
-  -- Enable tree-sitter after opening a file for a target language
+  -- Enable tree-sitter after opening a file for a target language.
   local filetypes = {}
   for _, lang in ipairs(languages) do
     for _, ft in ipairs(vim.treesitter.language.get_filetypes(lang)) do
@@ -102,6 +112,21 @@ now_if_args(function()
     },
     automatic_installation = true,
   })
+end)
+
+later(function()
+  add({
+    'https://github.com/nvim-lua/plenary.nvim',
+    'https://github.com/kdheepak/lazygit.nvim',
+  })
+end)
+
+later(function()
+  add({
+    'https://github.com/MunifTanjim/nui.nvim',
+    'https://github.com/m4xshen/hardtime.nvim',
+  })
+  require('hardtime').setup()
 end)
 
 -- Colorschemes ======
