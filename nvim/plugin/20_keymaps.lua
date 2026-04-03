@@ -123,7 +123,7 @@ nmap_leader("fs", pick_workspace_symbols_live, "Symbols workspace (live)")
 nmap_leader("fS", '<Cmd>Pick lsp scope="document_symbol"<CR>', "Symbols document")
 
 -- g is for 'Git'. Use LazyGit for all Git actions.
-nmap_leader("gg", "<Cmd>LazyGit<CR>", "LazyGit")
+nmap_leader("g", "<Cmd>LazyGit<CR>", "LazyGit")
 
 -- l is for 'Language'. Common usage:
 -- - `<Leader>ld` - show more diagnostic details in a floating window
