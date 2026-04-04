@@ -19,6 +19,10 @@ end
 nmap("[p", '<Cmd>exe "iput! " . v:register<CR>', "Paste Above")
 nmap("]p", '<Cmd>exe "iput "  . v:register<CR>', "Paste Below")
 
+-- Keep cursor centered after half-page scrolling
+nmap("<C-d>", "<C-d>zz", "Half-page down + center")
+nmap("<C-u>", "<C-u>zz", "Half-page up + center")
+
 -- Create a global table with information about Leader groups in certain modes.
 -- This is used to provide 'mini.clue' with extra clues.
 -- Add an entry if you create a new group.
