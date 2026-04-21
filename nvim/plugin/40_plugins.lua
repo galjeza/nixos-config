@@ -131,10 +131,16 @@ end)
 
 -- Colorschemes ======
 Config.now(function()
- -- Install only those that you need
- -- add({
- --   'https://github.com/ellisonleao/gruvbox.nvim',
- -- })
+  -- Install only those that you need
+  add({
+    'https://github.com/ellisonleao/gruvbox.nvim',
+    'https://github.com/folke/tokyonight.nvim',
+    'https://github.com/rebelot/kanagawa.nvim',
+    'https://github.com/EdenEast/nightfox.nvim',
+    'https://github.com/bluz71/vim-moonfly-colors',
+    'https://github.com/maxmx03/solarized.nvim',
+    'https://github.com/rose-pine/neovim',
+  })
 
-  -- vim.cmd('color everfo')
+  vim.cmd('colorscheme moonfly')
 end)
