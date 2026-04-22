@@ -1,146 +1,149 @@
 local add = vim.pack.add
 local now_if_args, later = Config.now_if_args, Config.later
 Config.now(function()
-  -- Define hook to update tree-sitter parsers after plugin is updated
-  local ts_update = function() vim.cmd('TSUpdate') end
-  Config.on_packchanged('nvim-treesitter', { 'update' }, ts_update, ':TSUpdate')
+	-- Define hook to update tree-sitter parsers after plugin is updated
+	local ts_update = function()
+		vim.cmd("TSUpdate")
+	end
+	Config.on_packchanged("nvim-treesitter", { "update" }, ts_update, ":TSUpdate")
 
-  add({
-    'https://github.com/nvim-treesitter/nvim-treesitter',
-    'https://github.com/nvim-treesitter/nvim-treesitter-textobjects',
-  })
+	add({
+		"https://github.com/nvim-treesitter/nvim-treesitter",
+		"https://github.com/nvim-treesitter/nvim-treesitter-textobjects",
+	})
 
-  -- `nvim-treesitter` ships queries under `runtime/queries`. With `vim.pack`
-  -- this subdirectory is not always added automatically, so ensure it is on
-  -- runtimepath; otherwise parser starts but highlights can be missing.
-  local ts_plugin_files = vim.api.nvim_get_runtime_file('plugin/nvim-treesitter.lua', false)
-  for _, plugin_file in ipairs(ts_plugin_files) do
-    local runtime_dir = vim.fn.fnamemodify(plugin_file, ':h:h') .. '/runtime'
-    if vim.fn.isdirectory(runtime_dir) == 1 and not vim.tbl_contains(vim.opt.rtp:get(), runtime_dir) then
-      vim.opt.rtp:append(runtime_dir)
-    end
-  end
+	-- `nvim-treesitter` ships queries under `runtime/queries`. With `vim.pack`
+	-- this subdirectory is not always added automatically, so ensure it is on
+	-- runtimepath; otherwise parser starts but highlights can be missing.
+	local ts_plugin_files = vim.api.nvim_get_runtime_file("plugin/nvim-treesitter.lua", false)
+	for _, plugin_file in ipairs(ts_plugin_files) do
+		local runtime_dir = vim.fn.fnamemodify(plugin_file, ":h:h") .. "/runtime"
+		if vim.fn.isdirectory(runtime_dir) == 1 and not vim.tbl_contains(vim.opt.rtp:get(), runtime_dir) then
+			vim.opt.rtp:append(runtime_dir)
+		end
+	end
 
-  -- Define languages which will have parsers installed and auto enabled
-  -- After changing this, restart Neovim once to install necessary parsers. Wait
-  -- for the installation to finish before opening a file for added language(s).
-  local languages = {
-    'lua',
-    'vimdoc',
-    'markdown',
-    'javascript',
-    'typescript',
-    'tsx',
-    'prisma',
-    'rust',
-    -- Add here more languages with which you want to use tree-sitter
-    -- To see available languages:
-    -- - Execute `:=require('nvim-treesitter').get_available()`
-    -- - Visit 'SUPPORTED_LANGUAGES.md' file at
-    --   https://github.com/nvim-treesitter/nvim-treesitter/blob/main
-  }
-  local isnt_installed = function(lang)
-    return #vim.api.nvim_get_runtime_file('parser/' .. lang .. '.*', false) == 0
-  end
-  local to_install = vim.tbl_filter(isnt_installed, languages)
-  if #to_install > 0 then require('nvim-treesitter').install(to_install) end
+	-- Define languages which will have parsers installed and auto enabled
+	-- After changing this, restart Neovim once to install necessary parsers. Wait
+	-- for the installation to finish before opening a file for added language(s).
+	local languages = {
+		"lua",
+		"vimdoc",
+		"markdown",
+		"javascript",
+		"typescript",
+		"tsx",
+		"prisma",
+		"rust",
+		-- Add here more languages with which you want to use tree-sitter
+		-- To see available languages:
+		-- - Execute `:=require('nvim-treesitter').get_available()`
+		-- - Visit 'SUPPORTED_LANGUAGES.md' file at
+		--   https://github.com/nvim-treesitter/nvim-treesitter/blob/main
+	}
+	local isnt_installed = function(lang)
+		return #vim.api.nvim_get_runtime_file("parser/" .. lang .. ".*", false) == 0
+	end
+	local to_install = vim.tbl_filter(isnt_installed, languages)
+	if #to_install > 0 then
+		require("nvim-treesitter").install(to_install)
+	end
 
-  -- Enable tree-sitter after opening a file for a target language.
-  local filetypes = {}
-  for _, lang in ipairs(languages) do
-    for _, ft in ipairs(vim.treesitter.language.get_filetypes(lang)) do
-      table.insert(filetypes, ft)
-    end
-  end
-  local ts_start = function(ev) vim.treesitter.start(ev.buf) end
-  Config.new_autocmd('FileType', filetypes, ts_start, 'Start tree-sitter')
+	-- Enable tree-sitter after opening a file for a target language.
+	local filetypes = {}
+	for _, lang in ipairs(languages) do
+		for _, ft in ipairs(vim.treesitter.language.get_filetypes(lang)) do
+			table.insert(filetypes, ft)
+		end
+	end
+	local ts_start = function(ev)
+		vim.treesitter.start(ev.buf)
+	end
+	Config.new_autocmd("FileType", filetypes, ts_start, "Start tree-sitter")
 end)
 
 now_if_args(function()
-  add({ 'https://github.com/neovim/nvim-lspconfig' })
-  -- Use `:h vim.lsp.enable()` to automatically enable language server based on
-  -- the rules provided by 'nvim-lspconfig'.
-  -- Use `:h vim.lsp.config()` or 'after/lsp/' directory to configure servers.
-  vim.lsp.enable({
-    'ts_ls',
-    'prismals',
-    'rust_analyzer',
-  })
+	add({ "https://github.com/neovim/nvim-lspconfig" })
+	-- Use `:h vim.lsp.enable()` to automatically enable language server based on
+	-- the rules provided by 'nvim-lspconfig'.
+	-- Use `:h vim.lsp.config()` or 'after/lsp/' directory to configure servers.
+	vim.lsp.enable({
+		"ts_ls",
+		"prismals",
+		"rust_analyzer",
+	})
 end)
 
 -- Formatting =================================================================
 later(function()
-  add({ 'https://github.com/stevearc/conform.nvim' })
-  require('conform').setup({
-    default_format_opts = {
-      -- Allow formatting from LSP server if no dedicated formatter is available
-      lsp_format = 'fallback',
-    },
-    format_on_save = {
-      timeout_ms = 5000,
-      lsp_format = 'fallback',
-    },
-    formatters_by_ft = {
-      css = { 'prettier' },
-      html = { 'prettier' },
-      javascript = { 'prettier' },
-      javascriptreact = { 'prettier' },
-      json = { 'prettier' },
-      jsonc = { 'prettier' },
-      less = { 'prettier' },
-      markdown = { 'prettier' },
-      rust = { 'rustfmt' },
-      scss = { 'prettier' },
-      typescript = { 'prettier' },
-      typescriptreact = { 'prettier' },
-      yaml = { 'prettier' },
-    },
-  })
+	add({ "https://github.com/stevearc/conform.nvim" })
+	require("conform").setup({
+		default_format_opts = {
+			-- Allow formatting from LSP server if no dedicated formatter is available
+			lsp_format = "fallback",
+		},
+		format_on_save = {
+			timeout_ms = 5000,
+			lsp_format = "fallback",
+		},
+		formatters_by_ft = {
+			css = { "prettier" },
+			html = { "prettier" },
+			javascript = { "prettier" },
+			javascriptreact = { "prettier" },
+			json = { "prettier" },
+			jsonc = { "prettier" },
+			less = { "prettier" },
+			markdown = { "prettier" },
+			rust = { "rustfmt" },
+			scss = { "prettier" },
+			typescript = { "prettier" },
+			typescriptreact = { "prettier" },
+			yaml = { "prettier" },
+		},
+	})
 end)
 
 now_if_args(function()
-  add({
-    'https://github.com/mason-org/mason.nvim',
-    'https://github.com/mason-org/mason-lspconfig.nvim',
-  })
-  require('mason').setup()
-  require('mason-lspconfig').setup({
-    ensure_installed = {
-      'ts_ls',
-      'prismals',
-      'rust_analyzer',
-    },
-    automatic_installation = true,
-  })
+	add({
+		"https://github.com/mason-org/mason.nvim",
+		"https://github.com/mason-org/mason-lspconfig.nvim",
+	})
+	require("mason").setup()
+	require("mason-lspconfig").setup({
+		ensure_installed = {
+			"ts_ls",
+			"prismals",
+			"rust_analyzer",
+		},
+		automatic_installation = true,
+	})
 end)
 
 later(function()
-  add({
-    'https://github.com/nvim-lua/plenary.nvim',
-    'https://github.com/kdheepak/lazygit.nvim',
-  })
+	add({
+		"https://github.com/nvim-lua/plenary.nvim",
+		"https://github.com/kdheepak/lazygit.nvim",
+	})
 end)
 
 later(function()
-  add({
-    'https://github.com/MunifTanjim/nui.nvim',
-    'https://github.com/m4xshen/hardtime.nvim',
-  })
-  require('hardtime').setup()
+	add({
+		"https://github.com/MunifTanjim/nui.nvim",
+		"https://github.com/m4xshen/hardtime.nvim",
+	})
+	require("hardtime").setup()
 end)
 
 -- Colorschemes ======
 Config.now(function()
-  -- Install only those that you need
-  add({
-    'https://github.com/ellisonleao/gruvbox.nvim',
-    'https://github.com/folke/tokyonight.nvim',
-    'https://github.com/rebelot/kanagawa.nvim',
-    'https://github.com/EdenEast/nightfox.nvim',
-    'https://github.com/bluz71/vim-moonfly-colors',
-    'https://github.com/maxmx03/solarized.nvim',
-    'https://github.com/rose-pine/neovim',
-  })
+	-- Install only those that you need
+	add({
+		"https://github.com/rebelot/kanagawa.nvim",
+		"https://github.com/bluz71/vim-moonfly-colors",
+		"https://github.com/vague-theme/vague.nvim",
+		"https://github.com/rose-pine/neovim",
+	})
 
-  vim.cmd('colorscheme moonfly')
+	vim.cmd("colorscheme vague")
 end)
