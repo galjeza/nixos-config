@@ -68,7 +68,6 @@ now_if_args(function()
 	-- the rules provided by 'nvim-lspconfig'.
 	-- Use `:h vim.lsp.config()` or 'after/lsp/' directory to configure servers.
 	vim.lsp.enable({
-		"ts_ls",
 		"prismals",
 		"rust_analyzer",
 	})
@@ -112,7 +111,6 @@ now_if_args(function()
 	require("mason").setup()
 	require("mason-lspconfig").setup({
 		ensure_installed = {
-			"ts_ls",
 			"prismals",
 			"rust_analyzer",
 		},
@@ -127,22 +125,19 @@ later(function()
 	})
 end)
 
-later(function()
-	add({
-		"https://github.com/MunifTanjim/nui.nvim",
-		"https://github.com/m4xshen/hardtime.nvim",
-	})
-	require("hardtime").setup()
-end)
-
+-- later(function()
+-- 	add({
+-- 		"https://github.com/MunifTanjim/nui.nvim",
+-- 		"https://github.com/m4xshen/hardtime.nvim",
+-- 	})
+-- 	require("hardtime").setup()
+-- end)
+--
 -- Colorschemes ======
 Config.now(function()
 	-- Install only those that you need
 	add({
-		"https://github.com/rebelot/kanagawa.nvim",
-		"https://github.com/bluz71/vim-moonfly-colors",
 		"https://github.com/vague-theme/vague.nvim",
-		"https://github.com/rose-pine/neovim",
 	})
 
 	vim.cmd("colorscheme vague")
