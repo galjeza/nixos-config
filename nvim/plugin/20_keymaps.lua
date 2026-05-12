@@ -23,6 +23,9 @@ nmap("]p", '<Cmd>exe "iput "  . v:register<CR>', "Paste Below")
 nmap("<C-d>", "<C-d>zz", "Half-page down + center")
 nmap("<C-u>", "<C-u>zz", "Half-page up + center")
 
+-- Use LSP navigation on `gd` like modern editor defaults
+nmap("gd", "<Cmd>lua vim.lsp.buf.definition()<CR>", "Go to definition (LSP)")
+
 -- Create a global table with information about Leader groups in certain modes.
 -- This is used to provide 'mini.clue' with extra clues.
 -- Add an entry if you create a new group.
