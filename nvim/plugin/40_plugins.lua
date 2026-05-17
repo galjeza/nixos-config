@@ -125,14 +125,15 @@ later(function()
 	})
 end)
 
--- later(function()
--- 	add({
--- 		"https://github.com/MunifTanjim/nui.nvim",
--- 		"https://github.com/m4xshen/hardtime.nvim",
--- 	})
--- 	require("hardtime").setup()
--- end)
---
+later(function()
+	add({
+		"https://github.com/pwntester/octo.nvim",
+	})
+	require("octo").setup({
+		picker = "default",
+		enable_builtin = true,
+	})
+end)
 -- Colorschemes ======
 Config.now(function()
 	-- Install only those that you need
