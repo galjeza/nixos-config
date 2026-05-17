@@ -40,6 +40,16 @@
     {
       nixosConfigurations = {
 
+        lenovo-yoga = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            ./hosts/lenovo-yoga/configuration.nix # your main system config
+            neovimNightlyModule
+            home-manager.nixosModules.home-manager
+            homeManagerModule
+          ];
+        };
+
         nixos-vm = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [
