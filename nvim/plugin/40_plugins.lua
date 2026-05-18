@@ -139,6 +139,7 @@ Config.now(function()
 	-- Install only those that you need
 	add({
 		"https://github.com/vague-theme/vague.nvim",
+    "https://github.com/rose-pine/neovim"
 	})
 
 	vim.cmd("colorscheme vague")

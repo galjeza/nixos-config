@@ -10,5 +10,5 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "lenovo-yoga"; # Define your hostname.
+  networking.hostName = "nixos"; # Define your hostname.
 }

@@ -63,7 +63,7 @@
     backgroundColor = "#191724";
     textColor = "#e0def4";
     borderColor = "#31748f";
-    progressColor = "#31748f";
+  progressColor = "#31748f";
     defaultTimeout = 5000;
   };
 
@@ -72,7 +72,6 @@
   # user-specific packages (things only you need, not system-wide)
   home.packages = with pkgs; [
     fastfetch
-    firefox
     zellij
     wdisplays
     zoxide
