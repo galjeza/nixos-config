@@ -88,5 +88,6 @@
     claude-code
     opencode
     htop
+    slack
   ];
 }
