@@ -77,6 +77,7 @@
     zoxide
     lazygit
     nixfmt-rfc-style # formatting for nix files until i have neovim configured
+    stylua
     nodejs
     grim
     slurp

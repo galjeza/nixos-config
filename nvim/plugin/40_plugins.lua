@@ -93,6 +93,7 @@ later(function()
 			json = { "prettier" },
 			jsonc = { "prettier" },
 			less = { "prettier" },
+			lua = { "stylua" },
 			markdown = { "prettier" },
 			rust = { "rustfmt" },
 			scss = { "prettier" },
@@ -139,7 +140,6 @@ Config.now(function()
 	-- Install only those that you need
 	add({
 		"https://github.com/vague-theme/vague.nvim",
-    "https://github.com/rose-pine/neovim"
 	})
 
 	vim.cmd("colorscheme vague")
