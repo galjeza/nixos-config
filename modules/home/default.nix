@@ -89,5 +89,6 @@
     opencode
     htop
     slack
+    gh
   ];
 }
