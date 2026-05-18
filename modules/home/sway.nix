@@ -1,4 +1,13 @@
 { config, pkgs, ... }:
+let
+  statusScript = pkgs.writeShellScript "sway-status" ''
+    while true; do
+      bat=$(cat /sys/class/power_supply/BAT0/capacity)
+      echo "BAT: $bat% | $(date +'%Y-%m-%d %X')"
+      sleep 1
+    done
+  '';
+in
 {
   wayland.windowManager.sway = {
     enable = true;
@@ -172,7 +181,7 @@
       bars = [
         {
           position = "top";
-          statusCommand = "while date +'%Y-%m-%d %X'; do sleep 1; done";
+          statusCommand = "${statusScript}";
           fonts = {
             names = [ "JetBrainsMono Nerd Font" ];
             size = 10.0;
