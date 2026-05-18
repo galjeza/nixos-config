@@ -3,11 +3,12 @@
 
   # inputs are external dependencies - like package.json in Node.js
   inputs = {
-    # the main package repository - pinned to 25.11 stable
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    # main package repository (rolling)
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.11";
+      # rolling home-manager to match nixpkgs
+      url = "github:nix-community/home-manager";
       # tell home-manager to use the same nixpkgs as above
       # instead of downloading its own copy
       inputs.nixpkgs.follows = "nixpkgs";
