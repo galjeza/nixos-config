@@ -82,7 +82,6 @@
     gcc
     nodejs
     pnpm
-    nvm
     grim
     slurp
     wl-clipboard
