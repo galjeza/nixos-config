@@ -1,12 +1,61 @@
-{ config, pkgs, ... }:
+{ ... }:
 {
   programs.zellij = {
     enable = true;
     settings = {
-      simplified_ui = true;
+      simplified_ui = false;
+      pane_frames = true;
+      default_layout = "main";
       theme = "vague";
-      pane_frames =false;
+      show_release_notes = false;
+      show_startup_tips = false;
     };
+    layouts.main = ''
+layout {
+  default_tab_template {
+      pane size=1 borderless=true {
+        plugin location="https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm" {
+          format_left  "#[bg=green,fg=black] {session} {tabs}"
+          format_center "#[bg=green,fg=black] "
+          format_right "#[bg=green,fg=black] {mode} {command_host} {datetime} "
+          format_space  "#[bg=green]"
+
+          command_host_command  "hostname"
+          command_host_format   "{stdout}"
+          command_host_interval "60"
+          command_host_rendermode "static"
+
+          mode_normal        "normal"
+          mode_locked        " locked"
+          mode_resize        "resize"
+          mode_pane          "pane"
+          mode_tab           "tab"
+          mode_scroll        "scroll"
+          mode_enter_search  "enter_search"
+          mode_search        "search"
+          mode_rename_tab    "rename_tab"
+          mode_rename_pane   "rename_pane"
+          mode_session       "session"
+          mode_move          "move"
+          mode_prompt        "prompt"
+          mode_tmux          "tmux"
+
+          tab_normal "#[bg=green,fg=black] #[bg=green,fg=black]{index}:{name} {sync_indicator}{fullscreen_indicator}{floating_indicator}#[bg=green,fg=black]"
+          tab_active "#[bg=green,fg=black] #[bg=green,fg=black]{index}:{name}* {sync_indicator}{fullscreen_indicator}{floating_indicator}#[bg=green,fg=black]"
+
+          tab_sync_indicator       "󰓦 "
+          tab_fullscreen_indicator "󱟱  "
+          tab_floating_indicator   "󰉈 "
+
+          datetime          "{format}"
+          datetime_format   "%d-%m-%Y %H:%M"
+          datetime_timezone "Europe/Berlin"
+        }
+      }
+    children
+  }
+}
+    '';
     extraConfig = ''
 // Upstream: https://github.com/vague-theme/vague-zellij/blob/main/vague.kdl
 themes {
