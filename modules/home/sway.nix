@@ -9,7 +9,7 @@
       up = "k";
       right = "l";
       terminal = "foot";
-      menu = "wmenu-run -N 191724 -n e0def4 -M 26233a -m e0def4 -S 31748f -s 191724";
+      menu = "wmenu-run -N 141415 -n cdcdcd -M 252530 -m cdcdcd -S 6e94b2 -s 141415";
       fonts = {
         names = [ "JetBrainsMono Nerd Font" ];
         size = 10.0;
@@ -17,45 +17,45 @@
 
       colors = {
         focused = {
-          border = "#31748f";
-          background = "#31748f";
-          text = "#e0def4";
-          indicator = "#f6c177";
-          childBorder = "#31748f";
+          border = "#6e94b2";
+          background = "#6e94b2";
+          text = "#141415";
+          indicator = "#f3be7c";
+          childBorder = "#6e94b2";
         };
         focusedInactive = {
-          border = "#26233a";
-          background = "#26233a";
-          text = "#6e6a86";
-          indicator = "#26233a";
-          childBorder = "#26233a";
+          border = "#252530";
+          background = "#252530";
+          text = "#606079";
+          indicator = "#252530";
+          childBorder = "#252530";
         };
         unfocused = {
-          border = "#191724";
-          background = "#191724";
-          text = "#6e6a86";
-          indicator = "#191724";
-          childBorder = "#191724";
+          border = "#141415";
+          background = "#141415";
+          text = "#606079";
+          indicator = "#141415";
+          childBorder = "#141415";
         };
         urgent = {
-          border = "#eb6f92";
-          background = "#eb6f92";
-          text = "#191724";
-          indicator = "#eb6f92";
-          childBorder = "#eb6f92";
+          border = "#d8647e";
+          background = "#d8647e";
+          text = "#141415";
+          indicator = "#d8647e";
+          childBorder = "#d8647e";
         };
         placeholder = {
-          border = "#191724";
-          background = "#191724";
-          text = "#6e6a86";
-          indicator = "#191724";
-          childBorder = "#191724";
+          border = "#141415";
+          background = "#141415";
+          text = "#606079";
+          indicator = "#141415";
+          childBorder = "#141415";
         };
-        background = "#191724";
+        background = "#141415";
       };
 
       output = {
-        "*".bg = "${config.home.homeDirectory}/.wallpaper.png fill #191724";
+        "*".bg = "${config.home.homeDirectory}/.wallpaper.png fill #141415";
 
         "Virtual-1".mode = "1920x1080@60Hz";
       };
@@ -84,7 +84,7 @@
           "${mod}+Shift+s" =
             ''exec sh -c 'mkdir -p ~/Pictures/Screenshots && file=~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png && grim -g "$(slurp)" "$file" && wl-copy -t image/png < "$file"' '';
           "${mod}+Shift+v" =
-            "exec sh -c 'cliphist list | wmenu -i -l 20 -N 191724 -n e0def4 -M 26233a -m e0def4 -S 31748f -s 191724 | cliphist decode | wl-copy' ";
+            "exec sh -c 'cliphist list | wmenu -i -l 20 -N 141415 -n cdcdcd -M 252530 -m cdcdcd -S 6e94b2 -s 141415 | cliphist decode | wl-copy' ";
 
           "${mod}+${left}" = "focus left";
 
@@ -174,22 +174,22 @@
             size = 10.0;
           };
           colors = {
-            statusline = "#e0def4";
-            background = "#191724";
+            statusline = "#cdcdcd";
+            background = "#141415";
             inactiveWorkspace = {
-              background = "#191724";
-              border = "#191724";
-              text = "#6e6a86";
+              background = "#141415";
+              border = "#141415";
+              text = "#606079";
             };
             activeWorkspace = {
-              background = "#c4a7e7";
-              border = "#c4a7e7";
-              text = "#e0def4";
+              background = "#252530";
+              border = "#252530";
+              text = "#cdcdcd";
             };
             focusedWorkspace = {
-              background = "#31748f";
-              border = "#31748f";
-              text = "#191724";
+              background = "#6e94b2";
+              border = "#6e94b2";
+              text = "#141415";
             };
           };
         }

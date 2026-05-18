@@ -33,7 +33,7 @@ programs.foot = {
       font = "JetBrainsMono Nerd Font:size=11";
     };
 
-    colors = {
+    colors-dark = {
       background = "141415";
       foreground = "cdcdcd";
 
