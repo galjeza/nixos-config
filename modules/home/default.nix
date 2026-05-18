@@ -95,5 +95,6 @@
     htop
     slack
     gh
+    dbeaver-bin
   ];
 }
