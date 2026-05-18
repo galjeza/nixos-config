@@ -17,6 +17,9 @@
       EDITOR = "nvim";
       TERM = "xterm-256color";
       PNPM_HOME = "$HOME/.local/share/pnpm";
+      PRISMA_QUERY_ENGINE_LIBRARY = "${pkgs.prisma-engines}/lib/libquery_engine.node";
+      PRISMA_QUERY_ENGINE_BINARY = "${pkgs.prisma-engines}/bin/query-engine";
+      PRISMA_SCHEMA_ENGINE_BINARY = "${pkgs.prisma-engines}/bin/schema-engine";
     };
 
     envExtra = ''

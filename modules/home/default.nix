@@ -32,7 +32,7 @@
       main = {
         font = "JetBrainsMono Nerd Font:size=11";
       };
-      colors = {
+      colors-dark = {
         background = "191724";
         foreground = "e0def4";
         regular0 = "26233a";
@@ -80,7 +80,9 @@
     stylua
     tree-sitter
     gcc
-    nodejs
+    nodejs_24
+    openssl
+    prisma-engines
     pnpm
     grim
     slurp
