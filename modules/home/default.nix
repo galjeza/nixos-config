@@ -85,6 +85,7 @@
     cliphist
     nerd-fonts.jetbrains-mono
     xfce.thunar # gui file manager
+    claude-code
     opencode
     htop
   ];

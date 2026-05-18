@@ -42,7 +42,12 @@
       vim = "nvim";
       vi = "nvim";
       im = "nvim";
-      rebuild = "sudo nixos-rebuild switch --flake /etc/nixos#nixos-vm";
+
+      # NixOS rebuild helpers (Lenovo Yoga flake target)
+      # Note: /etc/nixos is not a flake checkout here.
+      rebuild = "sudo nixos-rebuild switch --flake $HOME/nixos-config#lenovo-yoga";
+      rebuild-test = "sudo nixos-rebuild test --flake $HOME/nixos-config#lenovo-yoga";
+      rebuild-boot = "sudo nixos-rebuild boot --flake $HOME/nixos-config#lenovo-yoga";
     };
   };
 }

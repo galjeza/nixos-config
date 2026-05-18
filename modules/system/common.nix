@@ -75,6 +75,8 @@
     curl
     sway
     meld
+
+    google-chrome
   ];
 
   # enable x11 for legacy desktop apps
