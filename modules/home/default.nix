@@ -24,7 +24,7 @@
   # let home-manager manage itself
   programs.home-manager.enable = true;
 
-  home.file.".wallpaper.png".source = ../../assets/wallpapers/flower.jpg;
+  home.file.".wallpaper.png".source = ../../assets/wallpapers/nix-wallpaper-waterfall.png;
 
 programs.foot = {
   enable = true;

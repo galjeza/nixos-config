@@ -2,6 +2,10 @@
 {
   wayland.windowManager.sway = {
     enable = true;
+    extraConfig = ''
+      default_border pixel 2
+      default_floating_border pixel 2
+    '';
     config = rec {
       modifier = "Mod4";
       left = "h";
