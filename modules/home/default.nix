@@ -78,7 +78,11 @@
     lazygit
     nixfmt-rfc-style # formatting for nix files until i have neovim configured
     stylua
+    tree-sitter
+    gcc
     nodejs
+    pnpm
+    nvm
     grim
     slurp
     wl-clipboard
