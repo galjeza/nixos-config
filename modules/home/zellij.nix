@@ -3,56 +3,50 @@
   programs.zellij = {
     enable = true;
     settings = {
-      simplified_ui = false;
-      pane_frames = true;
+      simplified_ui = true;
       default_layout = "main";
       theme = "vague";
+      pane_frames = false;
       show_release_notes = false;
       show_startup_tips = false;
     };
     layouts.main = ''
 layout {
-  default_tab_template {
-      pane size=1 borderless=true {
+    pane split_direction="vertical" {
+        pane
+    }
+
+    pane size=1 borderless=true {
         plugin location="https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm" {
-          format_left  "#[bg=green,fg=black] {session} {tabs}"
-          format_center "#[bg=green,fg=black] "
-          format_right "#[bg=green,fg=black] {mode} {command_host} {datetime} "
-          format_space  "#[bg=green]"
 
-          command_host_command  "hostname"
-          command_host_format   "{stdout}"
-          command_host_interval "60"
-          command_host_rendermode "static"
+            hide_frame_for_single_pane "false"
 
-          mode_normal        "normal"
-          mode_locked        " locked"
-          mode_resize        "resize"
-          mode_pane          "pane"
-          mode_tab           "tab"
-          mode_scroll        "scroll"
-          mode_enter_search  "enter_search"
-          mode_search        "search"
-          mode_rename_tab    "rename_tab"
-          mode_rename_pane   "rename_pane"
-          mode_session       "session"
-          mode_move          "move"
-          mode_prompt        "prompt"
-          mode_tmux          "tmux"
+            format_left  "{mode}#[fg=#6E94B2,bg=#141415,bold] {session}#[bg=#141415] {tabs}"
+            format_right "{command_kubectx}#[fg=#606079,bg=#141415]::{command_kubens}{datetime}"
+            format_space "#[bg=#141415]"
 
-          tab_normal "#[bg=green,fg=black] #[bg=green,fg=black]{index}:{name} {sync_indicator}{fullscreen_indicator}{floating_indicator}#[bg=green,fg=black]"
-          tab_active "#[bg=green,fg=black] #[bg=green,fg=black]{index}:{name}* {sync_indicator}{fullscreen_indicator}{floating_indicator}#[bg=green,fg=black]"
+            mode_normal          "#[bg=#6E94B2] "
+            mode_tmux            "#[bg=#F3BE7C] "
+            mode_default_to_mode "tmux"
 
-          tab_sync_indicator       "󰓦 "
-          tab_fullscreen_indicator "󱟱  "
-          tab_floating_indicator   "󰉈 "
+            tab_normal               "#[fg=#606079,bg=#141415] {index} {name} {fullscreen_indicator}{sync_indicator}{floating_indicator}"
+            tab_active               "#[fg=#CDCDCD,bg=#141415,bold,italic] {index} {name} {fullscreen_indicator}{sync_indicator}{floating_indicator}"
+            tab_fullscreen_indicator "□ "
+            tab_sync_indicator       "  "
+            tab_floating_indicator   "󰉈 "
 
-          datetime          "{format}"
-          datetime_format   "%d-%m-%Y %H:%M"
-          datetime_timezone "Europe/Berlin"
+            command_kubectx_command  "kubectx -c"
+            command_kubectx_format   "#[fg=#AEAED1,bg=#141415,italic] {stdout}"
+            command_kubectx_interval "2"
+
+            command_kubens_command  "kubens -c"
+            command_kubens_format   "#[fg=#AEAED1,bg=#141415]{stdout} "
+            command_kubens_interval "2"
+
+            datetime          "#[fg=#CDCDCD,bg=#141415] {format} "
+            datetime_format   "%A, %d %b %Y %H:%M"
+            datetime_timezone "Europe/Berlin"
         }
-      }
-    children
   }
 }
     '';
