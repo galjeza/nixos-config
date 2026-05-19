@@ -77,7 +77,20 @@
     meld
 
     google-chrome
+    pritunl-client
   ];
+
+  systemd.services.pritunl-client = {
+    description = "Pritunl Client Service";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "network.target" ];
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = "${pkgs.pritunl-client}/bin/pritunl-client-service";
+      Restart = "always";
+      RestartSec = "5s";
+    };
+  };
 
   # enable x11 for legacy desktop apps
   services.xserver.enable = true;
