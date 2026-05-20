@@ -102,5 +102,6 @@ programs.foot = {
     slack
     gh
     dbeaver-bin
+    bruno
   ];
 }
