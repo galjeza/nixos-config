@@ -30,9 +30,10 @@ now(function()
 	require("mini.notify").setup()
 end)
 
-now(function()
-	require("mini.tabline").setup()
-end)
+-- DONT NEED THIS FOR NOW
+-- now(function()
+-- 	require("mini.tabline").setup()
+-- end)
 
 -- Step one or two ============================================================
 -- Load now if Neovim is started like `nvim -- path/to/file`, otherwise - later.
@@ -400,5 +401,19 @@ end)
 --   Execute one either with Lua function, `:Pick <picker-name>` command, or
 --   one of `<Leader>f` mappings defined in 'plugin/20_keymaps.lua'
 later(function()
-	require("mini.pick").setup()
+	require("mini.pick").setup({
+		window = {
+			config = function()
+				local height = math.floor(vim.o.lines * 0.5)
+				local width = math.floor(vim.o.columns * 0.6)
+				return {
+					anchor = "NW",
+					height = height,
+					width = width,
+					row = math.floor((vim.o.lines - height) / 2),
+					col = math.floor((vim.o.columns - width) / 2),
+				}
+			end,
+		},
+	})
 end)
