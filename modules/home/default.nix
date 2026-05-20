@@ -101,6 +101,7 @@ programs.foot = {
     htop
     slack
     gh
+    ripgrep
     dbeaver-bin
     bruno
   ];
