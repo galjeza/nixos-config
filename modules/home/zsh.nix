@@ -52,7 +52,7 @@
       rebuild-test = "sudo nixos-rebuild test --flake $HOME/nixos-config#lenovo-yoga";
       rebuild-boot = "sudo nixos-rebuild boot --flake $HOME/nixos-config#lenovo-yoga";
 
-      rebuild-update = "nix flake update $HOME/nixos-config && sudo nixos-rebuild switch --flake $HOME/nixos-config#lenovo-yoga";
+      rebuild-update = "nix flake update --flake $HOME/nixos-config && sudo nixos-rebuild switch --flake $HOME/nixos-config#lenovo-yoga";
     };
   };
 }
