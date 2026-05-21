@@ -135,6 +135,31 @@ later(function()
 		enable_builtin = true,
 	})
 end)
+later(function()
+	add({ "https://github.com/sindrets/diffview.nvim" })
+	require("diffview").setup({
+		enhanced_diff_hl = true,
+		view = {
+			default = {
+				layout = "diff2_horizontal",
+			},
+			merge_tool = {
+				layout = "diff3_mixed",
+				disable_diagnostics = true,
+			},
+			file_history = {
+				layout = "diff2_horizontal",
+			},
+		},
+		hooks = {
+			diff_buf_read = function(_bufnr)
+				vim.opt_local.wrap = false
+				vim.opt_local.list = false
+			end,
+		},
+	})
+end)
+
 -- Colorschemes ======
 Config.now(function()
 	-- Install only those that you need

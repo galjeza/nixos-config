@@ -75,7 +75,6 @@
     curl
     sway
     meld
-
     google-chrome
     pritunl-client
   ];
