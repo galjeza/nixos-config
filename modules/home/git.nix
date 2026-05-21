@@ -5,7 +5,7 @@
     settings = {
       user.name = "Gal Jeza";
       user.email = "gal.jeza55@gmail.com";
-      merge.tool = "vimdiff";
+      merge.tool = "meld";
     };
   };
 }
