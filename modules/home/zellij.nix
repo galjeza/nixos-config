@@ -22,7 +22,7 @@ layout {
             hide_frame_for_single_pane "false"
 
             format_left  "{mode}#[fg=#6E94B2,bg=#141415,bold] {session}#[bg=#141415] {tabs}"
-            format_right "{command_kubectx}#[fg=#606079,bg=#141415]::{command_kubens}{datetime}"
+            format_right "{datetime}"
             format_space "#[bg=#141415]"
 
             mode_normal          "#[bg=#6E94B2] "
@@ -34,14 +34,6 @@ layout {
             tab_fullscreen_indicator "□ "
             tab_sync_indicator       "  "
             tab_floating_indicator   "󰉈 "
-
-            command_kubectx_command  "kubectx -c"
-            command_kubectx_format   "#[fg=#AEAED1,bg=#141415,italic] {stdout}"
-            command_kubectx_interval "2"
-
-            command_kubens_command  "kubens -c"
-            command_kubens_format   "#[fg=#AEAED1,bg=#141415]{stdout} "
-            command_kubens_interval "2"
 
             datetime          "#[fg=#CDCDCD,bg=#141415] {format} "
             datetime_format   "%A, %d %b %Y %H:%M"
