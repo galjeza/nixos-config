@@ -2,6 +2,7 @@
 {
   imports = [
     ./git.nix
+    ./meld.nix
     ./neovim.nix
     ./sway.nix
     ./zellij.nix

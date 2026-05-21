@@ -17,10 +17,9 @@
       # zdiff3 adds a BASE (ancestor) section to conflict markers so you can see
       # what both sides diverged from — essential for understanding *why* there's
       # a conflict, not just what the two sides say. Requires git >= 2.35.
-      # nvimdiff: used when `git mergetool` is run; primary workflow is :DiffviewOpen.
       # keepBackup = false: don't leave .orig files everywhere after resolving.
       merge.conflictStyle = "zdiff3";
-      merge.tool = "nvimdiff";
+      merge.tool = "meld";
       mergetool.prompt = false;
       mergetool.keepBackup = false;
 
