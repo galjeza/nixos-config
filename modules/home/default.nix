@@ -107,5 +107,6 @@ programs.foot = {
     ripgrep
     dbeaver-bin
     bruno
+    playwright-driver.browsers
   ];
 }
