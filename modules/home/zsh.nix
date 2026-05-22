@@ -39,12 +39,51 @@
     initContent = ''
       	    setopt inc_append_history
       	    eval "$(zoxide init zsh)"
+
+      	    ticket() {
+      	      if [[ -z "$1" ]]; then
+      	        echo "Usage:"
+      	        echo "  ticket <name>       create worktree + start zellij session"
+      	        echo "  ticket-done <name>  kill session + remove worktree"
+      	        echo ""
+      	        echo "Worktrees are created at ~/worktrees/<repo>/<name>"
+      	        return 0
+      	      fi
+      	      local name="$1"
+      	      local repo
+      	      repo=$(git rev-parse --show-toplevel 2>/dev/null) || { echo "Not in a git repo"; return 1; }
+      	      local repo_name=$(basename "$repo")
+      	      local worktree_dir="$HOME/worktrees/$repo_name/$name"
+
+      	      if [[ ! -d "$worktree_dir" ]]; then
+      	        git -C "$repo" worktree add "$worktree_dir" -b "$name"
+      	      fi
+
+      	      if zellij list-sessions 2>/dev/null | grep -q "^$name "; then
+      	        zellij attach "$name"
+      	      else
+      	        (cd "$worktree_dir" && zellij --session "$name" --layout main)
+      	      fi
+      	    }
+
+      	    ticket-done() {
+      	      local name="''${1:?Usage: ticket-done <name>}"
+      	      local repo
+      	      repo=$(git rev-parse --show-toplevel 2>/dev/null) || { echo "Not in a git repo"; return 1; }
+      	      local repo_name=$(basename "$repo")
+      	      local worktree_dir="$HOME/worktrees/$repo_name/$name"
+
+      	      zellij kill-session "$name" 2>/dev/null
+      	      git worktree remove "$worktree_dir" --force
+      	      echo "Done: $name"
+      	    }
       	  '';
 
     shellAliases = {
       vim = "nvim";
       vi = "nvim";
       im = "nvim";
+      zj = "zellij";
 
       # NixOS rebuild helpers (Lenovo Yoga flake target)
       # Note: /etc/nixos is not a flake checkout here.
