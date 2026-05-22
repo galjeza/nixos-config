@@ -66,12 +66,14 @@ programs.foot = {
 };
   services.mako = {
     enable = true;
-    font = "JetBrainsMono Nerd Font 10";
-    backgroundColor = "#191724";
-    textColor = "#e0def4";
-    borderColor = "#31748f";
-    progressColor = "#31748f";
-    defaultTimeout = 5000;
+    settings = {
+      font = "JetBrainsMono Nerd Font 10";
+      background-color = "#191724";
+      text-color = "#e0def4";
+      border-color = "#31748f";
+      progress-color = "#31748f";
+      default-timeout = 5000;
+    };
   };
 
   services.polkit-gnome.enable = true;
@@ -83,7 +85,7 @@ programs.foot = {
     wdisplays
     zoxide
     lazygit
-    nixfmt-rfc-style # formatting for nix files until i have neovim configured
+    nixfmt # formatting for nix files until i have neovim configured
     stylua
     tree-sitter
     gcc
@@ -96,7 +98,7 @@ programs.foot = {
     wl-clipboard
     cliphist
     nerd-fonts.jetbrains-mono
-    xfce.thunar # gui file manager
+    thunar # gui file manager
     claude-code
     opencode
     htop
