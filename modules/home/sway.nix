@@ -1,5 +1,16 @@
 { config, pkgs, ... }:
 let
+  ws1  = "1: web";      # browser — daily web browsing, docs, GitHub PRs
+  ws2  = "2: dev";      # zellij sessions — one per ticket (ticket PROJ-123)
+  ws3  = "3: terminal"; # quick standalone terminals, one-off commands
+  ws4  = "4: comms";    # Slack
+  ws5  = "5: db";       # DBeaver — database inspection and queries
+  ws6  = "6: api";      # Bruno — REST/GraphQL API testing
+  ws7  = "7: linear + github"; # Linear tickets, GitHub PRs and Issues
+  ws8  = "8: monitor";  # htop, logs, system health
+  ws9  = "9: music";    # media playback
+  ws10 = "10: scratch"; # overflow, floating windows, anything temporary
+
   statusScript = pkgs.writeShellScript "sway-status" ''
     while true; do
       bat=$(cat /sys/class/power_supply/BAT0/capacity)
@@ -118,27 +129,27 @@ in
           "${mod}+Shift+Up" = "move up";
           "${mod}+Shift+Right" = "move right";
 
-          "${mod}+1" = "workspace number 1";
-          "${mod}+2" = "workspace number 2";
-          "${mod}+3" = "workspace number 3";
-          "${mod}+4" = "workspace number 4";
-          "${mod}+5" = "workspace number 5";
-          "${mod}+6" = "workspace number 6";
-          "${mod}+7" = "workspace number 7";
-          "${mod}+8" = "workspace number 8";
-          "${mod}+9" = "workspace number 9";
-          "${mod}+0" = "workspace number 10";
+          "${mod}+1" = "workspace \"${ws1}\"";
+          "${mod}+2" = "workspace \"${ws2}\"";
+          "${mod}+3" = "workspace \"${ws3}\"";
+          "${mod}+4" = "workspace \"${ws4}\"";
+          "${mod}+5" = "workspace \"${ws5}\"";
+          "${mod}+6" = "workspace \"${ws6}\"";
+          "${mod}+7" = "workspace \"${ws7}\"";
+          "${mod}+8" = "workspace \"${ws8}\"";
+          "${mod}+9" = "workspace \"${ws9}\"";
+          "${mod}+0" = "workspace \"${ws10}\"";
 
-          "${mod}+Shift+1" = "move container to workspace number 1";
-          "${mod}+Shift+2" = "move container to workspace number 2";
-          "${mod}+Shift+3" = "move container to workspace number 3";
-          "${mod}+Shift+4" = "move container to workspace number 4";
-          "${mod}+Shift+5" = "move container to workspace number 5";
-          "${mod}+Shift+6" = "move container to workspace number 6";
-          "${mod}+Shift+7" = "move container to workspace number 7";
-          "${mod}+Shift+8" = "move container to workspace number 8";
-          "${mod}+Shift+9" = "move container to workspace number 9";
-          "${mod}+Shift+0" = "move container to workspace number 10";
+          "${mod}+Shift+1" = "move container to workspace \"${ws1}\"";
+          "${mod}+Shift+2" = "move container to workspace \"${ws2}\"";
+          "${mod}+Shift+3" = "move container to workspace \"${ws3}\"";
+          "${mod}+Shift+4" = "move container to workspace \"${ws4}\"";
+          "${mod}+Shift+5" = "move container to workspace \"${ws5}\"";
+          "${mod}+Shift+6" = "move container to workspace \"${ws6}\"";
+          "${mod}+Shift+7" = "move container to workspace \"${ws7}\"";
+          "${mod}+Shift+8" = "move container to workspace \"${ws8}\"";
+          "${mod}+Shift+9" = "move container to workspace \"${ws9}\"";
+          "${mod}+Shift+0" = "move container to workspace \"${ws10}\"";
 
           "${mod}+b" = "splith";
           "${mod}+v" = "splitv";
