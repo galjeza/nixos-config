@@ -76,6 +76,7 @@
     sway
     meld
     google-chrome
+    firefox
     pritunl-client
   ];
 

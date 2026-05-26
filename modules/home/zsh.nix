@@ -59,10 +59,10 @@
       	        git -C "$repo" worktree add "$worktree_dir" -b "$name"
       	      fi
 
-      	      if zellij list-sessions 2>/dev/null | grep -q "^$name "; then
+      	      if zellij list-sessions -ns 2>/dev/null | grep -qx "$name"; then
       	        zellij attach "$name"
       	      else
-      	        (cd "$worktree_dir" && zellij --session "$name" --layout main)
+      	        (cd "$worktree_dir" && zellij --session "$name" --new-session-with-layout main)
       	      fi
       	    }
 
@@ -92,6 +92,8 @@
       rebuild-boot = "sudo nixos-rebuild boot --flake $HOME/nixos-config#lenovo-yoga";
 
       rebuild-update = "nix flake update --flake $HOME/nixos-config && sudo nixos-rebuild switch --flake $HOME/nixos-config#lenovo-yoga";
+
+      playwright-shell = "nix shell github:pietdevries94/playwright-web-flake#playwright-test";
     };
   };
 }
