@@ -99,6 +99,50 @@
   programs.zsh.enable = true;
   programs.steam.enable = true;
 
+  # nix-ld: allow dynamically linked FHS binaries (e.g. prebuilt Electron) to run.
+  programs.nix-ld.enable = true;
+  programs.nix-ld.libraries = with pkgs; [
+    stdenv.cc.cc.lib
+    glibc
+    zlib
+    glib
+    nss
+    nspr
+    atk
+    at-spi2-atk
+    at-spi2-core
+    cups
+    dbus
+    expat
+    libdrm
+    libxkbcommon
+    mesa
+    libgbm
+    alsa-lib
+    cairo
+    pango
+    gdk-pixbuf
+    gtk3
+    fontconfig
+    freetype
+    libnotify
+    libsecret
+    systemd
+    xorg.libX11
+    xorg.libxcb
+    xorg.libXcomposite
+    xorg.libXcursor
+    xorg.libXdamage
+    xorg.libXext
+    xorg.libXfixes
+    xorg.libXi
+    xorg.libXrandr
+    xorg.libXrender
+    xorg.libXScrnSaver
+    xorg.libXtst
+    xorg.libxkbfile
+  ];
+
   virtualisation.docker.enable = true;
   #enable extra featuresw  in sway wrapper
   programs.sway.wrapperFeatures.gtk = true;
