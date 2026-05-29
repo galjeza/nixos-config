@@ -134,8 +134,11 @@ nmap_leader("fR", '<Cmd>Pick lsp scope="references"<CR>', "References (LSP)")
 nmap_leader("fs", pick_workspace_symbols_live, "Symbols workspace (live)")
 nmap_leader("fS", '<Cmd>Pick lsp scope="document_symbol"<CR>', "Symbols document")
 
--- g is for 'Git'. Use LazyGit for all Git actions.
-nmap_leader("g", "<Cmd>LazyGit<CR>", "LazyGit")
+-- g is for 'Git'.
+-- - `<Leader>gg` - open LazyGit
+-- - `<Leader>go` - toggle mini.diff inline overlay (shows removed text + word diff)
+nmap_leader("gg", "<Cmd>LazyGit<CR>", "LazyGit")
+nmap_leader("go", "<Cmd>lua MiniDiff.toggle_overlay()<CR>", "Diff overlay toggle")
 
 -- l is for 'Language'. Common usage:
 -- - `<Leader>ld` - show more diagnostic details in a floating window

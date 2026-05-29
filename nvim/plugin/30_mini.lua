@@ -245,6 +245,16 @@ later(function()
 	require("mini.bufremove").setup()
 end)
 
+-- Git diff visualization. Signs in the sign column for added/changed/deleted
+-- lines vs the git index, plus a toggleable inline overlay showing removed
+-- text and word-level diff. Also provides hunk text objects and operators.
+-- Example usage:
+-- - `<Leader>go` - toggle inline diff overlay
+-- - `ghih` / `dgh` - text object / operator for hunks (see `:h MiniDiff`)
+later(function()
+	require("mini.diff").setup()
+end)
+
 -- Show next key clues in a bottom right window. Requires explicit opt-in for
 -- keys that act as clue trigger. Example usage:
 -- - Press `<Leader>` and wait for 1 second. A window with information about

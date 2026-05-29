@@ -97,6 +97,7 @@ programs.foot = {
     slurp
     wl-clipboard
     cliphist
+    pavucontrol
     nerd-fonts.jetbrains-mono
     thunar # gui file manager
     claude-code
@@ -107,5 +108,6 @@ programs.foot = {
     ripgrep
     dbeaver-bin
     bruno
+    beyond-all-reason
   ];
 }
