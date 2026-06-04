@@ -34,6 +34,9 @@
       	    )
 
       	    [[ -f $HOME/.cargo/env ]] && source $HOME/.cargo/env
+
+      	    # Per-machine secrets (GH_TOKEN, etc). NOT tracked in nix-config.
+      	    [[ -f $HOME/.config/secrets/env ]] && source $HOME/.config/secrets/env
       	  '';
 
     initContent = ''
