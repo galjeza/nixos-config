@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 let
   ws1  = "1: web";      # browser — daily web browsing, docs, GitHub PRs
   ws2  = "2: dev";      # zellij sessions — one per ticket (ticket PROJ-123)
@@ -20,6 +20,40 @@ let
   '';
 in
 {
+  programs.swaylock = {
+    enable = true;
+    settings = {
+      color = "141415";
+      font-size = 24;
+      indicator-idle-visible = false;
+      indicator-radius = 100;
+      show-failed-attempts = true;
+    };
+  };
+  # Idle ladder: lock at 5min, screen off at 10min, suspend at 15min.
+  # Also lock before any suspend (incl. lid close) and on systemd lock signal.
+  services.swayidle = {
+    enable = true;
+    events = {
+      before-sleep = "${pkgs.swaylock}/bin/swaylock -f";
+      lock = "${pkgs.swaylock}/bin/swaylock -f";
+    };
+    timeouts = [
+      {
+        timeout = 300;
+        command = "${pkgs.swaylock}/bin/swaylock -f";
+      }
+      {
+        timeout = 600;
+        command = ''${pkgs.sway}/bin/swaymsg "output * power off"'';
+        resumeCommand = ''${pkgs.sway}/bin/swaymsg "output * power on"'';
+      }
+      {
+        timeout = 900;
+        command = "${pkgs.systemd}/bin/systemctl suspend";
+      }
+    ];
+  };
   wayland.windowManager.sway = {
     enable = true;
     extraConfig = ''

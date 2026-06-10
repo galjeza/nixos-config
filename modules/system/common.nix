@@ -225,6 +225,21 @@
     options snd-hda-intel model=yoga9-bass-spk-pin
   '';
 
+  # Lid close → suspend. Docked (external monitor connected) → ignore so the
+  # machine stays up. swayidle still locks before sleep via the before-sleep hook.
+  services.logind.settings.Login = {
+    HandleLidSwitch = "suspend";
+    HandleLidSwitchExternalPower = "suspend";
+    HandleLidSwitchDocked = "ignore";
+  };
+
+  # PAM service required for swaylock to authenticate.
+  security.pam.services.swaylock = { };
+
+  # Firmware updates via LVFS. Run `fwupdmgr refresh` then `fwupdmgr update`
+  # to pull and apply Lenovo BIOS / Thunderbolt / SSD firmware updates.
+  services.fwupd.enable = true;
+
   virtualisation.docker.enable = true;
   #enable extra featuresw  in sway wrapper
   programs.sway.wrapperFeatures.gtk = true;

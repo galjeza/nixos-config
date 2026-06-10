@@ -50,7 +50,7 @@ layout {
     }
 
     tab name="agents" {
-        pane command="claude"
+        pane command="claude --dangerously-skip-permissions"
     }
 }
     '';
