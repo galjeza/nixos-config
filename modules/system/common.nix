@@ -208,6 +208,14 @@
     xorg.libxkbfile
   ];
 
+  # Bluetooth + Blueman GUI (blueman-manager for pairing, blueman-applet tray)
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+    settings.General.Experimental = true; # battery % reporting for some devices
+  };
+  services.blueman.enable = true;
+
   # Audio via PipeWire
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;

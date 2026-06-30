@@ -61,6 +61,7 @@ in
       default_floating_border pixel 2
     '';
     config = rec {
+      focus.followMouse = false;
       modifier = "Mod4";
       left = "h";
       down = "j";
@@ -220,6 +221,9 @@ in
         }
         {
           command = "wl-paste --type image --watch cliphist store";
+        }
+        {
+          command = "blueman-applet";
         }
       ];
 
