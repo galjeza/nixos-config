@@ -35,6 +35,7 @@ Config.now(function()
 		"tsx",
 		"prisma",
 		"rust",
+		"typst",
 		-- Add here more languages with which you want to use tree-sitter
 		-- To see available languages:
 		-- - Execute `:=require('nvim-treesitter').get_available()`
@@ -70,6 +71,7 @@ now_if_args(function()
 	vim.lsp.enable({
 		"prismals",
 		"rust_analyzer",
+		"tinymist",
 	})
 end)
 
@@ -114,6 +116,7 @@ now_if_args(function()
 		ensure_installed = {
 			"prismals",
 			"rust_analyzer",
+			"tinymist",
 		},
 		automatic_installation = true,
 	})
@@ -133,6 +136,23 @@ later(function()
 	require("octo").setup({
 		picker = "default",
 		enable_builtin = true,
+	})
+end)
+
+-- Typst live preview. Opens a browser tab with the rendered PDF that updates
+-- as you type. Uses the system `tinymist` binary (provided by nix) for both
+-- compilation and the websocket server, so no extra binaries are downloaded.
+-- Example usage in a `.typ` buffer:
+-- - `:TypstPreview`       - start the preview and open it in the browser
+-- - `:TypstPreviewToggle` - start/stop
+-- - `:TypstPreviewStop`   - stop the server
+later(function()
+	add({ "https://github.com/chomosuke/typst-preview.nvim" })
+	require("typst-preview").setup({
+		dependencies_bin = {
+			["typst-preview"] = "tinymist",
+		},
+		invert_colors = "auto",
 	})
 end)
 -- Colorschemes ======
