@@ -40,18 +40,18 @@ This is a NixOS flake-based configuration managing three hosts (`lenovo-yoga`, `
 **`hosts/<name>/configuration.nix`** — Per-host overrides (bootloader, hostname). Each imports `hardware-configuration.nix` and `../../modules/system/common.nix`.
 
 **`modules/home/`** — Home-manager modules, all imported by `default.nix`:
-- `default.nix` — User packages, foot terminal (Rose Pine colors), mako notifications, wallpaper symlink
-- `sway.nix` — Full Sway WM config (keybindings, colors, bar, outputs)
+- `default.nix` — User packages, foot terminal, mako notifications, wallpaper symlink (foot/mako still on old Rose Pine hex — pending migration to vague)
+- `sway.nix` — Full Sway WM config (keybindings, colors, bar, outputs) — vague palette
 - `neovim.nix` — Enables neovim-nightly; symlinks `nvim/` into `~/.config/nvim`
-- `zsh.nix` — Shell config, aliases, zoxide, PATH setup
+- `zsh.nix` — Shell config, aliases, zoxide, PATH setup, prompt (vague palette)
 - `git.nix` — Git identity
-- `zellij.nix` — Zellij terminal multiplexer with Rose Pine theme
+- `zellij.nix` — Zellij terminal multiplexer with vague theme
 
 **`nvim/`** — Neovim config (Lua). Uses `vim.pack` (built-in plugin manager, NixOS Neovim nightly). Loaded in order: `init.lua` → `plugin/10_options.lua` → `20_keymaps.lua` → `30_mini.lua` → `40_plugins.lua`. Powered by `mini.nvim`.
 
 ## Key Conventions
 
-- **Theme**: Rose Pine throughout (foot, mako, sway, zellij, neovim). Hex palette: bg `#191724`, fg `#e0def4`, accent `#31748f`, love `#eb6f92`, gold `#f6c177`, iris `#c4a7e7`.
+- **Theme**: `vague` ([vague-theme/vague.nvim](https://github.com/vague-theme/vague.nvim)) — used by neovim, zellij, sway, zsh prompt. Palette: bg `#141415`, surface `#252530`, fg `#cdcdcd`, muted `#606079`, blue `#6e94b2`, gold `#f3be7c`, love `#d8647e`. `foot` and `mako` still use the older Rose Pine hex — migrate when convenient.
 - **`nixpkgs` channel**: `nixos-unstable` (rolling). `home-manager` follows the same nixpkgs to avoid duplicate copies.
 - **`stateVersion`**: `"25.11"` — do not change without reading the NixOS docs on state version migration.
 - **Neovim config** lives in `nvim/` (repo root) and is symlinked to `~/.config/nvim` via `xdg.configFile` in `neovim.nix`. Edit files here; changes take effect after `rebuild` or after re-sourcing home-manager.

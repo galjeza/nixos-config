@@ -43,6 +43,20 @@
       	    setopt inc_append_history
       	    eval "$(zoxide init zsh)"
 
+      	    # Prompt: ~/path on branch* ❯   (vague palette)
+      	    autoload -Uz vcs_info
+      	    precmd_vcs_info() { vcs_info }
+      	    precmd_functions+=( precmd_vcs_info )
+      	    setopt prompt_subst
+      	    zstyle ':vcs_info:*' enable git
+      	    zstyle ':vcs_info:git:*' check-for-changes true
+      	    zstyle ':vcs_info:git:*' unstagedstr '*'
+      	    zstyle ':vcs_info:git:*' stagedstr '+'
+      	    zstyle ':vcs_info:git:*' formats ' %F{#606079}on%f %F{#f3be7c}%b%F{#d8647e}%u%c%f'
+      	    zstyle ':vcs_info:git:*' actionformats ' %F{#606079}on%f %F{#f3be7c}%b|%a%F{#d8647e}%u%c%f'
+      	    PROMPT='%n@%m:%F{#6e94b2}%~/%f''${vcs_info_msg_0_}
+      > '
+
       	    ticket() {
       	      if [[ -z "$1" ]]; then
       	        echo "Usage:"
