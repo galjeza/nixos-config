@@ -18,6 +18,24 @@ let
       sleep 1
     done
   '';
+
+  # AnyDesk hardcodes DISPLAY=:0 for its child processes. When sway's
+  # Xwayland lands on :1 (or later), those children fail with "Cannot open
+  # display" and AnyDesk auto-shuts-down. Point /tmp/.X11-unix/X0 at
+  # whichever socket Xwayland actually picked.
+  xwaylandX0Symlink = pkgs.writeShellScript "xwayland-x0-symlink" ''
+    shopt -s nullglob
+    for _ in $(seq 1 30); do
+      if [ -S /tmp/.X11-unix/X0 ]; then exit 0; fi
+      for sock in /tmp/.X11-unix/X[0-9]*; do
+        if [ -S "$sock" ]; then
+          ln -sf "$sock" /tmp/.X11-unix/X0
+          exit 0
+        fi
+      done
+      sleep 0.5
+    done
+  '';
 in
 {
   programs.swaylock = {
@@ -117,6 +135,9 @@ in
         "*".bg = "${config.home.homeDirectory}/.wallpaper.png fill #141415";
 
         "Virtual-1".mode = "1920x1080@60Hz";
+
+        "ASUSTek COMPUTER INC VY279HGR T7LMTF134179".mode = "1920x1080@100Hz";
+        "China Star Optoelectronics Technology Co., Ltd 0x1640 0x00006004".mode = "3200x2000@165Hz";
       };
 
       input = {
@@ -224,6 +245,9 @@ in
         }
         {
           command = "blueman-applet";
+        }
+        {
+          command = "${xwaylandX0Symlink}";
         }
       ];
 

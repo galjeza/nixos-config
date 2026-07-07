@@ -108,7 +108,6 @@ programs.foot = {
     gh
     ripgrep
     dbeaver-bin
-    bruno
     beyond-all-reason
     ollama
     wineWowPackages.stable # 32+64-bit Wine for electron-builder --win on Linux
