@@ -1,1 +1,0 @@
-/nix/store/9xfpdxdi4nh79nxif653h957q560xrfg-home-manager-files/.config/nvim/after/ftplugin/markdown.lua
