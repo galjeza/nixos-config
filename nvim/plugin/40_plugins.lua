@@ -69,6 +69,9 @@ now_if_args(function()
 	-- the rules provided by 'nvim-lspconfig'.
 	-- Use `:h vim.lsp.config()` or 'after/lsp/' directory to configure servers.
 	vim.lsp.enable({
+		"lua_ls",
+		"nixd",
+		"vtsls",
 		"prismals",
 		"rust_analyzer",
 		"tinymist",
@@ -97,28 +100,13 @@ later(function()
 			less = { "prettier" },
 			lua = { "stylua" },
 			markdown = { "prettier" },
+			nix = { "nixfmt" },
 			rust = { "rustfmt" },
 			scss = { "prettier" },
 			typescript = { "prettier" },
 			typescriptreact = { "prettier" },
 			yaml = { "prettier" },
 		},
-	})
-end)
-
-now_if_args(function()
-	add({
-		"https://github.com/mason-org/mason.nvim",
-		"https://github.com/mason-org/mason-lspconfig.nvim",
-	})
-	require("mason").setup()
-	require("mason-lspconfig").setup({
-		ensure_installed = {
-			"prismals",
-			"rust_analyzer",
-			"tinymist",
-		},
-		automatic_installation = true,
 	})
 end)
 
@@ -155,6 +143,7 @@ later(function()
 		invert_colors = "auto",
 	})
 end)
+
 -- Colorschemes ======
 Config.now(function()
 	-- Install only those that you need
