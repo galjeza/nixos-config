@@ -85,8 +85,19 @@ programs.foot = {
     wdisplays
     zoxide
     lazygit
-    nixfmt # formatting for nix files until i have neovim configured
+    nixfmt # nix formatter (wired into conform for .nix + nixd LSP)
     stylua
+
+    # language servers + formatters (installed via nix, not mason)
+    lua-language-server # lua_ls — Lua (this config)
+    nixd # nixd — Nix
+    vtsls # vtsls — TypeScript/JavaScript
+    tinymist # tinymist — Typst LSP + typst-preview
+    rust-analyzer # rust_analyzer — Rust
+    rustfmt # conform rust formatter
+    prisma-language-server # prismals — Prisma
+    prettierd # conform prettier daemon (global fallback outside projects)
+
     tree-sitter
     gcc
     nodejs_24
