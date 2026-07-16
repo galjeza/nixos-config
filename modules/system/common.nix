@@ -140,6 +140,8 @@
     pritunl-client
     screen
     anydesk
+    zip
+    unzip
   ];
 
   systemd.services.pritunl-client = {
