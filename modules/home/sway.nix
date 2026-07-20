@@ -77,6 +77,13 @@ in
     extraConfig = ''
       default_border pixel 2
       default_floating_border pixel 2
+
+      # Steam/Proton games run under XWayland and auto-fullscreen so the window
+      # maps 1:1 to the output. Combined with the gaming monitor being pinned
+      # to (0,0) below, this is what fixes "can't click buttons" in games —
+      # XWayland offsets the pointer by the output's layout position, so a
+      # non-origin output makes every click land in the wrong place.
+      for_window [class="^steam_app_[0-9]+$"] fullscreen enable
     '';
     config = rec {
       focus.followMouse = false;
@@ -136,8 +143,18 @@ in
 
         "Virtual-1".mode = "1920x1080@60Hz";
 
-        "ASUSTek COMPUTER INC VY279HGR T7LMTF134179".mode = "1920x1080@100Hz";
-        "China Star Optoelectronics Technology Co., Ltd 0x1640 0x00006004".mode = "3200x2000@165Hz";
+        # External ASUS monitor pinned to the layout origin (0,0). XWayland
+        # games get a broken pointer offset when their output isn't at (0,0),
+        # so keeping the gaming monitor at origin is what makes clicks land
+        # correctly. The internal panel sits to its right.
+        "ASUSTek COMPUTER INC VY279HGR T7LMTF134179" = {
+          mode = "1920x1080@100Hz";
+          pos = "0 0";
+        };
+        "China Star Optoelectronics Technology Co., Ltd 0x1640 0x00006004" = {
+          mode = "3200x2000@165Hz";
+          pos = "1920 0";
+        };
       };
 
       input = {

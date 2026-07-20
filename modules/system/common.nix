@@ -165,6 +165,14 @@
   programs.sway.extraOptions = [ "--unsupported-gpu" ];
   programs.zsh.enable = true;
   programs.steam.enable = true;
+  # gamemode: CPU governor + priority tuning for games. Use per-game via
+  # Steam launch options: gamemoderun %command%
+  # NOTE: gamescope was tried to fix the XWayland mouse-offset ("can't click
+  # buttons") issue, but nested gamescope is broken on this Intel+NVIDIA
+  # hybrid (cross-GPU swapchain sharing fails, games die on the first frame).
+  # Use the game's own Borderless Windowed mode instead — no resolution change
+  # means no XWayland pointer offset, and clicks land correctly.
+  programs.gamemode.enable = true;
 
   # nix-ld: allow dynamically linked FHS binaries (e.g. prebuilt Electron) to run.
   programs.nix-ld.enable = true;
