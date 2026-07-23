@@ -147,10 +147,13 @@ end)
 
 -- Colorschemes ======
 Config.now(function()
-	-- Install only those that you need
+	-- Install only those that you need. Switch at runtime with `:colorscheme
+	-- <name><Tab>` — e.g. `:colorscheme moonfly` or `:colorscheme vague`.
 	add({
 		"https://github.com/vague-theme/vague.nvim",
+		"https://github.com/bluz71/vim-moonfly-colors",
 	})
 
-	vim.cmd("colorscheme vague")
+	-- Default on startup; the ones above are also available to switch to.
+	vim.cmd("colorscheme moonfly")
 end)
