@@ -96,6 +96,7 @@ programs.foot = {
     rust-analyzer # rust_analyzer — Rust
     rustfmt # conform rust formatter
     prisma-language-server # prismals — Prisma
+    tailwindcss-language-server # tailwindcss — Tailwind CSS class completion/hover
     prettierd # conform prettier daemon (global fallback outside projects)
 
     tree-sitter
@@ -111,6 +112,7 @@ programs.foot = {
     pavucontrol
     nerd-fonts.jetbrains-mono
     thunar # gui file manager
+    libreoffice # office suite — open/view/edit docx (with images), odt, xlsx, etc.
     claude-code
     opencode
     htop

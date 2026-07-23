@@ -75,6 +75,7 @@ now_if_args(function()
 		"prismals",
 		"rust_analyzer",
 		"tinymist",
+		"tailwindcss",
 	})
 end)
 
