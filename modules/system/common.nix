@@ -106,26 +106,6 @@
     };
   };
 
-  # Local LLM stack: Ollama daemon with CUDA + Open WebUI on localhost:8080
-  services.ollama = {
-    enable = true;
-    package = pkgs.ollama-cuda;
-    host = "127.0.0.1";
-    port = 11434;
-  };
-
-  services.open-webui = {
-    enable = true;
-    host = "127.0.0.1";
-    port = 8090;
-    environment = {
-      OLLAMA_BASE_URL = "http://127.0.0.1:11434";
-      WEBUI_AUTH = "False";
-      ANONYMIZED_TELEMETRY = "False";
-      DO_NOT_TRACK = "True";
-    };
-  };
-
   # List packages installed in system profile. To search, run:
   # $ nix search wget
 
