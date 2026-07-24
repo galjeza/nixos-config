@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 {
   programs.zsh = {
     enable = true;
@@ -14,8 +14,6 @@
     };
 
     sessionVariables = {
-      EDITOR = "nvim";
-      TERM = "xterm-256color";
       PNPM_HOME = "$HOME/.local/share/pnpm";
       PRISMA_QUERY_ENGINE_LIBRARY = "${pkgs.prisma-engines}/lib/libquery_engine.node";
       PRISMA_QUERY_ENGINE_BINARY = "${pkgs.prisma-engines}/bin/query-engine";
@@ -23,78 +21,78 @@
     };
 
     envExtra = ''
-      	    path=(
-      	      $HOME/.opencode/bin
-      	      $HOME/.local/bin
-      	      $HOME/bin
-      	      $HOME/go/bin
-      	      $HOME/.cargo/bin
-      	      $HOME/.local/share/pnpm
-      	      $path
-      	    )
+      path=(
+        $HOME/.opencode/bin
+        $HOME/.local/bin
+        $HOME/bin
+        $HOME/go/bin
+        $HOME/.cargo/bin
+        $HOME/.local/share/pnpm
+        $path
+      )
 
-      	    [[ -f $HOME/.cargo/env ]] && source $HOME/.cargo/env
+      [[ -f $HOME/.cargo/env ]] && source $HOME/.cargo/env
 
-      	    # Per-machine secrets (GH_TOKEN, etc). NOT tracked in nix-config.
-      	    [[ -f $HOME/.config/secrets/env ]] && source $HOME/.config/secrets/env
-      	  '';
+      # Per-machine secrets (GH_TOKEN, etc). NOT tracked in nix-config.
+      [[ -f $HOME/.config/secrets/env ]] && source $HOME/.config/secrets/env
+    '';
 
     initContent = ''
-      	    setopt inc_append_history
-      	    eval "$(zoxide init zsh)"
+      setopt inc_append_history
+      eval "$(zoxide init zsh)"
 
-      	    # Prompt: ~/path on branch* ❯   (vague palette)
-      	    autoload -Uz vcs_info
-      	    precmd_vcs_info() { vcs_info }
-      	    precmd_functions+=( precmd_vcs_info )
-      	    setopt prompt_subst
-      	    zstyle ':vcs_info:*' enable git
-      	    zstyle ':vcs_info:git:*' check-for-changes true
-      	    zstyle ':vcs_info:git:*' unstagedstr '*'
-      	    zstyle ':vcs_info:git:*' stagedstr '+'
-      	    zstyle ':vcs_info:git:*' formats ' %F{#606079}on%f %F{#f3be7c}%b%F{#d8647e}%u%c%f'
-      	    zstyle ':vcs_info:git:*' actionformats ' %F{#606079}on%f %F{#f3be7c}%b|%a%F{#d8647e}%u%c%f'
-      	    PROMPT='%n@%m:%F{#6e94b2}%~/%f''${vcs_info_msg_0_}
+      # Prompt: ~/path on branch* ❯   (vague palette)
+      autoload -Uz vcs_info
+      precmd_vcs_info() { vcs_info }
+      precmd_functions+=( precmd_vcs_info )
+      setopt prompt_subst
+      zstyle ':vcs_info:*' enable git
+      zstyle ':vcs_info:git:*' check-for-changes true
+      zstyle ':vcs_info:git:*' unstagedstr '*'
+      zstyle ':vcs_info:git:*' stagedstr '+'
+      zstyle ':vcs_info:git:*' formats ' %F{#606079}on%f %F{#f3be7c}%b%F{#d8647e}%u%c%f'
+      zstyle ':vcs_info:git:*' actionformats ' %F{#606079}on%f %F{#f3be7c}%b|%a%F{#d8647e}%u%c%f'
+      PROMPT='%n@%m:%F{#6e94b2}%~/%f''${vcs_info_msg_0_}
       > '
 
-      	    ticket() {
-      	      if [[ -z "$1" ]]; then
-      	        echo "Usage:"
-      	        echo "  ticket <name>       create worktree + start zellij session"
-      	        echo "  ticket-done <name>  kill session + remove worktree"
-      	        echo ""
-      	        echo "Worktrees are created at ~/worktrees/<repo>/<name>"
-      	        return 0
-      	      fi
-      	      local name="$1"
-      	      local repo
-      	      repo=$(git rev-parse --show-toplevel 2>/dev/null) || { echo "Not in a git repo"; return 1; }
-      	      local repo_name=$(basename "$repo")
-      	      local worktree_dir="$HOME/worktrees/$repo_name/$name"
+      ticket() {
+        if [[ -z "$1" ]]; then
+          echo "Usage:"
+          echo "  ticket <name>       create worktree + start zellij session"
+          echo "  ticket-done <name>  kill session + remove worktree"
+          echo ""
+          echo "Worktrees are created at ~/worktrees/<repo>/<name>"
+          return 0
+        fi
+        local name="$1"
+        local repo
+        repo=$(git rev-parse --show-toplevel 2>/dev/null) || { echo "Not in a git repo"; return 1; }
+        local repo_name=$(basename "$repo")
+        local worktree_dir="$HOME/worktrees/$repo_name/$name"
 
-      	      if [[ ! -d "$worktree_dir" ]]; then
-      	        git -C "$repo" worktree add "$worktree_dir" -b "$name"
-      	      fi
+        if [[ ! -d "$worktree_dir" ]]; then
+          git -C "$repo" worktree add "$worktree_dir" -b "$name"
+        fi
 
-      	      if zellij list-sessions -ns 2>/dev/null | grep -qx "$name"; then
-      	        zellij attach "$name"
-      	      else
-      	        (cd "$worktree_dir" && zellij --session "$name" --new-session-with-layout main)
-      	      fi
-      	    }
+        if zellij list-sessions -ns 2>/dev/null | grep -qx "$name"; then
+          zellij attach "$name"
+        else
+          (cd "$worktree_dir" && zellij --session "$name" --new-session-with-layout main)
+        fi
+      }
 
-      	    ticket-done() {
-      	      local name="''${1:?Usage: ticket-done <name>}"
-      	      local repo
-      	      repo=$(git rev-parse --show-toplevel 2>/dev/null) || { echo "Not in a git repo"; return 1; }
-      	      local repo_name=$(basename "$repo")
-      	      local worktree_dir="$HOME/worktrees/$repo_name/$name"
+      ticket-done() {
+        local name="''${1:?Usage: ticket-done <name>}"
+        local repo
+        repo=$(git rev-parse --show-toplevel 2>/dev/null) || { echo "Not in a git repo"; return 1; }
+        local repo_name=$(basename "$repo")
+        local worktree_dir="$HOME/worktrees/$repo_name/$name"
 
-      	      zellij kill-session "$name" 2>/dev/null
-      	      git worktree remove "$worktree_dir" --force
-      	      echo "Done: $name"
-      	    }
-      	  '';
+        zellij kill-session "$name" 2>/dev/null
+        git worktree remove "$worktree_dir" --force
+        echo "Done: $name"
+      }
+    '';
 
     shellAliases = {
       vim = "nvim";

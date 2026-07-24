@@ -35,17 +35,19 @@ This is a NixOS flake-based configuration managing three hosts (`lenovo-yoga`, `
 
 **`flake.nix`** — Entry point. Defines all `nixosConfigurations`, wires in `home-manager` and the `neovim-nightly-overlay`. All hosts share one `homeManagerModule` pointing to `modules/home/default.nix` for user `galjeza`.
 
-**`modules/system/common.nix`** — System-level config shared by all hosts: locale, timezone (`Europe/Ljubljana`), user account, Docker, Sway, polkit, XDG portals, automatic GC/store optimisation.
+**`modules/system/common.nix`** — Config that is genuinely shared by **all** hosts: nix settings + GC/store optimise, locale, timezone (`Europe/Ljubljana`), user account, networking, Docker, Sway + X11, PipeWire, nix-ld, polkit, XDG portals. Hardware- and machine-specific config lives in the host files, not here.
 
-**`hosts/<name>/configuration.nix`** — Per-host overrides (bootloader, hostname). Each imports `hardware-configuration.nix` and `../../modules/system/common.nix`.
+**`hosts/<name>/configuration.nix`** — Per-host config: bootloader, hostname, and anything hardware/machine-specific. `lenovo-yoga` additionally carries NVIDIA/PRIME graphics, gaming (Steam + gamemode), the Yoga speaker fixup, lid-switch behaviour, bluetooth, and battery conservation; the VM hosts carry the SPICE guest agent. Each imports `hardware-configuration.nix` and `../../modules/system/common.nix`.
 
 **`modules/home/`** — Home-manager modules, all imported by `default.nix`:
-- `default.nix` — User packages, foot terminal, mako notifications, wallpaper symlink (foot/mako still on old Rose Pine hex — pending migration to vague)
+- `default.nix` — User packages, mako notifications (vague palette), wallpaper symlink
+- `foot.nix` — Foot terminal; carries both `vague` and `moonfly` palettes, switched via the `footTheme` selector (currently `moonfly`)
 - `sway.nix` — Full Sway WM config (keybindings, colors, bar, outputs) — vague palette
 - `neovim.nix` — Enables neovim-nightly; symlinks `nvim/` into `~/.config/nvim`
 - `zsh.nix` — Shell config, aliases, zoxide, PATH setup, prompt (vague palette)
-- `git.nix` — Git identity
-- `zellij.nix` — Zellij terminal multiplexer with vague theme
+- `git.nix` — Git identity + diff/merge/rerere config
+- `meld.nix` — Meld graphical diff/merge tool (dconf settings)
+- `zellij.nix` — Zellij terminal multiplexer (moonfly theme; vague also defined)
 
 **`nvim/`** — Neovim config (Lua). Uses `vim.pack` (built-in plugin manager, NixOS Neovim nightly). Loaded in order: `init.lua` → `plugin/10_options.lua` → `20_keymaps.lua` → `30_mini.lua` → `40_plugins.lua`. Powered by `mini.nvim`.
 

@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 {
   imports = [
     ./foot.nix
@@ -26,16 +26,17 @@
   # let home-manager manage itself
   programs.home-manager.enable = true;
 
-  home.file.".wallpaper.png".source = ../../assets/wallpapers/xp.jpg;
+  home.file.".wallpaper.jpg".source = ../../assets/wallpapers/xp.jpg;
 
+  # Notification colours — vague palette (matches sway/swaylock chrome).
   services.mako = {
     enable = true;
     settings = {
       font = "JetBrainsMono Nerd Font 10";
-      background-color = "#191724";
-      text-color = "#e0def4";
-      border-color = "#31748f";
-      progress-color = "#31748f";
+      background-color = "#141415";
+      text-color = "#cdcdcd";
+      border-color = "#6e94b2";
+      progress-color = "#6e94b2";
       default-timeout = 5000;
     };
   };
@@ -75,6 +76,8 @@
     cliphist
     pavucontrol
     nerd-fonts.jetbrains-mono
+    google-chrome
+    firefox
     thunar # gui file manager
     libreoffice # office suite — open/view/edit docx (with images), odt, xlsx, etc.
     claude-code

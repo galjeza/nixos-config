@@ -77,16 +77,13 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
 
+  # GUI apps (browsers, meld, etc.) live in home.packages; keep this list to
+  # CLI tools + things tied to system services (pritunl).
   environment.systemPackages = with pkgs; [
     vim
     wget
     curl
-    sway
-    meld
-    google-chrome
-    firefox
     pritunl-client
-    screen
     anydesk
     zip
     unzip

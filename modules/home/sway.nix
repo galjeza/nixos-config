@@ -1,14 +1,14 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, ... }:
 let
-  ws1  = "1: web";      # browser — daily web browsing, docs, GitHub PRs
-  ws2  = "2: dev";      # zellij sessions — one per ticket (ticket PROJ-123)
-  ws3  = "3: terminal"; # quick standalone terminals, one-off commands
-  ws4  = "4: comms";    # Slack
-  ws5  = "5: db";       # DBeaver — database inspection and queries
-  ws6  = "6: api";      # Bruno — REST/GraphQL API testing
-  ws7  = "7: linear + github"; # Linear tickets, GitHub PRs and Issues
-  ws8  = "8: monitor";  # htop, logs, system health
-  ws9  = "9: music";    # media playback
+  ws1 = "1: web"; # browser — daily web browsing, docs, GitHub PRs
+  ws2 = "2: dev"; # zellij sessions — one per ticket (ticket PROJ-123)
+  ws3 = "3: terminal"; # quick standalone terminals, one-off commands
+  ws4 = "4: comms"; # Slack
+  ws5 = "5: db"; # DBeaver — database inspection and queries
+  ws6 = "6: api"; # Bruno — REST/GraphQL API testing
+  ws7 = "7: linear + github"; # Linear tickets, GitHub PRs and Issues
+  ws8 = "8: monitor"; # htop, logs, system health
+  ws9 = "9: music"; # media playback
   ws10 = "10: scratch"; # overflow, floating windows, anything temporary
 
   statusScript = pkgs.writeShellScript "sway-status" ''
@@ -139,7 +139,7 @@ in
       };
 
       output = {
-        "*".bg = "${config.home.homeDirectory}/.wallpaper.png fill #141415";
+        "*".bg = "${config.home.homeDirectory}/.wallpaper.jpg fill #141415";
 
         "Virtual-1".mode = "1920x1080@60Hz";
 

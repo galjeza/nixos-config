@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ ... }:
 let
   # Terminal (foot) theme. Change this value and `rebuild` to switch.
   # Both palettes are defined below; add more the same way.
