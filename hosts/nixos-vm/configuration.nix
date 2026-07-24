@@ -12,4 +12,7 @@
   boot.loader.grub.useOSProber = true;
 
   networking.hostName = "nixos"; # Define your hostname.
+
+  # SPICE guest agent: clipboard sharing + dynamic resolution with the host.
+  services.spice-vdagentd.enable = true;
 }
