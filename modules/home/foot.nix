@@ -2,7 +2,7 @@
 let
   # Terminal (foot) theme. Change this value and `rebuild` to switch.
   # Palettes are defined below; add more the same way.
-  footTheme = "rose-pine-dawn"; # "vague" | "moonfly" | "rose-pine-dawn"
+  footTheme = "solarized-light"; # "vague" | "moonfly" | "solarized-light"
 
   footPalettes = {
     # vague — https://github.com/vague-theme/vague.nvim
@@ -62,32 +62,32 @@ let
       selection-foreground = "080808";
     };
 
-    # rose-pine-dawn (light) — https://github.com/rose-pine/rose-pine-theme
-    rose-pine-dawn = {
-      background = "faf4ed";
-      foreground = "575279";
+    # solarized-light — https://github.com/altercation/solarized
+    solarized-light = {
+      background = "fdf6e3"; # base3
+      foreground = "657b83"; # base00
 
-      regular0 = "f2e9e1"; # overlay
-      regular1 = "b4637a"; # love
-      regular2 = "286983"; # pine
-      regular3 = "ea9d34"; # gold
-      regular4 = "56949f"; # foam
-      regular5 = "907aa9"; # iris
-      regular6 = "d7827e"; # rose
-      regular7 = "575279"; # text
+      regular0 = "073642"; # base02
+      regular1 = "dc322f"; # red
+      regular2 = "859900"; # green
+      regular3 = "b58900"; # yellow
+      regular4 = "268bd2"; # blue
+      regular5 = "d33682"; # magenta
+      regular6 = "2aa198"; # cyan
+      regular7 = "eee8d5"; # base2
 
-      bright0 = "9893a5"; # muted
-      bright1 = "b4637a";
-      bright2 = "286983";
-      bright3 = "ea9d34";
-      bright4 = "56949f";
-      bright5 = "907aa9";
-      bright6 = "d7827e";
-      bright7 = "575279";
+      bright0 = "002b36"; # base03
+      bright1 = "cb4b16"; # orange
+      bright2 = "586e75"; # base01
+      bright3 = "657b83"; # base00
+      bright4 = "839496"; # base0
+      bright5 = "6c71c4"; # violet
+      bright6 = "93a1a1"; # base1
+      bright7 = "fdf6e3"; # base3
 
-      cursor = "faf4ed 575279";
-      selection-background = "dfdad9";
-      selection-foreground = "575279";
+      cursor = "fdf6e3 657b83";
+      selection-background = "eee8d5";
+      selection-foreground = "586e75";
     };
   };
 in

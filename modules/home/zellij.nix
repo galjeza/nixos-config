@@ -1,11 +1,54 @@
 { ... }:
+let
+  # ── Single theme switch ──────────────────────────────────────────────
+  # Flip this one value to re-theme zellij. It drives *both* zellij's native
+  # UI (via settings.theme — a zellij built-in theme, or one of the `themes {}`
+  # blocks below) and the zjstatus bar (whose hex colors the `theme` option
+  # can't reach — hence the parallel `barPalettes` below, keyed off the same
+  # name).
+  # Options: "vague" | "moonfly" | "solarized-light".
+  # (solarized-light ships as a zellij built-in, so it needs no `themes {}`
+  # block here — only a bar palette.)
+  activeTheme = "solarized-light";
+
+  barPalettes = {
+    vague = {
+      bg = "#252530";
+      sessionFg = "#6e94b2";
+      modeNormal = "#6e94b2";
+      modeTmux = "#f3be7c";
+      tabNormal = "#606079";
+      tabActive = "#cdcdcd";
+      datetime = "#cdcdcd";
+    };
+    moonfly = {
+      bg = "#080808";
+      sessionFg = "#80A0FF";
+      modeNormal = "#80A0FF";
+      modeTmux = "#E3C78A";
+      tabNormal = "#949494";
+      tabActive = "#BDBDBD";
+      datetime = "#BDBDBD";
+    };
+    solarized-light = {
+      bg = "#eee8d5"; # base2
+      sessionFg = "#268bd2"; # blue
+      modeNormal = "#268bd2"; # blue
+      modeTmux = "#b58900"; # yellow
+      tabNormal = "#93a1a1"; # base1
+      tabActive = "#586e75"; # base01
+      datetime = "#657b83"; # base00
+    };
+  };
+  bar = barPalettes.${activeTheme};
+in
 {
   programs.zellij = {
     enable = true;
     settings = {
       simplified_ui = true;
       default_layout = "main";
-      theme = "rose-pine-dawn";
+      theme = activeTheme;
       pane_frames = false;
       show_release_notes = false;
       show_startup_tips = false;
@@ -18,21 +61,21 @@
                   plugin location="https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm" {
                       hide_frame_for_single_pane "false"
 
-                      format_left  "{mode}#[fg=#80A0FF,bg=#080808,bold] {session}#[bg=#080808] {tabs}"
+                      format_left  "{mode}#[fg=${bar.sessionFg},bg=${bar.bg},bold] {session}#[bg=${bar.bg}] {tabs}"
                       format_right "{datetime}"
-                      format_space "#[bg=#080808]"
+                      format_space "#[bg=${bar.bg}]"
 
-                      mode_normal          "#[bg=#80A0FF] "
-                      mode_tmux            "#[bg=#E3C78A] "
+                      mode_normal          "#[bg=${bar.modeNormal}] "
+                      mode_tmux            "#[bg=${bar.modeTmux}] "
                       mode_default_to_mode "tmux"
 
-                      tab_normal               "#[fg=#949494,bg=#080808] {index} {name} {fullscreen_indicator}{sync_indicator}{floating_indicator}"
-                      tab_active               "#[fg=#BDBDBD,bg=#080808,bold,italic] {index} {name} {fullscreen_indicator}{sync_indicator}{floating_indicator}"
+                      tab_normal               "#[fg=${bar.tabNormal},bg=${bar.bg}] {index} {name} {fullscreen_indicator}{sync_indicator}{floating_indicator}"
+                      tab_active               "#[fg=${bar.tabActive},bg=${bar.bg},bold,italic] {index} {name} {fullscreen_indicator}{sync_indicator}{floating_indicator}"
                       tab_fullscreen_indicator "□ "
                       tab_sync_indicator       "  "
                       tab_floating_indicator   "󰉈 "
 
-                      datetime          "#[fg=#BDBDBD,bg=#080808] {format} "
+                      datetime          "#[fg=${bar.datetime},bg=${bar.bg}] {format} "
                       datetime_format   "%A, %d %b %Y %H:%M"
                       datetime_timezone "Europe/Berlin"
                   }
@@ -302,133 +345,6 @@
       			player_8 0
       			player_9 0
       			player_10 0
-      		}
-      	}
-      	// rose-pine-dawn (light) — palette https://rosepinetheme.com/palette/
-      	rose-pine-dawn {
-      		text_unselected {
-      			base 87 82 121
-      			background 250 244 237
-      			emphasis_0 234 157 52
-      			emphasis_1 144 122 169
-      			emphasis_2 86 148 159
-      			emphasis_3 215 130 126
-      		}
-      		text_selected {
-      			base 87 82 121
-      			background 242 233 225
-      			emphasis_0 234 157 52
-      			emphasis_1 144 122 169
-      			emphasis_2 86 148 159
-      			emphasis_3 215 130 126
-      		}
-      		ribbon_unselected {
-      			base 242 233 225
-      			background 87 82 121
-      			emphasis_0 242 233 225
-      			emphasis_1 87 82 121
-      			emphasis_2 234 157 52
-      			emphasis_3 215 130 126
-      		}
-      		ribbon_selected {
-      			base 242 233 225
-      			background 86 148 159
-      			emphasis_0 242 233 225
-      			emphasis_1 234 157 52
-      			emphasis_2 215 130 126
-      			emphasis_3 234 157 52
-      		}
-      		table_title {
-      			base 40 105 131
-      			background 242 233 225
-      			emphasis_0 234 157 52
-      			emphasis_1 144 122 169
-      			emphasis_2 86 148 159
-      			emphasis_3 215 130 126
-      		}
-      		table_cell_unselected {
-      			base 87 82 121
-      			background 242 233 225
-      			emphasis_0 234 157 52
-      			emphasis_1 144 122 169
-      			emphasis_2 86 148 159
-      			emphasis_3 215 130 126
-      		}
-      		table_cell_selected {
-      			base 87 82 121
-      			background 242 233 225
-      			emphasis_0 234 157 52
-      			emphasis_1 144 122 169
-      			emphasis_2 86 148 159
-      			emphasis_3 215 130 126
-      		}
-      		list_unselected {
-      			base 87 82 121
-      			background 242 233 225
-      			emphasis_0 234 157 52
-      			emphasis_1 144 122 169
-      			emphasis_2 86 148 159
-      			emphasis_3 215 130 126
-      		}
-      		list_selected {
-      			base 87 82 121
-      			background 242 233 225
-      			emphasis_0 234 157 52
-      			emphasis_1 144 122 169
-      			emphasis_2 86 148 159
-      			emphasis_3 215 130 126
-      		}
-      		frame_selected {
-      			base 144 122 169
-      			background 242 233 225
-      			emphasis_0 234 157 52
-      			emphasis_1 144 122 169
-      			emphasis_2 215 130 126
-      			emphasis_3 242 233 225
-      		}
-      		frame_unselected {
-      			base 152 147 165
-      			background 152 147 165
-      			emphasis_0 152 147 165
-      			emphasis_1 152 147 165
-      			emphasis_2 152 147 165
-      			emphasis_3 152 147 165
-      		}
-      		frame_highlight {
-      			base 234 157 52
-      			background 242 233 225
-      			emphasis_0 215 130 126
-      			emphasis_1 234 157 52
-      			emphasis_2 234 157 52
-      			emphasis_3 234 157 52
-      		}
-      		exit_code_success {
-      			base 40 105 131
-      			background 242 233 225
-      			emphasis_0 144 122 169
-      			emphasis_1 242 233 225
-      			emphasis_2 215 130 126
-      			emphasis_3 234 157 52
-      		}
-      		exit_code_error {
-      			base 180 99 122
-      			background 242 233 225
-      			emphasis_0 234 157 52
-      			emphasis_1 242 233 225
-      			emphasis_2 242 233 225
-      			emphasis_3 242 233 225
-      		}
-      		multiplayer_user_colors {
-      			player_1 215 130 126
-      			player_2 234 157 52
-      			player_3 242 233 225
-      			player_4 144 122 169
-      			player_5 180 99 122
-      			player_6 242 233 225
-      			player_7 40 105 131
-      			player_8 242 233 225
-      			player_9 242 233 225
-      			player_10 242 233 225
       		}
       	}
       }

@@ -148,14 +148,16 @@ end)
 -- Colorschemes ======
 Config.now(function()
 	-- Install only those that you need. Switch by editing the `colorscheme`
-	-- line below — moonfly / vague (dark) or rose-pine-dawn (light) — or at
+	-- line below — moonfly / vague (dark) or solarized (light) — or at
 	-- runtime with `:colorscheme <name><Tab>`.
 	add({
 		"https://github.com/vague-theme/vague.nvim",
 		"https://github.com/bluz71/vim-moonfly-colors",
-		{ src = "https://github.com/rose-pine/neovim", name = "rose-pine" },
+		"https://github.com/maxmx03/solarized.nvim",
 	})
 
 	-- Default on startup; the ones above are also available to switch to.
-	vim.cmd("colorscheme moonfly")
+	-- solarized picks its variant from `background`, so request light explicitly.
+	vim.o.background = "light"
+	vim.cmd("colorscheme solarized")
 end)
