@@ -1,8 +1,8 @@
 { ... }:
 let
   # Terminal (foot) theme. Change this value and `rebuild` to switch.
-  # Both palettes are defined below; add more the same way.
-  footTheme = "moonfly"; # "vague" | "moonfly"
+  # Palettes are defined below; add more the same way.
+  footTheme = "rose-pine-dawn"; # "vague" | "moonfly" | "rose-pine-dawn"
 
   footPalettes = {
     # vague — https://github.com/vague-theme/vague.nvim
@@ -60,6 +60,34 @@ let
       cursor = "080808 9e9e9e";
       selection-background = "b2ceee";
       selection-foreground = "080808";
+    };
+
+    # rose-pine-dawn (light) — https://github.com/rose-pine/rose-pine-theme
+    rose-pine-dawn = {
+      background = "faf4ed";
+      foreground = "575279";
+
+      regular0 = "f2e9e1"; # overlay
+      regular1 = "b4637a"; # love
+      regular2 = "286983"; # pine
+      regular3 = "ea9d34"; # gold
+      regular4 = "56949f"; # foam
+      regular5 = "907aa9"; # iris
+      regular6 = "d7827e"; # rose
+      regular7 = "575279"; # text
+
+      bright0 = "9893a5"; # muted
+      bright1 = "b4637a";
+      bright2 = "286983";
+      bright3 = "ea9d34";
+      bright4 = "56949f";
+      bright5 = "907aa9";
+      bright6 = "d7827e";
+      bright7 = "575279";
+
+      cursor = "faf4ed 575279";
+      selection-background = "dfdad9";
+      selection-foreground = "575279";
     };
   };
 in

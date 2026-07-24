@@ -5,7 +5,7 @@
     settings = {
       simplified_ui = true;
       default_layout = "main";
-      theme = "moonfly";
+      theme = "rose-pine-dawn";
       pane_frames = false;
       show_release_notes = false;
       show_startup_tips = false;
@@ -302,6 +302,133 @@
       			player_8 0
       			player_9 0
       			player_10 0
+      		}
+      	}
+      	// rose-pine-dawn (light) — palette https://rosepinetheme.com/palette/
+      	rose-pine-dawn {
+      		text_unselected {
+      			base 87 82 121
+      			background 250 244 237
+      			emphasis_0 234 157 52
+      			emphasis_1 144 122 169
+      			emphasis_2 86 148 159
+      			emphasis_3 215 130 126
+      		}
+      		text_selected {
+      			base 87 82 121
+      			background 242 233 225
+      			emphasis_0 234 157 52
+      			emphasis_1 144 122 169
+      			emphasis_2 86 148 159
+      			emphasis_3 215 130 126
+      		}
+      		ribbon_unselected {
+      			base 242 233 225
+      			background 87 82 121
+      			emphasis_0 242 233 225
+      			emphasis_1 87 82 121
+      			emphasis_2 234 157 52
+      			emphasis_3 215 130 126
+      		}
+      		ribbon_selected {
+      			base 242 233 225
+      			background 86 148 159
+      			emphasis_0 242 233 225
+      			emphasis_1 234 157 52
+      			emphasis_2 215 130 126
+      			emphasis_3 234 157 52
+      		}
+      		table_title {
+      			base 40 105 131
+      			background 242 233 225
+      			emphasis_0 234 157 52
+      			emphasis_1 144 122 169
+      			emphasis_2 86 148 159
+      			emphasis_3 215 130 126
+      		}
+      		table_cell_unselected {
+      			base 87 82 121
+      			background 242 233 225
+      			emphasis_0 234 157 52
+      			emphasis_1 144 122 169
+      			emphasis_2 86 148 159
+      			emphasis_3 215 130 126
+      		}
+      		table_cell_selected {
+      			base 87 82 121
+      			background 242 233 225
+      			emphasis_0 234 157 52
+      			emphasis_1 144 122 169
+      			emphasis_2 86 148 159
+      			emphasis_3 215 130 126
+      		}
+      		list_unselected {
+      			base 87 82 121
+      			background 242 233 225
+      			emphasis_0 234 157 52
+      			emphasis_1 144 122 169
+      			emphasis_2 86 148 159
+      			emphasis_3 215 130 126
+      		}
+      		list_selected {
+      			base 87 82 121
+      			background 242 233 225
+      			emphasis_0 234 157 52
+      			emphasis_1 144 122 169
+      			emphasis_2 86 148 159
+      			emphasis_3 215 130 126
+      		}
+      		frame_selected {
+      			base 144 122 169
+      			background 242 233 225
+      			emphasis_0 234 157 52
+      			emphasis_1 144 122 169
+      			emphasis_2 215 130 126
+      			emphasis_3 242 233 225
+      		}
+      		frame_unselected {
+      			base 152 147 165
+      			background 152 147 165
+      			emphasis_0 152 147 165
+      			emphasis_1 152 147 165
+      			emphasis_2 152 147 165
+      			emphasis_3 152 147 165
+      		}
+      		frame_highlight {
+      			base 234 157 52
+      			background 242 233 225
+      			emphasis_0 215 130 126
+      			emphasis_1 234 157 52
+      			emphasis_2 234 157 52
+      			emphasis_3 234 157 52
+      		}
+      		exit_code_success {
+      			base 40 105 131
+      			background 242 233 225
+      			emphasis_0 144 122 169
+      			emphasis_1 242 233 225
+      			emphasis_2 215 130 126
+      			emphasis_3 234 157 52
+      		}
+      		exit_code_error {
+      			base 180 99 122
+      			background 242 233 225
+      			emphasis_0 234 157 52
+      			emphasis_1 242 233 225
+      			emphasis_2 242 233 225
+      			emphasis_3 242 233 225
+      		}
+      		multiplayer_user_colors {
+      			player_1 215 130 126
+      			player_2 234 157 52
+      			player_3 242 233 225
+      			player_4 144 122 169
+      			player_5 180 99 122
+      			player_6 242 233 225
+      			player_7 40 105 131
+      			player_8 242 233 225
+      			player_9 242 233 225
+      			player_10 242 233 225
       		}
       	}
       }
