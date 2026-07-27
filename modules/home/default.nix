@@ -1,4 +1,31 @@
 { pkgs, ... }:
+let
+  # Ioskeley Mono (Nerd Font) — custom Iosevka build, not packaged in nixpkgs.
+  # Upstream: https://github.com/ahatem/IoskeleyMono
+  # Installs the Normal-width faces only; the fontconfig family that ghostty
+  # references is "IoskeleyMono Nerd Font" (see modules/home/ghostty.nix).
+  ioskeley-mono-nerd-font = pkgs.stdenvNoCC.mkDerivation {
+    pname = "ioskeley-mono-nerd-font";
+    version = "2.0.0";
+    src = pkgs.fetchurl {
+      url = "https://github.com/ahatem/IoskeleyMono/releases/download/v2.0.0/IoskeleyMono-NerdFont.zip";
+      hash = "sha256-aIN1jDocVlc4Jbfm7Npz2b3m3dn1tQTpd8kQHoAPurY=";
+    };
+    nativeBuildInputs = [ pkgs.unzip ];
+    dontUnpack = true;
+    installPhase = ''
+      runHook preInstall
+      mkdir -p $out/share/fonts/truetype/ioskeley-mono
+      unzip -j "$src" 'Normal/*.ttf' -d $out/share/fonts/truetype/ioskeley-mono
+      runHook postInstall
+    '';
+    meta = {
+      description = "Ioskeley Mono (Nerd Font) — Iosevka custom build";
+      homepage = "https://github.com/ahatem/IoskeleyMono";
+      license = pkgs.lib.licenses.ofl;
+    };
+  };
+in
 {
   imports = [
     ./foot.nix
@@ -77,6 +104,7 @@
     cliphist
     pavucontrol
     nerd-fonts.jetbrains-mono
+    ioskeley-mono-nerd-font
     google-chrome
     firefox
     thunar # gui file manager
