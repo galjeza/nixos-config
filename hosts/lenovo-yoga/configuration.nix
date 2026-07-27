@@ -71,6 +71,27 @@
   # means no XWayland pointer offset, and clicks land correctly.
   programs.gamemode.enable = true;
 
+  # ── Waydroid: Android container (for Boom Beach etc.) ───────────────────────
+  # Runs a full Android userspace in an LXC container on the host kernel via
+  # binder. Needs Wayland (Sway provides it). After a rebuild, run once:
+  #   sudo waydroid init -s GAPPS      # download image WITH Google Play
+  #   sudo systemctl start waydroid-container
+  #   waydroid session start &         # then: waydroid show-full-ui
+  # See the notes at the bottom of this section for getting Boom Beach on.
+  virtualisation.waydroid.enable = true;
+
+  # This kernel ships ONLY the nftables netfilter backend — the legacy
+  # ip_tables.ko modules don't exist. Waydroid's default waydroid-net.sh
+  # hard-prefers the `iptables-legacy` binary, so the container's network
+  # setup dies with "can't initialize iptables table `filter'". The package's
+  # `withNftables` flag builds the script to drive `nft` directly (and puts it
+  # on the script's PATH), which works with the nft_tables module we do have.
+  virtualisation.waydroid.package = pkgs.waydroid.override { withNftables = true; };
+
+  # Boom Beach is online-only, so the container must reach the internet. The
+  # NixOS firewall would otherwise drop forwarded traffic on Waydroid's bridge.
+  networking.firewall.trustedInterfaces = [ "waydroid0" ];
+
   # ── Audio: Yoga Pro 9 16IMH9 speaker workaround ─────────────────────────────
   # Force the ALC287 fixup that wires the TAS2781 i2c amps as speaker output.
   # The kernel doesn't have a quirk for PCI SSID 17aa:3811, so we hint the
