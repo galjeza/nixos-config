@@ -7,9 +7,10 @@ let
   # can't reach — hence the parallel `barPalettes` below, keyed off the same
   # name).
   # Options: "vague" | "moonfly" | "solarized-light" | "solarized-dark".
-  # (Both solarized variants ship as zellij built-ins, so they need no
-  # `themes {}` block here — only a bar palette.)
-  activeTheme = "solarized-dark";
+  # (vague + moonfly are custom themes defined in the `themes {}` block below;
+  # the solarized variants ship as zellij built-ins. Each still needs a matching
+  # bar palette here.)
+  activeTheme = "moonfly";
 
   barPalettes = {
     vague = {

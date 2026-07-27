@@ -154,6 +154,5 @@ Config.now(function()
 	})
 
 	-- Default on startup;
-	vim.o.background = "dark"
-	vim.cmd("colorscheme solarized")
+	vim.cmd("colorscheme moonfly")
 end)
