@@ -79,11 +79,8 @@ in
                       mode_tmux            "#[bg=${bar.modeTmux}] "
                       mode_default_to_mode "tmux"
 
-                      tab_normal               "#[fg=${bar.tabNormal},bg=${bar.bg}] {index} {name} {fullscreen_indicator}{sync_indicator}{floating_indicator}"
-                      tab_active               "#[fg=${bar.tabActive},bg=${bar.bg},bold,italic] {index} {name} {fullscreen_indicator}{sync_indicator}{floating_indicator}"
-                      tab_fullscreen_indicator "□ "
-                      tab_sync_indicator       "  "
-                      tab_floating_indicator   "󰉈 "
+                      tab_normal               "#[fg=${bar.tabNormal},bg=${bar.bg}]{name} "
+                      tab_active               "#[fg=${bar.tabActive},bg=${bar.bg},bold,italic]{name}"
 
                       datetime          "#[fg=${bar.datetime},bg=${bar.bg}] {format} "
                       datetime_format   "%A, %d %b %Y %H:%M"
