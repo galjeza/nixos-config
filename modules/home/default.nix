@@ -2,6 +2,7 @@
 {
   imports = [
     ./foot.nix
+    ./ghostty.nix
     ./git.nix
     ./meld.nix
     ./neovim.nix

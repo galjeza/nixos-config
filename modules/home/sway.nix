@@ -92,7 +92,7 @@ in
       down = "j";
       up = "k";
       right = "l";
-      terminal = "foot";
+      terminal = "ghostty";
       menu = "wmenu-run -N 141415 -n cdcdcd -M 252530 -m cdcdcd -S 6e94b2 -s 141415";
       fonts = {
         names = [ "JetBrainsMono Nerd Font" ];

@@ -6,10 +6,10 @@ let
   # blocks below) and the zjstatus bar (whose hex colors the `theme` option
   # can't reach — hence the parallel `barPalettes` below, keyed off the same
   # name).
-  # Options: "vague" | "moonfly" | "solarized-light".
-  # (solarized-light ships as a zellij built-in, so it needs no `themes {}`
-  # block here — only a bar palette.)
-  activeTheme = "solarized-light";
+  # Options: "vague" | "moonfly" | "solarized-light" | "solarized-dark".
+  # (Both solarized variants ship as zellij built-ins, so they need no
+  # `themes {}` block here — only a bar palette.)
+  activeTheme = "solarized-dark";
 
   barPalettes = {
     vague = {
@@ -38,6 +38,15 @@ let
       tabNormal = "#93a1a1"; # base1
       tabActive = "#586e75"; # base01
       datetime = "#657b83"; # base00
+    };
+    solarized-dark = {
+      bg = "#073642"; # base02
+      sessionFg = "#268bd2"; # blue
+      modeNormal = "#268bd2"; # blue
+      modeTmux = "#b58900"; # yellow
+      tabNormal = "#586e75"; # base01
+      tabActive = "#93a1a1"; # base1
+      datetime = "#839496"; # base0
     };
   };
   bar = barPalettes.${activeTheme};
