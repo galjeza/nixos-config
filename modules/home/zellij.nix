@@ -18,6 +18,7 @@ let
       sessionFg = "#6e94b2";
       modeNormal = "#6e94b2";
       modeTmux = "#f3be7c";
+      modeLocked = "#d8647e";
       tabNormal = "#606079";
       tabActive = "#cdcdcd";
       datetime = "#cdcdcd";
@@ -27,6 +28,7 @@ let
       sessionFg = "#80A0FF";
       modeNormal = "#80A0FF";
       modeTmux = "#E3C78A";
+      modeLocked = "#E65E72";
       tabNormal = "#949494";
       tabActive = "#BDBDBD";
       datetime = "#BDBDBD";
@@ -36,6 +38,7 @@ let
       sessionFg = "#268bd2"; # blue
       modeNormal = "#268bd2"; # blue
       modeTmux = "#b58900"; # yellow
+      modeLocked = "#dc322f"; # red
       tabNormal = "#93a1a1"; # base1
       tabActive = "#586e75"; # base01
       datetime = "#657b83"; # base00
@@ -45,6 +48,7 @@ let
       sessionFg = "#268bd2"; # blue
       modeNormal = "#268bd2"; # blue
       modeTmux = "#b58900"; # yellow
+      modeLocked = "#dc322f"; # red
       tabNormal = "#586e75"; # base01
       tabActive = "#93a1a1"; # base1
       datetime = "#839496"; # base0
@@ -71,16 +75,29 @@ in
                   plugin location="https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm" {
                       hide_frame_for_single_pane "false"
 
-                      format_left  "{mode}#[fg=${bar.sessionFg},bg=${bar.bg},bold] {session}#[bg=${bar.bg}] {tabs}"
-                      format_right "{datetime}"
-                      format_space "#[bg=${bar.bg}]"
+                      format_left   "{mode}#[fg=${bar.datetime},bg=${bar.bg}] [{session}] "
+                      format_center "#[bg=${bar.bg}]{tabs}"
+                      format_right  "{datetime}"
+                      format_space  "#[bg=${bar.bg}]"
 
-                      mode_normal          "#[bg=${bar.modeNormal}] "
-                      mode_tmux            "#[bg=${bar.modeTmux}] "
-                      mode_default_to_mode "tmux"
+                      mode_normal          "#[fg=${bar.modeNormal},bg=${bar.bg},bold] NORMAL"
+                      mode_locked          "#[fg=${bar.modeLocked},bg=${bar.bg},bold] LOCKED"
+                      mode_tmux            "#[fg=${bar.modeTmux},bg=${bar.bg},bold] TMUX"
+                      mode_resize          "#[fg=${bar.modeNormal},bg=${bar.bg},bold] RESIZE"
+                      mode_pane            "#[fg=${bar.modeNormal},bg=${bar.bg},bold] PANE"
+                      mode_tab             "#[fg=${bar.modeNormal},bg=${bar.bg},bold] TAB"
+                      mode_scroll          "#[fg=${bar.modeNormal},bg=${bar.bg},bold] SCROLL"
+                      mode_enter_search    "#[fg=${bar.modeNormal},bg=${bar.bg},bold] SEARCH"
+                      mode_search          "#[fg=${bar.modeNormal},bg=${bar.bg},bold] SEARCH"
+                      mode_rename_tab      "#[fg=${bar.modeNormal},bg=${bar.bg},bold] RENAME"
+                      mode_rename_pane     "#[fg=${bar.modeNormal},bg=${bar.bg},bold] RENAME"
+                      mode_session         "#[fg=${bar.modeNormal},bg=${bar.bg},bold] SESSION"
+                      mode_move            "#[fg=${bar.modeNormal},bg=${bar.bg},bold] MOVE"
+                      mode_prompt          "#[fg=${bar.modeNormal},bg=${bar.bg},bold] PROMPT"
+                      mode_default_to_mode "normal"
 
                       tab_normal               "#[fg=${bar.tabNormal},bg=${bar.bg}] {name} "
-                      tab_active               "#[fg=${bar.tabActive},bg=${bar.bg},bold,italic] {name} "
+                      tab_active               "#[fg=${bar.tabActive},bg=${bar.bg},bold,italic] {name}*"
 
                       datetime          "#[fg=${bar.datetime},bg=${bar.bg}] {format} "
                       datetime_format   "%A, %d %b %Y %H:%M"
