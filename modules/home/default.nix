@@ -108,7 +108,9 @@ in
     google-chrome
     firefox
     thunar # gui file manager
+    loupe # gnome image viewer — opens svg, png, jpg, etc.
     libreoffice # office suite — open/view/edit docx (with images), odt, xlsx, etc.
+    (anki.withAddons (with ankiAddons; [ anki-connect ]))
     claude-code
     opencode
     htop
