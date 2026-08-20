@@ -42,7 +42,7 @@ This is a NixOS flake-based configuration managing three hosts (`lenovo-yoga`, `
 **`modules/home/`** — Home-manager modules, all imported by `default.nix`:
 - `default.nix` — User packages, mako notifications (vague palette), wallpaper symlink
 - `foot.nix` — Foot terminal; carries both `vague` and `moonfly` palettes, switched via the `footTheme` selector (currently `moonfly`)
-- `sway.nix` — Full Sway WM config (keybindings, colors, bar, outputs) — vague palette
+- `sway.nix` — Full Sway WM config (keybindings, colors, bar, outputs) — moonfly palette
 - `neovim.nix` — Enables neovim-nightly; symlinks `nvim/` into `~/.config/nvim`
 - `zsh.nix` — Shell config, aliases, zoxide, PATH setup, prompt (vague palette)
 - `git.nix` — Git identity + diff/merge/rerere config
@@ -53,7 +53,7 @@ This is a NixOS flake-based configuration managing three hosts (`lenovo-yoga`, `
 
 ## Key Conventions
 
-- **Theme**: `vague` ([vague-theme/vague.nvim](https://github.com/vague-theme/vague.nvim)) — used by neovim, zellij, sway, zsh prompt. Palette: bg `#141415`, surface `#252530`, fg `#cdcdcd`, muted `#606079`, blue `#6e94b2`, gold `#f3be7c`, love `#d8647e`. `foot` and `mako` still use the older Rose Pine hex — migrate when convenient.
+- **Theme**: migrating from `vague` ([vague-theme/vague.nvim](https://github.com/vague-theme/vague.nvim)) to `moonfly` ([bluz71/vim-moonfly-colors](https://github.com/bluz71/vim-moonfly-colors)). vague palette: bg `#141415`, surface `#252530`, fg `#cdcdcd`, muted `#606079`, blue `#6e94b2`, gold `#f3be7c`, love `#d8647e`. moonfly palette: bg `#080808`, surface `#323437`, fg `#bdbdbd`, muted `#949494`, blue `#80a0ff`, gold `#e3c78a`, red `#ff5d5d`. `foot`, `zellij`, and `sway` are on moonfly; `zsh` prompt still uses vague; `mako` still uses the older Rose Pine hex — migrate when convenient.
 - **`nixpkgs` channel**: `nixos-unstable` (rolling). `home-manager` follows the same nixpkgs to avoid duplicate copies.
 - **`stateVersion`**: `"25.11"` — do not change without reading the NixOS docs on state version migration.
 - **Neovim config** lives in `nvim/` (repo root) and is symlinked to `~/.config/nvim` via `xdg.configFile` in `neovim.nix`. Edit files here; changes take effect after `rebuild` or after re-sourcing home-manager.
