@@ -3,9 +3,8 @@
   programs.ghostty = {
     enable = true;
     settings = {
-      # Ioskeley Mono (Nerd Font) — custom Iosevka build installed via
-      # home.packages (see modules/home/default.nix).
-      font-family = "IoskeleyMono Nerd Font";
+      # Iosevka Nerd Font — installed via home.packages (nerd-fonts.iosevka).
+      font-family = "Iosevka Nerd Font";
       font-size = 11;
 
       # Built-in theme shipped with ghostty. List others with `ghostty +list-themes`.
