@@ -20,7 +20,7 @@
   fonts.fontconfig = {
     enable = true;
     defaultFonts = {
-      monospace = [ "Iosevka Nerd Font" ];
+      monospace = [ "JetBrainsMono Nerd Font" ];
     };
   };
 
@@ -33,7 +33,7 @@
   services.mako = {
     enable = true;
     settings = {
-      font = "Iosevka Nerd Font 10";
+      font = "JetBrainsMono Nerd Font 10";
       background-color = "#141415";
       text-color = "#cdcdcd";
       border-color = "#6e94b2";
@@ -76,7 +76,7 @@
     wl-clipboard
     cliphist
     pavucontrol
-    nerd-fonts.iosevka
+    nerd-fonts.jetbrains-mono
     google-chrome
     firefox
     thunar # gui file manager

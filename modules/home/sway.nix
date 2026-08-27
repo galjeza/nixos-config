@@ -42,7 +42,7 @@ in
     enable = true;
     settings = {
       color = "080808";
-      font = "Iosevka Nerd Font";
+      font = "JetBrainsMono Nerd Font";
       font-size = 24;
       indicator-idle-visible = false;
       indicator-radius = 100;
@@ -96,7 +96,7 @@ in
       terminal = "ghostty";
       menu = "wmenu-run -N 080808 -n bdbdbd -M 323437 -m bdbdbd -S 80a0ff -s 080808";
       fonts = {
-        names = [ "Iosevka Nerd Font" ];
+        names = [ "JetBrainsMono Nerd Font" ];
         size = 10.0;
       };
 
@@ -274,7 +274,7 @@ in
           position = "top";
           statusCommand = "${statusScript}";
           fonts = {
-            names = [ "Iosevka Nerd Font" ];
+            names = [ "JetBrainsMono Nerd Font" ];
             size = 10.0;
           };
           colors = {

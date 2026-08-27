@@ -3,8 +3,8 @@
   programs.ghostty = {
     enable = true;
     settings = {
-      # Iosevka Nerd Font — installed via home.packages (nerd-fonts.iosevka).
-      font-family = "Iosevka Nerd Font";
+      # JetBrainsMono Nerd Font — installed via home.packages (nerd-fonts.jetbrains-mono).
+      font-family = "JetBrainsMono Nerd Font";
       font-size = 11;
 
       # Built-in theme shipped with ghostty. List others with `ghostty +list-themes`.

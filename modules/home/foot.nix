@@ -96,7 +96,7 @@ in
     enable = true;
     settings = {
       main = {
-        font = "Iosevka Nerd Font:size=11";
+        font = "JetBrainsMono Nerd Font:size=11";
       };
       # Palette selected by `footTheme` above.
       colors-dark = footPalettes.${footTheme};
