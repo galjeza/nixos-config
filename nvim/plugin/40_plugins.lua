@@ -91,21 +91,26 @@ later(function()
 			timeout_ms = 5000,
 			lsp_format = "fallback",
 		},
+		formatters = {
+			-- Only reach for biome in projects that actually have a biome config;
+			-- everywhere else conform falls through to prettierd.
+			biome = { require_cwd = true },
+		},
 		formatters_by_ft = {
-			css = { "prettierd" },
+			css = { "biome", "prettierd", stop_after_first = true },
 			html = { "prettierd" },
-			javascript = { "prettierd" },
-			javascriptreact = { "prettierd" },
-			json = { "prettierd" },
-			jsonc = { "prettierd" },
+			javascript = { "biome", "prettierd", stop_after_first = true },
+			javascriptreact = { "biome", "prettierd", stop_after_first = true },
+			json = { "biome", "prettierd", stop_after_first = true },
+			jsonc = { "biome", "prettierd", stop_after_first = true },
 			less = { "prettierd" },
 			lua = { "stylua" },
 			markdown = { "prettierd" },
 			nix = { "nixfmt" },
 			rust = { "rustfmt" },
 			scss = { "prettierd" },
-			typescript = { "prettierd" },
-			typescriptreact = { "prettierd" },
+			typescript = { "biome", "prettierd", stop_after_first = true },
+			typescriptreact = { "biome", "prettierd", stop_after_first = true },
 			yaml = { "prettierd" },
 		},
 	})
