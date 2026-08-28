@@ -157,6 +157,7 @@ Config.now(function()
 		"https://github.com/bluz71/vim-moonfly-colors",
 		"https://github.com/maxmx03/solarized.nvim",
 		"https://github.com/rebelot/kanagawa.nvim",
+		"https://github.com/olivercederborg/poimandres.nvim",
 	})
 
 	-- Default on startup; try others live with `:colorscheme <name>`.

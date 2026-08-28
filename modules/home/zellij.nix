@@ -14,7 +14,9 @@ let
 
   barPalettes = {
     vague = {
-      bg = "#252530";
+      # Must match ghostty's Vague `background` exactly, so the bar disappears
+      # into the terminal instead of reading as a separate strip.
+      bg = "#141415";
       sessionFg = "#6e94b2";
       modeNormal = "#6e94b2";
       modeTmux = "#f3be7c";
