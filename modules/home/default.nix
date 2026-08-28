@@ -92,7 +92,7 @@
     ripgrep
     dbeaver-bin
     beyond-all-reason
-    wineWowPackages.stable # 32+64-bit Wine for electron-builder --win on Linux
+    wineWow64Packages.stable # 32+64-bit Wine for electron-builder --win on Linux
     typst
   ];
 }

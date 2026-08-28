@@ -138,19 +138,19 @@
     libnotify
     libsecret
     systemd
-    xorg.libX11
-    xorg.libxcb
-    xorg.libXcomposite
-    xorg.libXcursor
-    xorg.libXdamage
-    xorg.libXext
-    xorg.libXfixes
-    xorg.libXi
-    xorg.libXrandr
-    xorg.libXrender
-    xorg.libXScrnSaver
-    xorg.libXtst
-    xorg.libxkbfile
+    libx11
+    libxcb
+    libxcomposite
+    libxcursor
+    libxdamage
+    libxext
+    libxfixes
+    libxi
+    libxrandr
+    libxrender
+    libxscrnsaver
+    libxtst
+    libxkbfile
   ];
 
   # Audio via PipeWire

@@ -41,7 +41,7 @@ in
   programs.swaylock = {
     enable = true;
     settings = {
-      color = "080808";
+      color = "141415";
       font = "JetBrainsMono Nerd Font";
       font-size = 24;
       indicator-idle-visible = false;
@@ -76,9 +76,6 @@ in
   wayland.windowManager.sway = {
     enable = true;
     extraConfig = ''
-      default_border pixel 2
-      default_floating_border pixel 2
-
       # Steam/Proton games run under XWayland and auto-fullscreen so the window
       # maps 1:1 to the output. Combined with the gaming monitor being pinned
       # to (0,0) below, this is what fixes "can't click buttons" in games —
@@ -94,53 +91,72 @@ in
       up = "k";
       right = "l";
       terminal = "ghostty";
-      menu = "wmenu-run -N 080808 -n bdbdbd -M 323437 -m bdbdbd -S 80a0ff -s 080808";
+      menu = "wmenu-run -N 141415 -n cdcdcd -M 252530 -m cdcdcd -S 6e94b2 -s 141415";
       fonts = {
         names = [ "JetBrainsMono Nerd Font" ];
         size = 10.0;
       };
 
+      # No borders and no titlebars anywhere — the 6px gap is the only thing
+      # separating windows. `border = 0` emits `default_border pixel 0`, which
+      # is sway's `none`. (smart_borders is pointless with no borders to hide.)
+      window = {
+        titlebar = false;
+        border = 0;
+      };
+      floating = {
+        titlebar = false;
+        border = 0;
+      };
+
+      gaps = {
+        inner = 6;
+        outer = 0;
+        # No gaps at all when a workspace has a single container.
+        smartGaps = true;
+      };
+
       colors = {
         focused = {
-          border = "#80a0ff";
-          background = "#80a0ff";
-          text = "#080808";
-          indicator = "#e3c78a";
-          childBorder = "#80a0ff";
+          border = "#6e94b2";
+          background = "#6e94b2";
+          text = "#141415";
+          indicator = "#f3be7c";
+          childBorder = "#6e94b2";
         };
         focusedInactive = {
-          border = "#323437";
-          background = "#323437";
-          text = "#949494";
-          indicator = "#323437";
-          childBorder = "#323437";
+          border = "#252530";
+          background = "#252530";
+          text = "#606079";
+          indicator = "#252530";
+          childBorder = "#252530";
         };
         unfocused = {
-          border = "#080808";
-          background = "#080808";
-          text = "#949494";
-          indicator = "#080808";
-          childBorder = "#080808";
+          border = "#141415";
+          background = "#141415";
+          text = "#606079";
+          indicator = "#141415";
+          childBorder = "#141415";
         };
         urgent = {
-          border = "#ff5d5d";
-          background = "#ff5d5d";
-          text = "#080808";
-          indicator = "#ff5d5d";
-          childBorder = "#ff5d5d";
+          border = "#d8647e";
+          background = "#d8647e";
+          text = "#141415";
+          indicator = "#d8647e";
+          childBorder = "#d8647e";
         };
         placeholder = {
-          border = "#080808";
-          background = "#080808";
-          text = "#949494";
-          indicator = "#080808";
-          childBorder = "#080808";
+          border = "#141415";
+          background = "#141415";
+          text = "#606079";
+          indicator = "#141415";
+          childBorder = "#141415";
         };
-        background = "#080808";
+        background = "#141415";
       };
 
       output = {
-        "*".bg = "${config.home.homeDirectory}/.wallpaper.jpg fill #080808";
+        "*".bg = "${config.home.homeDirectory}/.wallpaper.jpg fill #141415";
 
         "Virtual-1".mode = "1920x1080@60Hz";
 
@@ -182,7 +198,7 @@ in
           "${mod}+Shift+s" =
             ''exec sh -c 'mkdir -p ~/Pictures/Screenshots && file=~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png && grim -g "$(slurp)" "$file" && wl-copy -t image/png < "$file"' '';
           "${mod}+Shift+v" =
-            "exec sh -c 'cliphist list | wmenu -i -l 20 -N 080808 -n bdbdbd -M 323437 -m bdbdbd -S 80a0ff -s 080808 | cliphist decode | wl-copy' ";
+            "exec sh -c 'cliphist list | wmenu -i -l 20 -N 141415 -n cdcdcd -M 252530 -m cdcdcd -S 6e94b2 -s 141415 | cliphist decode | wl-copy' ";
 
           "${mod}+${left}" = "focus left";
 
@@ -278,22 +294,22 @@ in
             size = 10.0;
           };
           colors = {
-            statusline = "#bdbdbd";
-            background = "#080808";
+            statusline = "#cdcdcd";
+            background = "#141415";
             inactiveWorkspace = {
-              background = "#080808";
-              border = "#080808";
-              text = "#949494";
+              background = "#141415";
+              border = "#141415";
+              text = "#606079";
             };
             activeWorkspace = {
-              background = "#323437";
-              border = "#323437";
-              text = "#bdbdbd";
+              background = "#252530";
+              border = "#252530";
+              text = "#cdcdcd";
             };
             focusedWorkspace = {
-              background = "#80a0ff";
-              border = "#80a0ff";
-              text = "#080808";
+              background = "#6e94b2";
+              border = "#6e94b2";
+              text = "#141415";
             };
           };
         }

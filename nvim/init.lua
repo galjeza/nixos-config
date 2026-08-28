@@ -1,3 +1,10 @@
+-- Disable unused language providers. Previously set by home-manager's
+-- `programs.neovim` module; see 'modules/home/neovim.nix' for why it is gone.
+vim.g.loaded_node_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_python3_provider = 0
+
 -- ├ init.lua          Initial (this) file executed during startup
 -- ├ plugin/           Files automatically sourced during startup
 -- ├── 10_options.lua  Built-in Neovim behavior

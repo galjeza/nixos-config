@@ -20,6 +20,7 @@ vim.o.mousescroll = 'ver:8,hor:6'                    -- Customize mouse scroll
 vim.o.clipboard   = 'unnamedplus'                    -- Share clipboard with the system
 vim.o.switchbuf   = 'usetab'                         -- Use already opened buffers when switching
 vim.o.undofile    = true                             -- Enable persistent undo
+vim.o.swapfile    = false                            -- No swap files; undofile + git are the safety net
 
 vim.o.shada       = "'100,<50,s10,:1000,/100,@100,h" -- Limit ShaDa file (for startup)
 

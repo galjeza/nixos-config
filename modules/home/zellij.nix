@@ -10,7 +10,7 @@ let
   # (vague + moonfly are custom themes defined in the `themes {}` block below;
   # the solarized variants ship as zellij built-ins. Each still needs a matching
   # bar palette here.)
-  activeTheme = "moonfly";
+  activeTheme = "vague";
 
   barPalettes = {
     vague = {
