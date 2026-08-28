@@ -1,4 +1,4 @@
-{ ... }:
+{ config, ... }:
 {
   programs.neovim = {
     enable = true;
@@ -9,10 +9,14 @@
     withPython3 = false;
   };
 
-  # symlink /etc/nixos/nvim into ~/.config/nvim
-  # so your existing init.lua and lazy.nvim config is picked up by nvim
-  xdg.configFile."nvim" = {
-    source = ../../nvim; # points to /etc/nixos/nvim
-    recursive = true; # symlink each file individually instead of the whole folder
-  };
+  # Symlink ~/.config/nvim straight at the repo working tree rather than at the
+  # nix store. `vim.pack` writes 'nvim-pack-lock.json' next to init.lua whenever
+  # a plugin is added, updated or removed — a store path is read-only, so that
+  # write fails with EROFS and takes the whole config down with it.
+  #
+  # Out-of-store means edits to nvim/ also apply on the next `nvim` start with
+  # no `rebuild`, and lockfile changes show up directly in `git status`.
+  # Requires this repo to live at the path below.
+  xdg.configFile."nvim".source =
+    config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nixos-config/nvim";
 }

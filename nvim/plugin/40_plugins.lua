@@ -156,8 +156,10 @@ Config.now(function()
 		"https://github.com/vague-theme/vague.nvim",
 		"https://github.com/bluz71/vim-moonfly-colors",
 		"https://github.com/maxmx03/solarized.nvim",
+		"https://github.com/rebelot/kanagawa.nvim",
 	})
 
-	-- Default on startup;
+	-- Default on startup; try others live with `:colorscheme <name>`.
+	-- Kanagawa ships: `kanagawa-wave`, `kanagawa-dragon`, `kanagawa-lotus` (light).
 	vim.cmd("colorscheme moonfly")
 end)
