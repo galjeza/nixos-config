@@ -19,6 +19,56 @@ let
     done
   '';
 
+  # Xwayland spans ONE X screen across the entire sway layout, and fullscreen
+  # X11 games position themselves at that screen's origin. With two outputs
+  # enabled, only one of them can own (0,0) — a game fullscreened on the other
+  # one ends up offset from where sway draws it, so clicks land outside the
+  # window while the keyboard still works (X routes keys by focus, not by
+  # coordinate). That is the "I can't click anything in the game" bug.
+  #
+  # No static layout fixes both monitors at once. Game mode sidesteps it by
+  # making the output you're playing on the ONLY active output, pinned to
+  # (0,0) — so the X screen is exactly that monitor at the origin.
+  #
+  # Toggle with Mod+g (acts on the focused output, or pass an output name).
+  gameMode = pkgs.writeShellScript "sway-game-mode" ''
+    set -eu
+    PATH=${
+      pkgs.lib.makeBinPath [
+        pkgs.sway
+        pkgs.jq
+        pkgs.libnotify
+      ]
+    }:$PATH
+    state="''${XDG_RUNTIME_DIR:-/tmp}/sway-game-mode"
+
+    if [ -e "$state" ]; then
+      # Restore: re-enable everything (disabled outputs are still listed by
+      # get_outputs), then reload to re-apply the declared positions.
+      swaymsg -t get_outputs | jq -r '.[].name' | while read -r out; do
+        swaymsg output "$out" enable >/dev/null
+      done
+      rm -f "$state"
+      swaymsg reload >/dev/null
+      notify-send -t 2000 "Game mode off" "All outputs restored"
+      exit 0
+    fi
+
+    target="''${1:-$(swaymsg -t get_outputs | jq -r '.[] | select(.focused) | .name')}"
+    if [ -z "$target" ] || [ "$target" = "null" ]; then
+      notify-send -u critical "Game mode" "Could not determine target output"
+      exit 1
+    fi
+
+    swaymsg -t get_outputs \
+      | jq -r --arg t "$target" '.[] | select(.active and .name != $t) | .name' \
+      | while read -r out; do swaymsg output "$out" disable >/dev/null; done
+    swaymsg output "$target" pos 0 0 >/dev/null
+
+    touch "$state"
+    notify-send -t 2000 "Game mode on" "$target is the only output, pinned to 0,0"
+  '';
+
   # AnyDesk hardcodes DISPLAY=:0 for its child processes. When sway's
   # Xwayland lands on :1 (or later), those children fail with "Cannot open
   # display" and AnyDesk auto-shuts-down. Point /tmp/.X11-unix/X0 at
@@ -77,10 +127,10 @@ in
     enable = true;
     extraConfig = ''
       # Steam/Proton games run under XWayland and auto-fullscreen so the window
-      # maps 1:1 to the output. Combined with the gaming monitor being pinned
+      # maps 1:1 to the output. Combined with the internal panel being pinned
       # to (0,0) below, this is what fixes "can't click buttons" in games —
-      # XWayland offsets the pointer by the output's layout position, so a
-      # non-origin output makes every click land in the wrong place.
+      # a fullscreen X11 game positions itself at the X screen origin, so an
+      # empty (0,0) makes every click land in the wrong place.
       for_window [class="^steam_app_[0-9]+$"] fullscreen enable
     '';
     config = rec {
@@ -160,17 +210,30 @@ in
 
         "Virtual-1".mode = "1920x1080@60Hz";
 
-        # External ASUS monitor pinned to the layout origin (0,0). XWayland
-        # games get a broken pointer offset when their output isn't at (0,0),
-        # so keeping the gaming monitor at origin is what makes clicks land
-        # correctly. The internal panel sits to its right.
-        "ASUSTek COMPUTER INC VY279HGR T7LMTF134179" = {
-          mode = "1920x1080@100Hz";
-          pos = "0 0";
-        };
+        # The internal panel owns the layout origin (0,0); the external ASUS
+        # sits to its right. This ordering matters for XWayland games:
+        # Xwayland spans a single X screen over the whole sway layout, and
+        # fullscreen X11 games place themselves at that screen's origin. If
+        # no output occupies (0,0), the game's idea of its own position is
+        # offset from where sway actually draws it, so every click lands off
+        # the window while the keyboard keeps working (X routes keys by
+        # focus, not by coordinate) — the "can't click anything in the game"
+        # bug.
+        #
+        # The origin therefore belongs to the output that is ALWAYS present.
+        # Pinning the external monitor there instead left a phantom 1920px
+        # dead zone at (0,0) whenever it was unplugged — which is exactly
+        # when the bug reappeared.
+        #
+        # eDP-1 is 3200x2000 at scale 2 => 1600x1000 logical, so the ASUS
+        # starts at x=1600.
         "China Star Optoelectronics Technology Co., Ltd 0x1640 0x00006004" = {
           mode = "3200x2000@165Hz";
-          pos = "1920 0";
+          pos = "0 0";
+        };
+        "ASUSTek COMPUTER INC VY279HGR T7LMTF134179" = {
+          mode = "1920x1080@100Hz";
+          pos = "1600 0";
         };
       };
 
@@ -253,6 +316,8 @@ in
           "${mod}+Shift+minus" = "move scratchpad";
           "${mod}+minus" = "scratchpad show";
           "${mod}+r" = "mode resize";
+          # Toggle single-output "game mode" — see gameMode above.
+          "${mod}+g" = "exec ${gameMode}";
         };
 
       modes = {

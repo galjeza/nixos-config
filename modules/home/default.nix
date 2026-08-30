@@ -88,6 +88,7 @@
     htop
     slack
     telegram-desktop
+    obsidian
     gh
     ripgrep
     dbeaver-bin
