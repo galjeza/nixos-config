@@ -7,6 +7,7 @@
     ./meld.nix
     ./neovim.nix
     ./sway.nix
+    ./xdg.nix
     ./zellij.nix
     ./zsh.nix
   ];
@@ -68,6 +69,7 @@
     tree-sitter
     gcc
     nodejs_24
+    python3
     openssl
     prisma-engines
     pnpm
