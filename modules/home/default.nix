@@ -30,7 +30,7 @@
   # let home-manager manage itself
   programs.home-manager.enable = true;
 
-  home.file.".wallpaper.jpg".source = ../../assets/wallpapers/xp.jpg;
+  home.file.".wallpaper.jpg".source = ../../assets/wallpapers/grad.jpg;
 
   # Notification colours — vague palette (matches sway/swaylock chrome).
   services.mako = {
