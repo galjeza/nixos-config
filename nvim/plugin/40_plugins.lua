@@ -35,6 +35,7 @@ Config.now(function()
 		"tsx",
 		"prisma",
 		"rust",
+		"toml",
 		"typst",
 		-- Add here more languages with which you want to use tree-sitter
 		-- To see available languages:
@@ -74,6 +75,7 @@ now_if_args(function()
 		"vtsls",
 		"prismals",
 		"rust_analyzer",
+		"taplo",
 		"tinymist",
 		"tailwindcss",
 	})
@@ -109,6 +111,7 @@ later(function()
 			nix = { "nixfmt" },
 			rust = { "rustfmt" },
 			scss = { "prettierd" },
+			toml = { "taplo" },
 			typescript = { "biome", "prettierd", stop_after_first = true },
 			typescriptreact = { "biome", "prettierd", stop_after_first = true },
 			yaml = { "prettierd" },
@@ -149,6 +152,40 @@ later(function()
 		invert_colors = "auto",
 	})
 end)
+
+-- Cargo.toml helper. Shows the latest/available version of each dependency
+-- inline as virtual text, and exposes upgrade/features/docs actions. Registers
+-- itself as an in-process LSP server (`lsp.enabled`), so completion and hover
+-- flow through 'mini.completion' like any other server instead of needing a
+-- separate completion source. Loaded on the first TOML buffer.
+-- Buffer-local mappings inside a 'Cargo.toml' (see 'plugin/20_keymaps.lua'
+-- for the global `<Leader>l` group these extend):
+-- - `<Leader>lu` - upgrade the crate under the cursor
+-- - `<Leader>lU` - upgrade every crate in the file
+-- - `<Leader>lF` - popup to toggle the crate's features
+-- - `<Leader>lD` - open the crate's docs.rs page
+local crates_loaded = false
+local setup_crates = function(ev)
+	if not crates_loaded then
+		add({ "https://github.com/saecki/crates.nvim" })
+		require("crates").setup({
+			lsp = { enabled = true, actions = true, completion = true, hover = true },
+			completion = { crates = { enabled = true } },
+		})
+		crates_loaded = true
+	end
+	if vim.fn.fnamemodify(vim.api.nvim_buf_get_name(ev.buf), ":t") ~= "Cargo.toml" then
+		return
+	end
+	local bmap = function(lhs, rhs, desc)
+		vim.keymap.set("n", "<Leader>" .. lhs, rhs, { buffer = ev.buf, desc = desc })
+	end
+	bmap("lu", '<Cmd>lua require("crates").upgrade_crate()<CR>', "Upgrade crate")
+	bmap("lU", '<Cmd>lua require("crates").upgrade_all_crates()<CR>', "Upgrade all crates")
+	bmap("lF", '<Cmd>lua require("crates").show_features_popup()<CR>', "Features popup")
+	bmap("lD", '<Cmd>lua require("crates").open_documentation()<CR>', "Docs.rs page")
+end
+Config.new_autocmd("FileType", "toml", setup_crates, "Set up 'crates.nvim'")
 
 -- Colorschemes ======
 Config.now(function()

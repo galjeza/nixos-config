@@ -10,7 +10,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "nixos"; # Define your hostname.
+  networking.hostName = "lenovo-yoga";
 
   # Cap battery charge at ~60% via ideapad EC conservation mode.
   systemd.tmpfiles.rules = [

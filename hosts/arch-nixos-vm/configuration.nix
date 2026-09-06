@@ -11,7 +11,7 @@
   boot.loader.grub.device = "/dev/vda";
   boot.loader.grub.useOSProber = true;
 
-  networking.hostName = "nixos"; # Define your hostname.
+  networking.hostName = "arch-nixos-vm";
 
   # SPICE guest agent: clipboard sharing + dynamic resolution with the host.
   services.spice-vdagentd.enable = true;

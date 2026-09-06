@@ -6,6 +6,7 @@
     ./git.nix
     ./meld.nix
     ./neovim.nix
+    ./rust.nix
     ./sway.nix
     ./xdg.nix
     ./zellij.nix
@@ -62,8 +63,6 @@
     nixd # nixd — Nix
     vtsls # vtsls — TypeScript/JavaScript
     tinymist # tinymist — Typst LSP + typst-preview
-    rust-analyzer # rust_analyzer — Rust
-    rustfmt # conform rust formatter
     prisma-language-server # prismals — Prisma
     tailwindcss-language-server # tailwindcss — Tailwind CSS class completion/hover
     prettierd # conform prettier daemon (global fallback outside projects)

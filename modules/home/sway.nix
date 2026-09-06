@@ -1,4 +1,10 @@
-{ config, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  osConfig ? null,
+  ...
+}:
 let
   ws1 = "1: web"; # browser — daily web browsing, docs, GitHub PRs
   ws2 = "2: dev"; # zellij sessions — one per ticket (ticket PROJ-123)
@@ -11,10 +17,16 @@ let
   ws9 = "9: music"; # media playback
   ws10 = "10: scratch"; # overflow, floating windows, anything temporary
 
+  # Shared across hosts, so the battery segment has to be optional — the
+  # desktop has no BAT0 and the unguarded `cat` printed an error line into
+  # the bar every second.
   statusScript = pkgs.writeShellScript "sway-status" ''
     while true; do
-      bat=$(cat /sys/class/power_supply/BAT0/capacity)
-      echo "BAT: $bat% | $(date +'%Y-%m-%d %X')"
+      if [ -r /sys/class/power_supply/BAT0/capacity ]; then
+        echo "BAT: $(cat /sys/class/power_supply/BAT0/capacity)% | $(date +'%Y-%m-%d %X')"
+      else
+        date +'%Y-%m-%d %X'
+      fi
       sleep 1
     done
   '';
@@ -237,6 +249,18 @@ in
           mode = "1920x1080@100Hz";
           pos = "1600 0";
         };
+
+        # desktop: Xiaomi 34" ultrawide on HDMI-A-2. Its EDID marks the
+        # 3440x1440@50Hz mode as *preferred*, so sway lands on 49.998Hz
+        # unless told otherwise. Sway has no "fastest mode" keyword, but when
+        # the requested refresh has no exact match it falls back to the
+        # highest refresh at that resolution — so "@100Hz" resolves to the
+        # real 99.992Hz here, and would pick up 144Hz on its own if the
+        # monitor is moved to DisplayPort (HDMI caps this panel at 100Hz).
+        "Xiaomi Corporation Mi Monitor 0000000000000" = {
+          mode = "3440x1440@100Hz";
+          pos = "0 0";
+        };
       };
 
       input = {
@@ -337,6 +361,9 @@ in
         };
       };
 
+      # blueman-applet is only installed on hosts that enable bluetooth. The
+      # desktop deliberately doesn't (its Wi-Fi/BT combo card shares one
+      # antenna), so autostarting it there would just fail every login.
       startup = [
         {
           command = "wl-paste --type text --watch cliphist store";
@@ -344,9 +371,11 @@ in
         {
           command = "wl-paste --type image --watch cliphist store";
         }
-        {
-          command = "blueman-applet";
-        }
+      ]
+      ++ lib.optional (osConfig == null || osConfig.hardware.bluetooth.enable) {
+        command = "blueman-applet";
+      }
+      ++ [
         {
           command = "${xwaylandX0Symlink}";
         }

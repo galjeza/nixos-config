@@ -29,6 +29,14 @@
   # Set your time zone.
   time.timeZone = "Europe/Ljubljana";
 
+  # Wi-Fi regulatory domain. Without this the kernel sits on the "00" world
+  # domain, which is the most conservative setting there is: reduced TX power,
+  # no-initiate-radiation (passive/scan-only) on much of the 5GHz band, and no
+  # 6GHz at all. Pinning it to SI unlocks the ETSI channel set and full legal
+  # TX power. Needs the regulatory database to be present to take effect.
+  hardware.wirelessRegulatoryDatabase = true;
+  boot.kernelParams = [ "cfg80211.ieee80211_regdom=SI" ];
+
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
 
@@ -87,6 +95,9 @@
     anydesk
     zip
     unzip
+    iw # wifi link/signal/regdomain diagnostics
+    pciutils # lspci
+    usbutils # lsusb
   ];
 
   systemd.services.pritunl-client = {

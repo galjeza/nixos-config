@@ -6,6 +6,8 @@
       user.name = "Gal Jeza";
       user.email = "gal.jeza55@gmail.com";
 
+      credential.helper = "!gh auth git-credential";
+
       # histogram: LCS-based algo, handles code better than default myers.
       # colorMoved: moved blocks get a distinct colour so you can tell "code moved"
       # from "code changed" at a glance. allow-indentation-change ignores

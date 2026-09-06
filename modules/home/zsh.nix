@@ -100,13 +100,17 @@
       im = "nvim";
       zj = "zellij";
 
-      # NixOS rebuild helpers (Lenovo Yoga flake target)
+      # NixOS rebuild helpers. No `#target` on purpose: nixos-rebuild defaults
+      # to nixosConfigurations.<hostname>, and every host in this flake sets
+      # networking.hostName to its own attr name (lenovo-yoga, desktop,
+      # nixos-vm, arch-nixos-vm). So the same alias does the right thing on
+      # every machine instead of applying the laptop's config to the desktop.
       # Note: /etc/nixos is not a flake checkout here.
-      rebuild = "sudo nixos-rebuild switch --flake $HOME/nixos-config#lenovo-yoga";
-      rebuild-test = "sudo nixos-rebuild test --flake $HOME/nixos-config#lenovo-yoga";
-      rebuild-boot = "sudo nixos-rebuild boot --flake $HOME/nixos-config#lenovo-yoga";
+      rebuild = "sudo nixos-rebuild switch --flake $HOME/nixos-config";
+      rebuild-test = "sudo nixos-rebuild test --flake $HOME/nixos-config";
+      rebuild-boot = "sudo nixos-rebuild boot --flake $HOME/nixos-config";
 
-      rebuild-update = "nix flake update --flake $HOME/nixos-config && sudo nixos-rebuild switch --flake $HOME/nixos-config#lenovo-yoga";
+      rebuild-update = "nix flake update --flake $HOME/nixos-config && sudo nixos-rebuild switch --flake $HOME/nixos-config";
 
       playwright-shell = "nix shell github:pietdevries94/playwright-web-flake#playwright-test";
     };
