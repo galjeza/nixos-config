@@ -3,8 +3,10 @@
   programs.ghostty = {
     enable = true;
     settings = {
-      # JetBrainsMono Nerd Font — installed via home.packages (nerd-fonts.jetbrains-mono).
-      font-family = "JetBrainsMono Nerd Font";
+      # IoskeleyMono — installed via home.packages (ioskeley-mono.normal-term-NF).
+      # The "Term" build is the one upstream recommends for terminals.
+      # font-family = "JetBrainsMono Nerd Font";
+      font-family = "IoskeleyMonoTerm Nerd Font";
       font-size = 11;
 
       # Built-in theme shipped with ghostty. List others with `ghostty +list-themes`.

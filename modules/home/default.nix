@@ -21,7 +21,8 @@
   fonts.fontconfig = {
     enable = true;
     defaultFonts = {
-      monospace = [ "JetBrainsMono Nerd Font" ];
+      # monospace = [ "JetBrainsMono Nerd Font" ];
+      monospace = [ "IoskeleyMono Nerd Font" ];
     };
   };
 
@@ -34,7 +35,8 @@
   services.mako = {
     enable = true;
     settings = {
-      font = "JetBrainsMono Nerd Font 10";
+      # font = "JetBrainsMono Nerd Font 10";
+      font = "IoskeleyMono Nerd Font 10";
       background-color = "#141415";
       text-color = "#cdcdcd";
       border-color = "#6e94b2";
@@ -78,7 +80,13 @@
     wl-clipboard
     cliphist
     pavucontrol
-    nerd-fonts.jetbrains-mono
+    # nerd-fonts.jetbrains-mono
+    # Ioskeley Mono — Iosevka build shaped after Berkeley Mono (SIL OFL 1.1).
+    # https://ahatem.github.io/IoskeleyMono/ — upstream recommends the plain
+    # build for editors/UI and the -term build for terminals (strict cell
+    # alignment). Nerd-Font-patched variants for icon glyphs.
+    ioskeley-mono.normal-NF # family: "IoskeleyMono Nerd Font"
+    ioskeley-mono.normal-term-NF # family: "IoskeleyMonoTerm Nerd Font"
     google-chrome
     firefox
     thunar # gui file manager
