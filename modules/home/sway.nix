@@ -31,6 +31,16 @@ let
     done
   '';
 
+  # Auto-suspend is a laptop affordance, and on `desktop` it is actively
+  # destructive: S3 resume hangs that box. The one and only time the idle
+  # ladder fired it (2026-09-06 19:30), the kernel logged `PM: suspend entry
+  # (deep)` and never wrote another line — no resume, no panic, journal ends
+  # there and the machine had to be power-cycled. Suspect is amdgpu (Navi 33)
+  # or rtw89/RTL8852CE resume; both are common offenders and this host already
+  # carries rtw89 ASPM workarounds. Until a *manual* `systemctl suspend`
+  # round-trips cleanly there, the ladder stops at "screen off".
+  suspendOnIdle = osConfig == null || osConfig.networking.hostName != "desktop";
+
   # Xwayland spans ONE X screen across the entire sway layout, and fullscreen
   # X11 games position themselves at that screen's origin. With two outputs
   # enabled, only one of them can own (0,0) — a game fullscreened on the other
@@ -112,8 +122,10 @@ in
       show-failed-attempts = true;
     };
   };
-  # Idle ladder: lock at 5min, screen off at 10min, suspend at 15min.
-  # Also lock before any suspend (incl. lid close) and on systemd lock signal.
+  # Idle ladder: lock at 5min, screen off at 10min, suspend at 15min — the
+  # last rung only on hosts where resume works (see suspendOnIdle above).
+  # Also lock before any suspend (incl. lid close) and on systemd lock signal;
+  # those stay wired up everywhere so a *manual* suspend still locks first.
   services.swayidle = {
     enable = true;
     events = {
@@ -130,11 +142,11 @@ in
         command = ''${pkgs.sway}/bin/swaymsg "output * power off"'';
         resumeCommand = ''${pkgs.sway}/bin/swaymsg "output * power on"'';
       }
-      {
-        timeout = 900;
-        command = "${pkgs.systemd}/bin/systemctl suspend";
-      }
-    ];
+    ]
+    ++ lib.optional suspendOnIdle {
+      timeout = 900;
+      command = "${pkgs.systemd}/bin/systemctl suspend";
+    };
   };
   wayland.windowManager.sway = {
     enable = true;
