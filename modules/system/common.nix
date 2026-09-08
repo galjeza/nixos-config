@@ -118,6 +118,13 @@
   programs.sway.enable = true;
   # enable extra features in the sway wrapper
   programs.sway.wrapperFeatures.gtk = true;
+  # swaybar renders SNI tray icons through gdk-pixbuf, which can only decode SVG
+  # if librsvg's loader module is registered. nixpkgs builds sway against librsvg
+  # but never wires up the loader cache, and the gtk wrapper only sets
+  # XDG_CURRENT_DESKTOP — so SVG-only tray icons (blueman) fall back to sway's
+  # built-in red ":(" placeholder. This cache is the merged one (all raster
+  # loaders + svg), so pointing at it does not break PNG/JPEG loading.
+  environment.sessionVariables.GDK_PIXBUF_MODULE_FILE = "${pkgs.librsvg}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache";
   programs.zsh.enable = true;
 
   # nix-ld: allow dynamically linked FHS binaries (e.g. prebuilt Electron) to run.
