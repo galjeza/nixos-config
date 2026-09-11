@@ -73,6 +73,9 @@
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
+  # The Android SDK (modules/home/android.nix) is unfree *and* license-gated;
+  # without this every androidenv derivation refuses to build.
+  nixpkgs.config.android_sdk.accept_license = true;
 
   # OpenGL/Vulkan for Wayland compositors. Needed everywhere Sway runs,
   # including VMs (virtio-gpu / llvmpipe). Host-specific driver bits — Intel
@@ -98,6 +101,11 @@
     iw # wifi link/signal/regdomain diagnostics
     pciutils # lspci
     usbutils # lsusb
+    # adb/fastboot for Expo / React Native on a physical device. `programs.adb`
+    # (and its "adbusers" group) is gone from nixpkgs: systemd >= 258 grants the
+    # logged-in user access to plugged-in phones via uaccess automatically, so
+    # the package on PATH is all that is left to do.
+    android-tools
   ];
 
   systemd.services.pritunl-client = {

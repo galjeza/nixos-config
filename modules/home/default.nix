@@ -1,6 +1,7 @@
 { pkgs, ... }:
 {
   imports = [
+    ./android.nix
     ./foot.nix
     ./ghostty.nix
     ./git.nix
