@@ -67,6 +67,7 @@
     prisma-language-server # prismals — Prisma
     tailwindcss-language-server # tailwindcss — Tailwind CSS class completion/hover
     prettierd # conform prettier daemon (global fallback outside projects)
+    copilot-language-server # copilot — GitHub Copilot via LSP (unfree; needs `:LspCopilotSignIn`)
 
     tree-sitter
     gcc

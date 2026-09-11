@@ -78,7 +78,43 @@ now_if_args(function()
 		"taplo",
 		"tinymist",
 		"tailwindcss",
+		"copilot",
 	})
+
+	-- GitHub Copilot is wired up as a plain language server (the `copilot` entry
+	-- above) plus Neovim's built-in inline completion — no third-party plugin.
+	-- The server binary is installed by nix; see 'modules/home/default.nix', and
+	-- 'after/lsp/copilot.lua' for its settings.
+	--
+	-- First run needs an interactive sign-in: in any buffer execute
+	-- `:LspCopilotSignIn` and follow the device-flow prompt (the one-time code is
+	-- put on the clipboard). The token is cached under
+	-- '~/.config/github-copilot/', so this is once per machine.
+	-- `:LspCopilotSignOut` revokes it. Both commands are created by
+	-- 'nvim-lspconfig' when the server attaches to a buffer.
+	--
+	-- Suggestions show up as ghost text while in Insert mode:
+	-- - `<Tab>`      - accept, when the 'mini.completion' menu is closed. A step
+	--                  of the multistep mapping in 'plugin/30_mini.lua'.
+	-- - `<Leader>lc` - toggle the ghost text for the current buffer
+	--                  (mapped in 'plugin/20_keymaps.lua').
+	--
+	-- See also `:h lsp-inline-completion`.
+	local enable_inline_completion = function(ev)
+		local client = vim.lsp.get_client_by_id(ev.data.client_id)
+		local method = vim.lsp.protocol.Methods.textDocument_inlineCompletion
+		if client ~= nil and client:supports_method(method, ev.buf) then
+			vim.lsp.inline_completion.enable(true, { bufnr = ev.buf })
+		end
+	end
+	Config.new_autocmd("LspAttach", "*", enable_inline_completion, "Enable LSP inline completion")
+
+	-- Buffer-local on/off switch behind `<Leader>lc`, for when the ghost text is
+	-- in the way (or when writing something that should stay Copilot-free).
+	Config.toggle_inline_completion = function()
+		local is_enabled = vim.lsp.inline_completion.is_enabled({ bufnr = 0 })
+		vim.lsp.inline_completion.enable(not is_enabled, { bufnr = 0 })
+	end
 end)
 
 -- Formatting =================================================================

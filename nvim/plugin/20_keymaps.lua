@@ -144,11 +144,13 @@ nmap_leader("go", "<Cmd>lua MiniDiff.toggle_overlay()<CR>", "Diff overlay toggle
 -- - `<Leader>ld` - show more diagnostic details in a floating window
 -- - `<Leader>lr` - perform rename via LSP
 -- - `<Leader>ls` - navigate to source definition of symbol under cursor
+-- - `<Leader>lc` - toggle Copilot ghost text in the current buffer
 --
 -- NOTE: most LSP mappings represent a more structured way of replacing built-in
 -- LSP mappings (like `:h gra` and others). This is needed because `gr` is mapped
 -- by an "replace" operator in 'mini.operators' (which is more commonly used).
 nmap_leader("la", "<Cmd>lua vim.lsp.buf.code_action()<CR>", "Actions")
+nmap_leader("lc", "<Cmd>lua Config.toggle_inline_completion()<CR>", "Copilot ghost text toggle")
 nmap_leader("ld", "<Cmd>lua vim.diagnostic.open_float()<CR>", "Diagnostic popup")
 nmap_leader("lf", '<Cmd>lua require("conform").format()<CR>', "Format")
 nmap_leader("li", "<Cmd>lua vim.lsp.buf.implementation()<CR>", "Implementation")

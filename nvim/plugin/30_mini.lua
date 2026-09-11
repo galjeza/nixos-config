@@ -345,8 +345,21 @@ end)
 -- - `:h MiniKeymap.map_combo()` - map combo
 later(function()
 	require("mini.keymap").setup()
-	-- Navigate 'mini.completion' menu with `<Tab>` /  `<S-Tab>`
-	MiniKeymap.map_multistep("i", "<Tab>", { "pmenu_next" })
+	-- Accept the Copilot ghost-text suggestion under the cursor, if there is one.
+	-- `get()` returns `false` when there is nothing to accept, which 'mini.keymap'
+	-- reads as "keep processing the next steps". See 'plugin/40_plugins.lua'.
+	local accept_inline_completion = {
+		condition = function()
+			return vim.lsp.inline_completion.is_enabled({ bufnr = 0 })
+		end,
+		action = function()
+			return vim.lsp.inline_completion.get()
+		end,
+	}
+	-- Navigate 'mini.completion' menu with `<Tab>` /  `<S-Tab>`. With the menu
+	-- closed, `<Tab>` accepts a Copilot suggestion; with neither present it
+	-- inserts a literal <Tab>.
+	MiniKeymap.map_multistep("i", "<Tab>", { "pmenu_next", accept_inline_completion })
 	MiniKeymap.map_multistep("i", "<S-Tab>", { "pmenu_prev" })
 	-- On `<CR>` try to accept current completion item, fall back to accounting
 	-- for pairs from 'mini.pairs'
