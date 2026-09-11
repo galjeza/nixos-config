@@ -114,8 +114,7 @@ in
     enable = true;
     settings = {
       color = "141415";
-      # font = "JetBrainsMono Nerd Font";
-      font = "IoskeleyMono Nerd Font";
+      font = "JetBrainsMono Nerd Font";
       font-size = 24;
       indicator-idle-visible = false;
       indicator-radius = 100;
@@ -168,8 +167,7 @@ in
       terminal = "ghostty";
       menu = "wmenu-run -N 141415 -n cdcdcd -M 252530 -m cdcdcd -S 6e94b2 -s 141415";
       fonts = {
-        # names = [ "JetBrainsMono Nerd Font" ];
-        names = [ "IoskeleyMono Nerd Font" ];
+        names = [ "JetBrainsMono Nerd Font" ];
         size = 10.0;
       };
 
@@ -398,8 +396,7 @@ in
           position = "top";
           statusCommand = "${statusScript}";
           fonts = {
-            # names = [ "JetBrainsMono Nerd Font" ];
-            names = [ "IoskeleyMono Nerd Font" ];
+            names = [ "JetBrainsMono Nerd Font" ];
             size = 10.0;
           };
           colors = {
