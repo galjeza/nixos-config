@@ -137,8 +137,17 @@ nmap_leader("fS", '<Cmd>Pick lsp scope="document_symbol"<CR>', "Symbols document
 -- g is for 'Git'.
 -- - `<Leader>gg` - open LazyGit
 -- - `<Leader>go` - toggle mini.diff inline overlay (shows removed text + word diff)
+-- - `<Leader>gd` - open Diffview (review working tree vs index; `:DiffviewClose` to quit)
+-- - `<Leader>gD` - close Diffview
+-- - `<Leader>gh` - file history of the current file (`:DiffviewFileHistory %`)
+-- - `<Leader>gH` - file history of the current branch
+-- Full Diffview usage cheatsheet lives above its setup in 'plugin/40_plugins.lua'.
 nmap_leader("gg", "<Cmd>LazyGit<CR>", "LazyGit")
 nmap_leader("go", "<Cmd>lua MiniDiff.toggle_overlay()<CR>", "Diff overlay toggle")
+nmap_leader("gd", "<Cmd>DiffviewOpen<CR>", "Diffview open")
+nmap_leader("gD", "<Cmd>DiffviewClose<CR>", "Diffview close")
+nmap_leader("gh", "<Cmd>DiffviewFileHistory %<CR>", "File history (current file)")
+nmap_leader("gH", "<Cmd>DiffviewFileHistory<CR>", "File history (branch)")
 
 -- l is for 'Language'. Common usage:
 -- - `<Leader>ld` - show more diagnostic details in a floating window

@@ -163,6 +163,48 @@ later(function()
 	})
 end)
 
+-- Diffview: single-tabpage UI for reviewing git diffs, merge conflicts and
+-- file history. Depends on 'plenary.nvim', which is added in the block above,
+-- so no extra dependency setup is needed. File icons come from 'mini.icons'
+-- (see 'plugin/30_mini.lua', which mocks 'nvim-web-devicons').
+--
+-- HOW TO USE (all commands work from anywhere inside a git repo):
+-- - `:DiffviewOpen` / `<Leader>gd` ......... review current changes vs index.
+--   Left window = staged/index version, right window = working tree. Edit
+--   either side and `:w` to stage that hunk (:DiffviewRefresh updates the view).
+-- - `:DiffviewOpen <rev>` ................... diff one revision, e.g.
+--   `:DiffviewOpen HEAD~2`, `:DiffviewOpen origin/main...HEAD`,
+--   `:DiffviewOpen d4a7b0d^!` (single commit), `:DiffviewOpen HEAD~4..HEAD~2`.
+-- - `:DiffviewClose` / `<Leader>gD` ......... close the view (`:tabclose` too).
+-- - `:DiffviewFileHistory %` / `<Leader>gh` . history of the current file.
+-- - `:DiffviewFileHistory` / `<Leader>gH` ... history of the whole branch.
+--   Visual-select lines then run it to trace those lines' evolution (`-L`).
+-- - Merging: opening a view during a merge/rebase lists conflicted files in a
+--   3-way diff. Pick a side with `<Leader>co` (ours) / `<Leader>ct` (theirs) /
+--   `<Leader>cb` (base) / `<Leader>ca` (all), or `dx` to delete the region.
+--   Capital variants (`<Leader>cO`, ...) apply to the whole file.
+--
+-- NAVIGATING INSIDE A DIFFVIEW (defaults, press `g?` for the full list):
+-- - `<Tab>` / `<S-Tab>` - next / previous changed file.
+-- - `[F` / `]F` ......... first / last file.
+-- - `gf` ................ open the real file (leaves the view).
+-- - `[c` / `]c` ......... jump between hunks (built-in diff-mode, `:h diff-mode`).
+-- - `do` / `dp` ......... obtain (`:h copy-diffs`) a hunk from the other /
+--   put it there. `2do` / `3do` pick ours/theirs in a 3-way merge view.
+-- - In the file panel: `-` or `s` stage/unstage entry, `S`/`U` stage/unstage
+--   all, `X` restore file to the left side's state, `R` refresh, `L` commit log.
+--
+-- TIPS:
+-- - `:DiffviewOpen -uno` ............ hide untracked files.
+-- - `:DiffviewOpen -- :!some/path` .. exclude a path.
+-- - `:DiffviewToggleFiles` ........... toggle the file panel.
+-- - `:DiffviewFocusFiles` ............ jump focus to the file panel.
+-- - Full docs: `:h diffview.nvim` (after install) or USAGE.md upstream.
+later(function()
+	add({ "https://github.com/sindrets/diffview.nvim" })
+	require("diffview").setup({})
+end)
+
 later(function()
 	add({
 		"https://github.com/pwntester/octo.nvim",
