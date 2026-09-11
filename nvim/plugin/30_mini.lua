@@ -356,10 +356,13 @@ later(function()
 			return vim.lsp.inline_completion.get()
 		end,
 	}
-	-- Navigate 'mini.completion' menu with `<Tab>` /  `<S-Tab>`. With the menu
-	-- closed, `<Tab>` accepts a Copilot suggestion; with neither present it
-	-- inserts a literal <Tab>.
-	MiniKeymap.map_multistep("i", "<Tab>", { "pmenu_next", accept_inline_completion })
+	-- `<Tab>` gives the Copilot suggestion priority over the 'mini.completion'
+	-- menu: both can be on screen at once, and with 'noselect' in 'completeopt'
+	-- (see 'plugin/10_options.lua') menu navigation would otherwise eat every
+	-- `<Tab>` before the ghost text ever got a turn. Only a *shown* suggestion
+	-- takes the key — without one `<Tab>` still walks the menu, and `<C-n>` /
+	-- `<C-p>` (or `<S-Tab>`) always do regardless.
+	MiniKeymap.map_multistep("i", "<Tab>", { accept_inline_completion, "pmenu_next" })
 	MiniKeymap.map_multistep("i", "<S-Tab>", { "pmenu_prev" })
 	-- On `<CR>` try to accept current completion item, fall back to accounting
 	-- for pairs from 'mini.pairs'

@@ -94,8 +94,9 @@ now_if_args(function()
 	-- 'nvim-lspconfig' when the server attaches to a buffer.
 	--
 	-- Suggestions show up as ghost text while in Insert mode:
-	-- - `<Tab>`      - accept, when the 'mini.completion' menu is closed. A step
-	--                  of the multistep mapping in 'plugin/30_mini.lua'.
+	-- - `<Tab>`      - accept. Takes priority over the 'mini.completion' menu,
+	--                  which is then navigated with `<C-n>` / `<C-p>`. A step of
+	--                  the multistep mapping in 'plugin/30_mini.lua'.
 	-- - `<Leader>lc` - toggle the ghost text for the current buffer
 	--                  (mapped in 'plugin/20_keymaps.lua').
 	--
