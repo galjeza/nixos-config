@@ -4,11 +4,78 @@
     enable = true;
 
     settings = {
+      os = {
+        # `e` on a file opens it in the *parent* nvim as a tab, instead of
+        # starting a nested nvim inside lazygit's floating terminal.
+        #
+        # lazygit.nvim only wires up remote editing when `nvr` is on PATH
+        # (`g:lazygit_use_neovim_remote = executable('nvr') ? 1 : 0`), and it
+        # isn't. This preset needs no extra package: it uses $NVIM, the socket
+        # nvim exports inside any :terminal. When $NVIM is unset — lazygit
+        # launched straight from ghostty or a zellij pane — it falls back to a
+        # plain `nvim`, so both entry points behave sensibly. Invoked from the
+        # staging panel it also jumps to the right line.
+        editPreset = "nvim-remote";
+      };
+
+      # The version is pinned by the flake, so a self-update prompt is noise
+      # you can't act on — `rebuild-update` is what actually moves it.
+      update.method = "never";
+
+      # No "press enter to return" step after every subprocess (editor, shell
+      # command, interactive rebase). Trade-off: subprocess output scrolls away
+      # instead of waiting for you — flip back to true if you miss seeing it.
+      promptToReturnFromSubprocess = false;
+
+      # No introductory popups on open.
+      disableStartupPopups = true;
+
       gui = {
         # The command log eats a fixed slice of the bottom panel and mostly
         # repeats what you just did. Hidden; `@` (extrasMenu) still opens it
         # on demand when you actually want to see the git commands.
         showCommandLog = false;
+
+        # Removes the "Donate" and "Ask Question" links from the bottom line,
+        # keeping the keybinding hints and version. They are clickable
+        # hyperlinks, so lazygit only renders them when the mouse is on:
+        # informationStr() gates both behind `if gui.g.Mouse`, and gui.go sets
+        # `g.Mouse = userConfig.Gui.MouseEvents`. There is no dedicated setting
+        # for them. Cost: no click-to-focus, no border dragging, and no scroll
+        # wheel in the diff panes.
+        mouseEvents = false;
+
+        # One of: rounded (default) | single | double | hidden | bold.
+        # Not `hidden`: focus is signalled purely through border *colour*
+        # (theme.activeBorderColor vs inactiveBorderColor), so hiding borders
+        # removes the only cue for which panel the keys act on.
+        border = "single";
+
+        # Nerd Fonts icons. Empty string (the default) means no icons at all;
+        # "3" matches the Nerd Fonts v3 families installed in default.nix
+        # (Terminess / IosevkaTerm), which is what the terminals render with.
+        nerdFontsVersion = "3";
+
+        # Side panels top-to-bottom; each inner list shares one panel as tabs.
+        # Upstream default additionally has a [status] panel at the top, dropped
+        # here. 'files', 'branches' and 'commits' cannot be hidden — everything
+        # else is optional, so more can come out of this list later.
+        sidePanels = [
+          [
+            "files"
+            "worktrees"
+            "submodules"
+          ]
+          [
+            "branches"
+            "remotes"
+          ]
+          [
+            "commits"
+            "reflog"
+          ]
+          [ "stash" ]
+        ];
       };
 
       git = {

@@ -24,7 +24,7 @@
   fonts.fontconfig = {
     enable = true;
     defaultFonts = {
-      monospace = [ "Terminess Nerd Font Mono" ];
+      monospace = [ "IosevkaTerm Nerd Font Mono" ];
     };
   };
 
@@ -42,7 +42,7 @@
   services.mako = {
     enable = true;
     settings = {
-      font = "Terminess Nerd Font Mono 10";
+      font = "IosevkaTerm Nerd Font Mono 10";
       background-color = "#141415";
       text-color = "#cdcdcd";
       border-color = "#6e94b2";
@@ -86,8 +86,8 @@
     pavucontrol
     # Both installed so switching terminals/bars between them is a
     # font-name-only change (no big font download on rebuild).
-    # Active family: "Terminess Nerd Font Mono".
-    # Alternative: "IosevkaTerm Nerd Font Mono".
+    # Active family: "IosevkaTerm Nerd Font Mono".
+    # Alternative: "Terminess Nerd Font Mono".
     nerd-fonts.iosevka-term
     nerd-fonts.terminess-ttf
     google-chrome

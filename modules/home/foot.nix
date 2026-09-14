@@ -96,7 +96,7 @@ in
     enable = true;
     settings = {
       main = {
-        font = "Terminess Nerd Font Mono:size=11";
+        font = "IosevkaTerm Nerd Font Mono:size=11";
       };
       # Palette selected by `footTheme` above.
       colors-dark = footPalettes.${footTheme};

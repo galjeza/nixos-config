@@ -114,7 +114,7 @@ in
     enable = true;
     settings = {
       color = "141415";
-      font = "Terminess Nerd Font Mono";
+      font = "IosevkaTerm Nerd Font Mono";
       font-size = 24;
       indicator-idle-visible = false;
       indicator-radius = 100;
@@ -167,7 +167,7 @@ in
       terminal = "ghostty";
       menu = "wmenu-run -N 141415 -n cdcdcd -M 252530 -m cdcdcd -S 6e94b2 -s 141415";
       fonts = {
-        names = [ "Terminess Nerd Font Mono" ];
+        names = [ "IosevkaTerm Nerd Font Mono" ];
         size = 10.0;
       };
 
@@ -402,7 +402,7 @@ in
           position = "top";
           statusCommand = "${statusScript}";
           fonts = {
-            names = [ "Terminess Nerd Font Mono" ];
+            names = [ "IosevkaTerm Nerd Font Mono" ];
             size = 10.0;
           };
           colors = {

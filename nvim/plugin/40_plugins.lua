@@ -161,6 +161,16 @@ later(function()
 		"https://github.com/nvim-lua/plenary.nvim",
 		"https://github.com/kdheepak/lazygit.nvim",
 	})
+
+	-- Fill the editor instead of the default 0.9 popup.
+	--
+	-- The border has to go with it: the plugin hands its border straight to
+	-- nvim_open_win, which draws borders *outside* the content box, so at factor
+	-- 1.0 the frame overflows the screen and gets clipped. No loss either way —
+	-- lazygit draws its own `single` frames now (modules/home/lazygit.nix), so
+	-- the plugin's rounded border was doubled framing around them.
+	vim.g.lazygit_floating_window_scaling_factor = 1.0
+	vim.g.lazygit_floating_window_border_chars = "none"
 end)
 
 -- Diffview: single-tabpage UI for reviewing git diffs, merge conflicts and
@@ -202,7 +212,27 @@ end)
 -- - Full docs: `:h diffview.nvim` (after install) or USAGE.md upstream.
 later(function()
 	add({ "https://github.com/sindrets/diffview.nvim" })
-	require("diffview").setup({})
+	require("diffview").setup({
+		-- Dim the filler chars on deleted lines. Most colorschemes paint them a
+		-- bright red — big blocks of colour carrying no information that pull your
+		-- eye away from the actual change. Links DiffviewDiffDelete -> Comment.
+		enhanced_diff_hl = true,
+	})
+
+	-- ...but that option is inert on its own in this version. diffview's
+	-- `hi_link()` routes through `hi()`, which merges the *existing* highlight
+	-- spec with the new one (hl.lua:266-268). `default` is absent from the new
+	-- opts, so `default = true` survives from the definition `hl.setup()` already
+	-- made — and nvim treats a default highlight as "apply only if not already
+	-- set". The re-link silently does nothing. Verified: raw nvim_set_hl applies,
+	-- diffview's hi_link does not. So do the link here, and again on ColorScheme
+	-- since loading a theme resets the groups.
+	local hl_group = vim.api.nvim_create_augroup("diffview_dim_delete", { clear = true })
+	local function dim_diff_delete()
+		vim.api.nvim_set_hl(0, "DiffviewDiffDelete", { link = "DiffviewDiffDeleteDim" })
+	end
+	dim_diff_delete()
+	vim.api.nvim_create_autocmd("ColorScheme", { group = hl_group, callback = dim_diff_delete })
 
 	-- Auto-refresh on changes made outside this nvim instance.
 	--

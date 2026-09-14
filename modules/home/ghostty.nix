@@ -3,7 +3,7 @@
   programs.ghostty = {
     enable = true;
     settings = {
-      font-family = "Terminess Nerd Font Mono";
+      font-family = "IosevkaTerm Nerd Font Mono";
       font-size = 11;
 
       # Built-in theme shipped with ghostty. List others with `ghostty +list-themes`.
