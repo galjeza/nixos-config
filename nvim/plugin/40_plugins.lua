@@ -313,16 +313,6 @@ later(function()
 	})
 end)
 
-later(function()
-	add({
-		"https://github.com/pwntester/octo.nvim",
-	})
-	require("octo").setup({
-		picker = "default",
-		enable_builtin = true,
-	})
-end)
-
 -- Typst live preview. Opens a browser tab with the rendered PDF that updates
 -- as you type. Uses the system `tinymist` binary (provided by nix) for both
 -- compilation and the websocket server, so no extra binaries are downloaded.
