@@ -55,43 +55,6 @@
       PROMPT='%n@%m:%F{#6e94b2}%~/%f''${vcs_info_msg_0_}
       > '
 
-      ticket() {
-        if [[ -z "$1" ]]; then
-          echo "Usage:"
-          echo "  ticket <name>       create worktree + start zellij session"
-          echo "  ticket-done <name>  kill session + remove worktree"
-          echo ""
-          echo "Worktrees are created at ~/worktrees/<repo>/<name>"
-          return 0
-        fi
-        local name="$1"
-        local repo
-        repo=$(git rev-parse --show-toplevel 2>/dev/null) || { echo "Not in a git repo"; return 1; }
-        local repo_name=$(basename "$repo")
-        local worktree_dir="$HOME/worktrees/$repo_name/$name"
-
-        if [[ ! -d "$worktree_dir" ]]; then
-          git -C "$repo" worktree add "$worktree_dir" -b "$name"
-        fi
-
-        if zellij list-sessions -ns 2>/dev/null | grep -qx "$name"; then
-          zellij attach "$name"
-        else
-          (cd "$worktree_dir" && zellij --session "$name" --new-session-with-layout main)
-        fi
-      }
-
-      ticket-done() {
-        local name="''${1:?Usage: ticket-done <name>}"
-        local repo
-        repo=$(git rev-parse --show-toplevel 2>/dev/null) || { echo "Not in a git repo"; return 1; }
-        local repo_name=$(basename "$repo")
-        local worktree_dir="$HOME/worktrees/$repo_name/$name"
-
-        zellij kill-session "$name" 2>/dev/null
-        git worktree remove "$worktree_dir" --force
-        echo "Done: $name"
-      }
     '';
 
     shellAliases = {

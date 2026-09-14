@@ -114,7 +114,7 @@ in
     enable = true;
     settings = {
       color = "141415";
-      font = "JetBrainsMono Nerd Font";
+      font = "Terminess Nerd Font Mono";
       font-size = 24;
       indicator-idle-visible = false;
       indicator-radius = 100;
@@ -167,7 +167,7 @@ in
       terminal = "ghostty";
       menu = "wmenu-run -N 141415 -n cdcdcd -M 252530 -m cdcdcd -S 6e94b2 -s 141415";
       fonts = {
-        names = [ "JetBrainsMono Nerd Font" ];
+        names = [ "Terminess Nerd Font Mono" ];
         size = 10.0;
       };
 
@@ -251,12 +251,17 @@ in
         #
         # eDP-1 is 3200x2000 at scale 2 => 1600x1000 logical, so the ASUS
         # starts at x=1600.
+        # Scales are pinned to integers on purpose: fractional scales
+        # (1.25/1.5) force the compositor to resample every glyph and blur
+        # all text. Integer 2/1 keeps font rasterization pixel-exact.
         "China Star Optoelectronics Technology Co., Ltd 0x1640 0x00006004" = {
           mode = "3200x2000@165Hz";
+          scale = "2";
           pos = "0 0";
         };
         "ASUSTek COMPUTER INC VY279HGR T7LMTF134179" = {
           mode = "1920x1080@100Hz";
+          scale = "1";
           pos = "1600 0";
         };
 
@@ -269,6 +274,7 @@ in
         # monitor is moved to DisplayPort (HDMI caps this panel at 100Hz).
         "Xiaomi Corporation Mi Monitor 0000000000000" = {
           mode = "3440x1440@100Hz";
+          scale = "1";
           pos = "0 0";
         };
       };
@@ -396,7 +402,7 @@ in
           position = "top";
           statusCommand = "${statusScript}";
           fonts = {
-            names = [ "JetBrainsMono Nerd Font" ];
+            names = [ "Terminess Nerd Font Mono" ];
             size = 10.0;
           };
           colors = {

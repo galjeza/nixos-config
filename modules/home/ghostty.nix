@@ -3,7 +3,7 @@
   programs.ghostty = {
     enable = true;
     settings = {
-      font-family = "JetBrainsMono Nerd Font";
+      font-family = "Terminess Nerd Font Mono";
       font-size = 11;
 
       # Built-in theme shipped with ghostty. List others with `ghostty +list-themes`.

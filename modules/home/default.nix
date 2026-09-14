@@ -5,6 +5,7 @@
     ./foot.nix
     ./ghostty.nix
     ./git.nix
+    ./lazygit.nix
     ./meld.nix
     ./neovim.nix
     ./rust.nix
@@ -23,7 +24,7 @@
   fonts.fontconfig = {
     enable = true;
     defaultFonts = {
-      monospace = [ "JetBrainsMono Nerd Font" ];
+      monospace = [ "Terminess Nerd Font Mono" ];
     };
   };
 
@@ -41,7 +42,7 @@
   services.mako = {
     enable = true;
     settings = {
-      font = "JetBrainsMono Nerd Font 10";
+      font = "Terminess Nerd Font Mono 10";
       background-color = "#141415";
       text-color = "#cdcdcd";
       border-color = "#6e94b2";
@@ -58,7 +59,6 @@
     zellij
     wdisplays
     zoxide
-    lazygit
     nixfmt # nix formatter (wired into conform for .nix + nixd LSP)
     stylua
 
@@ -84,7 +84,12 @@
     wl-clipboard
     cliphist
     pavucontrol
-    nerd-fonts.jetbrains-mono
+    # Both installed so switching terminals/bars between them is a
+    # font-name-only change (no big font download on rebuild).
+    # Active family: "Terminess Nerd Font Mono".
+    # Alternative: "IosevkaTerm Nerd Font Mono".
+    nerd-fonts.iosevka-term
+    nerd-fonts.terminess-ttf
     google-chrome
     firefox
     thunar # gui file manager
@@ -94,12 +99,18 @@
     claude-code
     opencode
     codex
+    # Agent-aware multiplexer: detects which pane is running an agent and whether
+    # it is working or blocked on you, so parallel agents don't need polling by
+    # hand. It *is* a terminal multiplexer, so it overlaps zellij rather than
+    # complementing it — both installed while trialling; drop one once decided.
+    herdr
     htop
     slack
     telegram-desktop
     obsidian
     gh
     ripgrep
+    difftastic # `difft` — structural (syntax-tree) diff; wired into lazygit
     dbeaver-bin
     beyond-all-reason
     wineWow64Packages.stable # 32+64-bit Wine for electron-builder --win on Linux
