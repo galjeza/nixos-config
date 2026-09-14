@@ -45,22 +45,42 @@
         # wheel in the diff panes.
         mouseEvents = false;
 
-        # One of: rounded (default) | single | double | hidden | bold.
-        # Not `hidden`: focus is signalled purely through border *colour*
-        # (theme.activeBorderColor vs inactiveBorderColor), so hiding borders
-        # removes the only cue for which panel the keys act on.
         border = "single";
+        #get rid of icons
+        nerdFontsVersion = "";
 
-        # Nerd Fonts icons. Empty string (the default) means no icons at all;
-        # "3" matches the Nerd Fonts v3 families installed in default.nix
-        # (Terminess / IosevkaTerm), which is what the terminals render with.
-        nerdFontsVersion = "3";
+        # Fraction of the terminal width given to the whole left column
+        # (default 0.3333). The side panels are lists of short strings — branch
+        # names, file paths, commit subjects — while the main panel holds the
+        # diff, which is where the long lines actually are. difftastic's
+        # side-by-side output in particular wants the width: it never switches
+        # away from two columns, so a narrow main panel is paid for in wrapped
+        # lines (continuation rows marked with a leading `.`) instead.
+        #
+        # Upstream's own advice for narrow screens is 0.2. Long branch names
+        # truncate at this width; `_` (or `+`) cycles the focused panel through
+        # half- and full-screen when you need to read one in full.
+        sidePanelWidth = 0.2;
+
+        shrinkSidePanelsToContent = false;
+
+        # Accordion: the focused side panel grows, the others shrink to their
+        # title line. The weight below is lazygit's default and means "twice
+        # the height of an unfocused panel"; raise it if you want focus to be
+        # more emphatic.
+        expandFocusedSidePanel = true;
+        expandedSidePanelWeight = 2;
 
         # Side panels top-to-bottom; each inner list shares one panel as tabs.
-        # Upstream default additionally has a [status] panel at the top, dropped
-        # here. 'files', 'branches' and 'commits' cannot be hidden — everything
-        # else is optional, so more can come out of this list later.
+        # This matches upstream's default set minus 'tags'. 'files', 'branches'
+        # and 'commits' cannot be hidden — everything else is optional.
+        #
+        # 'status' shows the repo/branch line plus the dashboard (version,
+        # config path, links). `gui.statusPanelView = "allBranchesLog"` swaps
+        # that dashboard for a log of all branches, if the static text is not
+        # earning its row.
         sidePanels = [
+          [ "status" ]
           [
             "files"
             "worktrees"
