@@ -203,6 +203,84 @@ end)
 later(function()
 	add({ "https://github.com/sindrets/diffview.nvim" })
 	require("diffview").setup({})
+
+	-- Auto-refresh on changes made outside this nvim instance.
+	--
+	-- diffview only updates itself on two triggers: a `:w` from this instance
+	-- (its BufWritePost handler), and a change to `.git/index` (the
+	-- `watch_index` fs_poll, on by default). A coding agent writing files on
+	-- disk, a rebase from a lazygit pane, or a checkout in another zellij pane
+	-- hits neither, so the view silently goes stale and needs `R` /
+	-- `:DiffviewRefresh`. Upstream: sindrets/diffview.nvim#567.
+	--
+	-- `refresh_files` is exactly what :DiffviewRefresh emits.
+	local group = vim.api.nvim_create_augroup("diffview_auto_refresh", { clear = true })
+	local timer
+
+	-- `checktime` reloads buffers whose file changed on disk ('autoread' is on).
+	-- Guarded: it throws inside the cmdline window.
+	local function check_disk()
+		if vim.fn.getcmdwintype() == "" then
+			vim.cmd("silent! checktime")
+		end
+	end
+
+	local function refresh_panel()
+		local ok, lib = pcall(require, "diffview.lib")
+		-- get_current_view() is tabpage-scoped, so this is nil unless the tab
+		-- you're on right now *is* a diffview. Never resurrects a background view.
+		if ok and lib.get_current_view() then
+			require("diffview").emit("refresh_files")
+		end
+	end
+
+	-- Only rebuild the file panel when a file genuinely changed on disk, rather
+	-- than on a blind interval: `checktime` fires FileChangedShellPost when it
+	-- actually reloads something.
+	vim.api.nvim_create_autocmd("FileChangedShellPost", {
+		group = group,
+		callback = refresh_panel,
+	})
+
+	-- Coming back to nvim is a natural point to resync, and cheap enough to do
+	-- unconditionally — an agent may also have added files that are in no buffer
+	-- yet, which checktime alone would miss.
+	vim.api.nvim_create_autocmd({ "FocusGained", "TermLeave", "TermClose" }, {
+		group = group,
+		callback = function()
+			check_disk()
+			refresh_panel()
+		end,
+	})
+
+	-- FocusGained needs the terminal to report focus and the multiplexer to
+	-- forward it, which is not guaranteed. Poll as a fallback, but only while a
+	-- view is actually open, and only `checktime` — the panel rebuild still goes
+	-- through FileChangedShellPost above.
+	vim.api.nvim_create_autocmd("User", {
+		group = group,
+		pattern = "DiffviewViewOpened",
+		callback = function()
+			if timer then
+				timer:stop()
+			else
+				timer = vim.uv.new_timer()
+			end
+			timer:start(2000, 2000, vim.schedule_wrap(check_disk))
+		end,
+	})
+
+	vim.api.nvim_create_autocmd("User", {
+		group = group,
+		pattern = "DiffviewViewClosed",
+		callback = function()
+			if timer then
+				timer:stop()
+				timer:close()
+				timer = nil
+			end
+		end,
+	})
 end)
 
 later(function()

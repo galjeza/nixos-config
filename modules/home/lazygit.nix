@@ -4,6 +4,13 @@
     enable = true;
 
     settings = {
+      gui = {
+        # The command log eats a fixed slice of the bottom panel and mostly
+        # repeats what you just did. Hidden; `@` (extrasMenu) still opens it
+        # on demand when you actually want to see the git commands.
+        showCommandLog = false;
+      };
+
       git = {
         # Diff renderers are cycled with `|` inside lazygit. The list order is
         # the cycle order, so entry one is what you get by default.
