@@ -36,7 +36,6 @@ Config.now(function()
 		"prisma",
 		"rust",
 		"toml",
-		"typst",
 		-- Add here more languages with which you want to use tree-sitter
 		-- To see available languages:
 		-- - Execute `:=require('nvim-treesitter').get_available()`
@@ -76,7 +75,6 @@ now_if_args(function()
 		"prismals",
 		"rust_analyzer",
 		"taplo",
-		"tinymist",
 		"tailwindcss",
 		"copilot",
 	})
@@ -156,27 +154,10 @@ later(function()
 	})
 end)
 
-later(function()
-	add({
-		"https://github.com/nvim-lua/plenary.nvim",
-		"https://github.com/kdheepak/lazygit.nvim",
-	})
-
-	-- Fill the editor instead of the default 0.9 popup.
-	--
-	-- The border has to go with it: the plugin hands its border straight to
-	-- nvim_open_win, which draws borders *outside* the content box, so at factor
-	-- 1.0 the frame overflows the screen and gets clipped. No loss either way —
-	-- lazygit draws its own `single` frames now (modules/home/lazygit.nix), so
-	-- the plugin's rounded border was doubled framing around them.
-	vim.g.lazygit_floating_window_scaling_factor = 1.0
-	vim.g.lazygit_floating_window_border_chars = "none"
-end)
-
 -- Diffview: single-tabpage UI for reviewing git diffs, merge conflicts and
--- file history. Depends on 'plenary.nvim', which is added in the block above,
--- so no extra dependency setup is needed. File icons come from 'mini.icons'
--- (see 'plugin/30_mini.lua', which mocks 'nvim-web-devicons').
+-- file history. Depends on 'plenary.nvim', added alongside it below. File icons
+-- come from 'mini.icons' (see 'plugin/30_mini.lua', which mocks
+-- 'nvim-web-devicons').
 --
 -- HOW TO USE (all commands work from anywhere inside a git repo):
 -- - `:DiffviewOpen` / `<Leader>gd` ......... review current changes vs index.
@@ -211,7 +192,10 @@ end)
 -- - `:DiffviewFocusFiles` ............ jump focus to the file panel.
 -- - Full docs: `:h diffview.nvim` (after install) or USAGE.md upstream.
 later(function()
-	add({ "https://github.com/sindrets/diffview.nvim" })
+	add({
+		"https://github.com/nvim-lua/plenary.nvim",
+		"https://github.com/sindrets/diffview.nvim",
+	})
 	require("diffview").setup({
 		-- Dim the filler chars on deleted lines. Most colorschemes paint them a
 		-- bright red — big blocks of colour carrying no information that pull your
@@ -310,23 +294,6 @@ later(function()
 				timer = nil
 			end
 		end,
-	})
-end)
-
--- Typst live preview. Opens a browser tab with the rendered PDF that updates
--- as you type. Uses the system `tinymist` binary (provided by nix) for both
--- compilation and the websocket server, so no extra binaries are downloaded.
--- Example usage in a `.typ` buffer:
--- - `:TypstPreview`       - start the preview and open it in the browser
--- - `:TypstPreviewToggle` - start/stop
--- - `:TypstPreviewStop`   - stop the server
-later(function()
-	add({ "https://github.com/chomosuke/typst-preview.nvim" })
-	require("typst-preview").setup({
-		dependencies_bin = {
-			["typst-preview"] = "tinymist",
-		},
-		invert_colors = "auto",
 	})
 end)
 

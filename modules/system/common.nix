@@ -122,6 +122,25 @@
 
   # enable x11 for legacy desktop apps
   services.xserver.enable = true;
+
+  # Login via greetd + tuigreet instead of lightdm. lightdm runs its greeter on
+  # a real X server (":0") and pam_systemd stamps that number onto the logind
+  # session as its `Display` property. Sway's XWayland then starts while the
+  # greeter is still alive, so it lands on ":1" — and anything that trusts
+  # logind's `Display` over $DISPLAY talks to a display that no longer exists.
+  # AnyDesk does exactly that: its local service spawns the control/tray process
+  # with the logind number, that process dies on "Cannot open display", and the
+  # whole app exits without ever showing a window. greetd starts no X server, so
+  # XWayland gets ":0" and the two agree. Keep it that way.
+  services.xserver.displayManager.lightdm.enable = false;
+  services.greetd = {
+    enable = true;
+    settings.default_session = {
+      command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd sway";
+      user = "greeter";
+    };
+  };
+
   # enable sway window manager
   programs.sway.enable = true;
   # enable extra features in the sway wrapper

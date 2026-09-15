@@ -126,6 +126,15 @@ in
       }
     '';
     extraConfig = ''
+      keybinds {
+      	// nvim (mini.basics) maps <C-hjkl> for window navigation. Of zellij's
+      	// Ctrl prefixes only `Ctrl h` collides — j/k/l already pass through to
+      	// the pane. It opened Move mode (reshuffles pane *positions* in the
+      	// layout, not focus); `Ctrl h` is its only default route, so the mode
+      	// becomes unreachable. Nothing here rearranges panes, so that's fine.
+      	unbind "Ctrl h"
+      }
+
       // Upstream: https://github.com/vague-theme/vague-zellij/blob/main/vague.kdl
       themes {
       	vague {

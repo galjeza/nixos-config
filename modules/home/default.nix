@@ -66,7 +66,6 @@
     lua-language-server # lua_ls — Lua (this config)
     nixd # nixd — Nix
     vtsls # vtsls — TypeScript/JavaScript
-    tinymist # tinymist — Typst LSP + typst-preview
     prisma-language-server # prismals — Prisma
     tailwindcss-language-server # tailwindcss — Tailwind CSS class completion/hover
     prettierd # conform prettier daemon (global fallback outside projects)
@@ -114,6 +113,5 @@
     dbeaver-bin
     beyond-all-reason
     wineWow64Packages.stable # 32+64-bit Wine for electron-builder --win on Linux
-    typst
   ];
 }
