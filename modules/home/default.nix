@@ -109,6 +109,17 @@
     obsidian
     gh
     ripgrep
+    # Shell tooling coding agents reach for by default. rg covers text search;
+    # these fill the rest — fd for file discovery, jq for every package.json /
+    # `gh api` / `nix --json` payload, ast-grep for syntax-tree-aware search
+    # where a regex gives false hits.
+    fd
+    jq
+    # Its short binary name `sg` is shadowed by shadow's setgid `sg` in
+    # /run/wrappers/bin, which wins on PATH. Invoke it as `ast-grep`.
+    ast-grep
+    tree
+    file
     difftastic # `difft` — structural (syntax-tree) diff; wired into lazygit
     dbeaver-bin
     beyond-all-reason

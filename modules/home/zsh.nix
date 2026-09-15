@@ -50,9 +50,9 @@
       zstyle ':vcs_info:git:*' check-for-changes true
       zstyle ':vcs_info:git:*' unstagedstr '*'
       zstyle ':vcs_info:git:*' stagedstr '+'
-      zstyle ':vcs_info:git:*' formats ' %F{#606079}on%f %F{#f3be7c}%b%F{#d8647e}%u%c%f'
-      zstyle ':vcs_info:git:*' actionformats ' %F{#606079}on%f %F{#f3be7c}%b|%a%F{#d8647e}%u%c%f'
-      PROMPT='%n@%m:%F{#6e94b2}%~/%f''${vcs_info_msg_0_}
+      zstyle ':vcs_info:git:*' formats ' %F{#949494}on%f %F{#e3c78a}%b%F{#ff5d5d}%u%c%f'
+      zstyle ':vcs_info:git:*' actionformats ' %F{#949494}on%f %F{#e3c78a}%b|%a%F{#ff5d5d}%u%c%f'
+      PROMPT='%n@%m:%F{#80a0ff}%~/%f''${vcs_info_msg_0_}
       > '
 
     '';

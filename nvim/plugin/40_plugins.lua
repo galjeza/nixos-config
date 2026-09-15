@@ -343,5 +343,5 @@ Config.now(function()
 
 	-- Default on startup; try others live with `:colorscheme <name>`.
 	-- Kanagawa ships: `kanagawa-wave`, `kanagawa-dragon`, `kanagawa-lotus` (light).
-	vim.cmd("colorscheme vague")
+	vim.cmd("colorscheme moonfly")
 end)

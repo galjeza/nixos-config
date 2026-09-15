@@ -192,45 +192,45 @@ in
 
       colors = {
         focused = {
-          border = "#6e94b2";
-          background = "#6e94b2";
-          text = "#141415";
-          indicator = "#f3be7c";
-          childBorder = "#6e94b2";
+          border = "#80a0ff";
+          background = "#80a0ff";
+          text = "#080808";
+          indicator = "#e3c78a";
+          childBorder = "#80a0ff";
         };
         focusedInactive = {
-          border = "#252530";
-          background = "#252530";
-          text = "#606079";
-          indicator = "#252530";
-          childBorder = "#252530";
+          border = "#323437";
+          background = "#323437";
+          text = "#949494";
+          indicator = "#323437";
+          childBorder = "#323437";
         };
         unfocused = {
-          border = "#141415";
-          background = "#141415";
-          text = "#606079";
-          indicator = "#141415";
-          childBorder = "#141415";
+          border = "#080808";
+          background = "#080808";
+          text = "#949494";
+          indicator = "#080808";
+          childBorder = "#080808";
         };
         urgent = {
-          border = "#d8647e";
-          background = "#d8647e";
-          text = "#141415";
-          indicator = "#d8647e";
-          childBorder = "#d8647e";
+          border = "#ff5d5d";
+          background = "#ff5d5d";
+          text = "#080808";
+          indicator = "#ff5d5d";
+          childBorder = "#ff5d5d";
         };
         placeholder = {
-          border = "#141415";
-          background = "#141415";
-          text = "#606079";
-          indicator = "#141415";
-          childBorder = "#141415";
+          border = "#080808";
+          background = "#080808";
+          text = "#949494";
+          indicator = "#080808";
+          childBorder = "#080808";
         };
-        background = "#141415";
+        background = "#080808";
       };
 
       output = {
-        "*".bg = "${config.home.homeDirectory}/.wallpaper.jpg fill #141415";
+        "*".bg = "${config.home.homeDirectory}/.wallpaper.jpg fill #080808";
 
         "Virtual-1".mode = "1920x1080@60Hz";
 
@@ -406,22 +406,22 @@ in
             size = 10.0;
           };
           colors = {
-            statusline = "#cdcdcd";
-            background = "#141415";
+            statusline = "#bdbdbd";
+            background = "#080808";
             inactiveWorkspace = {
-              background = "#141415";
-              border = "#141415";
-              text = "#606079";
+              background = "#080808";
+              border = "#080808";
+              text = "#949494";
             };
             activeWorkspace = {
-              background = "#252530";
-              border = "#252530";
-              text = "#cdcdcd";
+              background = "#323437";
+              border = "#323437";
+              text = "#bdbdbd";
             };
             focusedWorkspace = {
-              background = "#6e94b2";
-              border = "#6e94b2";
-              text = "#141415";
+              background = "#80a0ff";
+              border = "#80a0ff";
+              text = "#080808";
             };
           };
         }

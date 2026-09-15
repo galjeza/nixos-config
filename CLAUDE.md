@@ -44,20 +44,20 @@ This is a NixOS flake-based configuration managing four hosts (`lenovo-yoga`, `d
 **`modules/home/`** — Home-manager modules, all imported by `default.nix`:
 - `default.nix` — User packages, mako notifications (vague palette), wallpaper symlink
 - `foot.nix` — Foot terminal (no longer the default terminal — ghostty is); carries `vague`, `moonfly` and solarized palettes, switched via the `footTheme` selector (currently `solarized-light`)
-- `ghostty.nix` — Ghostty terminal, the actual default (`terminal` in `sway.nix`); uses the built-in `Vague` theme
-- `sway.nix` — Full Sway WM config (keybindings, colors, bar, outputs, gaps) — vague palette
+- `ghostty.nix` — Ghostty terminal, the actual default (`terminal` in `sway.nix`); uses the built-in `Moonfly` theme
+- `sway.nix` — Full Sway WM config (keybindings, colors, bar, outputs, gaps) — moonfly palette
 - `neovim.nix` — Enables neovim-nightly; symlinks `nvim/` into `~/.config/nvim`
-- `zsh.nix` — Shell config, aliases, zoxide, PATH setup, prompt (vague palette)
+- `zsh.nix` — Shell config, aliases, zoxide, PATH setup, prompt (moonfly palette)
 - `git.nix` — Git identity + diff/merge/rerere config
 - `meld.nix` — Meld graphical diff/merge tool (dconf settings)
 - `rust.nix` — Rust toolchain (`rustc`/`cargo`/`clippy`/`rustfmt`/`rust-analyzer`, from nixpkgs — no rustup), cargo helpers (`cargo-edit`, `cargo-nextest`, `cargo-watch`, `bacon`) and `taplo` for `Cargo.toml`
-- `zellij.nix` — Zellij terminal multiplexer (vague theme; moonfly + solarized also defined)
+- `zellij.nix` — Zellij terminal multiplexer (moonfly theme; vague + solarized also defined)
 
 **`nvim/`** — Neovim config (Lua). Uses `vim.pack` (built-in plugin manager, NixOS Neovim nightly). Loaded in order: `init.lua` → `plugin/10_options.lua` → `20_keymaps.lua` → `30_mini.lua` → `40_plugins.lua`. Powered by `mini.nvim`.
 
 ## Key Conventions
 
-- **Theme**: `vague` ([vague-theme/vague.nvim](https://github.com/vague-theme/vague.nvim)) is the active theme across `ghostty`, `zellij`, `sway`, `nvim` and the `zsh` prompt. vague palette: bg `#141415`, surface `#252530`, fg `#cdcdcd`, muted `#606079`, blue `#6e94b2`, gold `#f3be7c`, love `#d8647e`. `moonfly` ([bluz71/vim-moonfly-colors](https://github.com/bluz71/vim-moonfly-colors)) stays defined everywhere as an alternative — bg `#080808`, surface `#323437`, fg `#bdbdbd`, muted `#949494`, blue `#80a0ff`, gold `#e3c78a`, red `#ff5d5d`. Stragglers: `foot` is on `solarized-light`, `mako` still uses the older Rose Pine hex — migrate when convenient.
+- **Theme**: `moonfly` ([bluz71/vim-moonfly-colors](https://github.com/bluz71/vim-moonfly-colors)) is the active theme across `ghostty`, `zellij`, `sway`, `nvim` and the `zsh` prompt. moonfly palette: bg `#080808`, surface `#323437`, fg `#bdbdbd`, muted `#949494`, blue `#80a0ff`, gold `#e3c78a`, red `#ff5d5d`. `vague` ([vague-theme/vague.nvim](https://github.com/vague-theme/vague.nvim)) stays defined everywhere as an alternative — bg `#141415`, surface `#252530`, fg `#cdcdcd`, muted `#606079`, blue `#6e94b2`, gold `#f3be7c`, love `#d8647e`. Stragglers: `foot` is on `solarized-light`, `mako` still uses the older Rose Pine hex — migrate when convenient.
 - **`nixpkgs` channel**: `nixos-unstable` (rolling). `home-manager` follows the same nixpkgs to avoid duplicate copies.
 - **`stateVersion`**: `"25.11"` — do not change without reading the NixOS docs on state version migration.
 - **`networking.hostName` must equal the flake attr name** for that host. The `rebuild` aliases depend on it (see above); breaking the match makes `rebuild` either fail or apply the wrong machine's config.
