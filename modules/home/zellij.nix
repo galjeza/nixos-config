@@ -1,68 +1,24 @@
 { ... }:
 let
   # ── Single theme switch ──────────────────────────────────────────────
-  # Flip this one value to re-theme zellij. It drives *both* zellij's native
-  # UI (via settings.theme — a zellij built-in theme, or one of the `themes {}`
-  # blocks below) and the zjstatus bar (whose hex colors the `theme` option
-  # can't reach — hence the parallel `barPalettes` below, keyed off the same
-  # name).
+  # Flip this one value to re-theme zellij. It feeds settings.theme, which
+  # colors both zellij's native UI and the compact-bar status line.
   # Options: "vague" | "moonfly" | "solarized-light" | "solarized-dark".
   # (vague + moonfly are custom themes defined in the `themes {}` block below;
-  # the solarized variants ship as zellij built-ins. Each still needs a matching
-  # bar palette here.)
+  # the solarized variants ship as zellij built-ins.)
+  #
+  # Zellij's built-in "ansi" theme was tried and rejected: it paints only with
+  # palette slots 0-15 so it inherits ghostty's colors for free, but it has no
+  # way to name the terminal's background — the bar lands on palette 0
+  # (#323437 under Moonfly) and reads as a grey strip instead of disappearing
+  # into the #080808 background. The explicit block below is worth its length.
   activeTheme = "moonfly";
-
-  barPalettes = {
-    vague = {
-      # Must match ghostty's Vague `background` exactly, so the bar disappears
-      # into the terminal instead of reading as a separate strip.
-      bg = "#141415";
-      sessionFg = "#6e94b2";
-      modeNormal = "#6e94b2";
-      modeTmux = "#f3be7c";
-      modeLocked = "#d8647e";
-      tabNormal = "#606079";
-      tabActive = "#cdcdcd";
-      datetime = "#cdcdcd";
-    };
-    moonfly = {
-      bg = "#080808";
-      sessionFg = "#80A0FF";
-      modeNormal = "#80A0FF";
-      modeTmux = "#E3C78A";
-      modeLocked = "#E65E72";
-      tabNormal = "#949494";
-      tabActive = "#BDBDBD";
-      datetime = "#BDBDBD";
-    };
-    solarized-light = {
-      bg = "#eee8d5"; # base2
-      sessionFg = "#268bd2"; # blue
-      modeNormal = "#268bd2"; # blue
-      modeTmux = "#b58900"; # yellow
-      modeLocked = "#dc322f"; # red
-      tabNormal = "#93a1a1"; # base1
-      tabActive = "#586e75"; # base01
-      datetime = "#657b83"; # base00
-    };
-    solarized-dark = {
-      bg = "#073642"; # base02
-      sessionFg = "#268bd2"; # blue
-      modeNormal = "#268bd2"; # blue
-      modeTmux = "#b58900"; # yellow
-      modeLocked = "#dc322f"; # red
-      tabNormal = "#586e75"; # base01
-      tabActive = "#93a1a1"; # base1
-      datetime = "#839496"; # base0
-    };
-  };
-  bar = barPalettes.${activeTheme};
 in
 {
   programs.zellij = {
     enable = true;
     settings = {
-      simplified_ui = true;
+      simplified_ui = false;
       default_layout = "main";
       theme = activeTheme;
       pane_frames = false;
@@ -72,40 +28,15 @@ in
     layouts.main = ''
       layout {
           default_tab_template {
-              children
+              // zellij's built-in compact-bar: tabs + mode/session on one
+              // line, no keybinding hints. Honours settings.simplified_ui and
+              // takes its colors from settings.theme, so there is nothing to
+              // hand-color.
               pane size=1 borderless=true {
-                  plugin location="https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm" {
-                      hide_frame_for_single_pane "false"
-
-                      format_left   "{mode}#[fg=${bar.datetime},bg=${bar.bg}] [{session}] "
-                      format_center "#[bg=${bar.bg}]{tabs}"
-                      format_right  "{datetime}"
-                      format_space  "#[bg=${bar.bg}]"
-
-                      mode_normal          "#[fg=${bar.modeNormal},bg=${bar.bg},bold] NORMAL"
-                      mode_locked          "#[fg=${bar.modeLocked},bg=${bar.bg},bold] LOCKED"
-                      mode_tmux            "#[fg=${bar.modeTmux},bg=${bar.bg},bold] TMUX"
-                      mode_resize          "#[fg=${bar.modeNormal},bg=${bar.bg},bold] RESIZE"
-                      mode_pane            "#[fg=${bar.modeNormal},bg=${bar.bg},bold] PANE"
-                      mode_tab             "#[fg=${bar.modeNormal},bg=${bar.bg},bold] TAB"
-                      mode_scroll          "#[fg=${bar.modeNormal},bg=${bar.bg},bold] SCROLL"
-                      mode_enter_search    "#[fg=${bar.modeNormal},bg=${bar.bg},bold] SEARCH"
-                      mode_search          "#[fg=${bar.modeNormal},bg=${bar.bg},bold] SEARCH"
-                      mode_rename_tab      "#[fg=${bar.modeNormal},bg=${bar.bg},bold] RENAME"
-                      mode_rename_pane     "#[fg=${bar.modeNormal},bg=${bar.bg},bold] RENAME"
-                      mode_session         "#[fg=${bar.modeNormal},bg=${bar.bg},bold] SESSION"
-                      mode_move            "#[fg=${bar.modeNormal},bg=${bar.bg},bold] MOVE"
-                      mode_prompt          "#[fg=${bar.modeNormal},bg=${bar.bg},bold] PROMPT"
-                      mode_default_to_mode "normal"
-
-                      tab_normal               "#[fg=${bar.tabNormal},bg=${bar.bg}] {name} "
-                      tab_active               "#[fg=${bar.tabActive},bg=${bar.bg},bold,italic] {name}*"
-
-                      datetime          "#[fg=${bar.datetime},bg=${bar.bg}] {format} "
-                      datetime_format   "%A, %d %b %Y %H:%M"
-                      datetime_timezone "Europe/Berlin"
-                  }
+                  plugin location="compact-bar"
               }
+
+              children
           }
 
           tab name="vim" {
