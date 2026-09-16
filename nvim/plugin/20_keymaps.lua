@@ -178,5 +178,3 @@ nmap_leader("oz", "<Cmd>lua MiniMisc.zoom()<CR>", "Zoom toggle")
 -- t is for 'Terminal'
 nmap_leader("tT", "<Cmd>horizontal term<CR>", "Terminal (horizontal)")
 nmap_leader("tt", "<Cmd>vertical term<CR>", "Terminal (vertical)")
-
--- stylua: ignore end

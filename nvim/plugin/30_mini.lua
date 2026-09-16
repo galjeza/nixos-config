@@ -27,11 +27,6 @@ now(function()
 	require("mini.notify").setup()
 end)
 
--- DONT NEED THIS FOR NOW
--- now(function()
--- 	require("mini.tabline").setup()
--- end)
-
 -- Step one or two ============================================================
 -- Load now if Neovim is started like `nvim -- path/to/file`, otherwise - later.
 -- This ensures a correct behavior for files opened during startup.

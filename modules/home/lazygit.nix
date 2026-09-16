@@ -12,7 +12,7 @@
         # (`g:lazygit_use_neovim_remote = executable('nvr') ? 1 : 0`), and it
         # isn't. This preset needs no extra package: it uses $NVIM, the socket
         # nvim exports inside any :terminal. When $NVIM is unset — lazygit
-        # launched straight from ghostty or a zellij pane — it falls back to a
+        # launched straight from foot or a zellij pane — it falls back to a
         # plain `nvim`, so both entry points behave sensibly. Invoked from the
         # staging panel it also jumps to the right line.
         editPreset = "nvim-remote";

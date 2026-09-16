@@ -3,7 +3,6 @@
   imports = [
     ./android.nix
     ./foot.nix
-    ./ghostty.nix
     ./git.nix
     ./lazygit.nix
     ./meld.nix
@@ -22,10 +21,11 @@
   # this must match system.stateVersion in configuration.nix
   home.stateVersion = "25.11";
 
+  # Monospace family comes from 'theme.nix' along with the palette.
   fonts.fontconfig = {
     enable = true;
     defaultFonts = {
-      monospace = [ "IosevkaTerm Nerd Font Mono" ];
+      monospace = [ theme.font ];
     };
   };
 
@@ -43,7 +43,7 @@
   services.mako = {
     enable = true;
     settings = {
-      font = "IosevkaTerm Nerd Font Mono 10";
+      font = "${theme.font} 10";
       background-color = "#${theme.colors.bg}";
       text-color = "#${theme.colors.fg}";
       border-color = "#${theme.colors.blue}";
@@ -87,9 +87,8 @@
     cliphist
     pavucontrol
     # Both installed so switching terminals/bars between them is a
-    # font-name-only change (no big font download on rebuild).
-    # Active family: "IosevkaTerm Nerd Font Mono".
-    # Alternative: "Terminess Nerd Font Mono".
+    # font-name-only change (no big font download on rebuild). Which one is
+    # live is the `font` line in 'theme.nix'.
     nerd-fonts.iosevka-term
     nerd-fonts.terminess-ttf
     google-chrome

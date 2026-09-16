@@ -6,11 +6,6 @@
     ../../modules/system/common.nix
   ];
 
-  # Bootloader. See the configurationLimit note in the yoga's config.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.systemd-boot.configurationLimit = 5;
-  boot.loader.efi.canTouchEfiVariables = true;
-
   networking.hostName = "desktop";
 
   # ── Graphics: AMD Radeon (Navi 33, RX 7600 XT) ──────────────────────────────

@@ -6,8 +6,8 @@ let
   # (vague + moonfly are custom themes defined in the `themes {}` block below.)
   #
   # Zellij's built-in "ansi" theme was tried and rejected: it paints only with
-  # palette slots 0-15 so it inherits ghostty's colors for free, but it has no
-  # way to name the terminal's background — the bar lands on palette 0
+  # palette slots 0-15 so it inherits the terminal's colors for free, but it
+  # has no way to name the terminal's background — the bar lands on palette 0
   # (#323437 under Moonfly) and reads as a grey strip instead of disappearing
   # into the #080808 background. The explicit block below is worth its length.
   #

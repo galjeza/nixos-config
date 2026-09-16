@@ -9,19 +9,42 @@
 let
   c = theme.colors;
 
+  swaylock = "${pkgs.swaylock}/bin/swaylock";
+  swaymsg = "${pkgs.sway}/bin/swaymsg";
+
+  # Same font and size for window titles and the bar — see 'theme.nix'.
+  uiFont = {
+    names = [ theme.font ];
+    size = 10.0;
+  };
+
   # wmenu takes bare hex (no '#') on the command line. Same palette as the rest
   # of the desktop chrome — see 'theme.nix'.
   wmenuColors = "-N ${c.bg} -n ${c.fg} -M ${c.surface} -m ${c.fg} -S ${c.blue} -s ${c.bg}";
-  ws1 = "1: web"; # browser — daily web browsing, docs, GitHub PRs
-  ws2 = "2: dev"; # zellij sessions — one per ticket (ticket PROJ-123)
-  ws3 = "3: terminal"; # quick standalone terminals, one-off commands
-  ws4 = "4: comms"; # Slack
-  ws5 = "5: db"; # DBeaver — database inspection and queries
-  ws6 = "6: api"; # Bruno — REST/GraphQL API testing
-  ws7 = "7: linear + github"; # Linear tickets, GitHub PRs and Issues
-  ws8 = "8: monitor"; # htop, logs, system health
-  ws9 = "9: music"; # media playback
-  ws10 = "10: scratch"; # overflow, floating windows, anything temporary
+
+  mod = "Mod4";
+
+  # Workspace table: key that selects it -> name sway shows in the bar. Note
+  # the tenth lives on key 0. Mod+<key> focuses and Mod+Shift+<key> moves the
+  # focused container there; both halves are generated in `workspaceKeybindings`
+  # below, so a workspace is added or renamed on one line here.
+  workspaces = {
+    "1" = "1: web"; # browser — daily web browsing, docs, GitHub PRs
+    "2" = "2: dev"; # zellij sessions — one per ticket (ticket PROJ-123)
+    "3" = "3: terminal"; # quick standalone terminals, one-off commands
+    "4" = "4: comms"; # Slack
+    "5" = "5: db"; # DBeaver — database inspection and queries
+    "6" = "6: api"; # Bruno — REST/GraphQL API testing
+    "7" = "7: linear + github"; # Linear tickets, GitHub PRs and Issues
+    "8" = "8: monitor"; # htop, logs, system health
+    "9" = "9: music"; # media playback
+    "0" = "10: scratch"; # overflow, floating windows, anything temporary
+  };
+
+  workspaceKeybindings = lib.concatMapAttrs (key: name: {
+    "${mod}+${key}" = ''workspace "${name}"'';
+    "${mod}+Shift+${key}" = ''move container to workspace "${name}"'';
+  }) workspaces;
 
   # Shared across hosts, so the battery segment has to be optional — the
   # desktop has no BAT0 and the unguarded `cat` printed an error line into
@@ -62,7 +85,7 @@ let
   gameMode = pkgs.writeShellScript "sway-game-mode" ''
     set -eu
     PATH=${
-      pkgs.lib.makeBinPath [
+      lib.makeBinPath [
         pkgs.sway
         pkgs.jq
         pkgs.libnotify
@@ -120,7 +143,7 @@ in
     enable = true;
     settings = {
       color = c.bg;
-      font = "IosevkaTerm Nerd Font Mono";
+      font = theme.font;
       font-size = 24;
       indicator-idle-visible = false;
       indicator-radius = 100;
@@ -134,18 +157,18 @@ in
   services.swayidle = {
     enable = true;
     events = {
-      before-sleep = "${pkgs.swaylock}/bin/swaylock -f";
-      lock = "${pkgs.swaylock}/bin/swaylock -f";
+      before-sleep = "${swaylock} -f";
+      lock = "${swaylock} -f";
     };
     timeouts = [
       {
         timeout = 300;
-        command = "${pkgs.swaylock}/bin/swaylock -f";
+        command = "${swaylock} -f";
       }
       {
         timeout = 600;
-        command = ''${pkgs.sway}/bin/swaymsg "output * power off"'';
-        resumeCommand = ''${pkgs.sway}/bin/swaymsg "output * power on"'';
+        command = ''${swaymsg} "output * power off"'';
+        resumeCommand = ''${swaymsg} "output * power on"'';
       }
     ]
     ++ lib.optional suspendOnIdle {
@@ -165,17 +188,14 @@ in
     '';
     config = rec {
       focus.followMouse = false;
-      modifier = "Mod4";
+      modifier = mod;
       left = "h";
       down = "j";
       up = "k";
       right = "l";
-      terminal = "ghostty";
+      terminal = "foot";
       menu = "wmenu-run ${wmenuColors}";
-      fonts = {
-        names = [ "IosevkaTerm Nerd Font Mono" ];
-        size = 10.0;
-      };
+      fonts = uiFont;
 
       # No borders and no titlebars anywhere — the 6px gap is the only thing
       # separating windows. `border = 0` emits `default_border pixel 0`, which
@@ -290,78 +310,52 @@ in
         };
       };
 
-      # keybindings
-      keybindings =
-        let
-          mod = modifier;
-        in
-        {
-          "${mod}+Return" = "exec ${terminal}";
-          "${mod}+Shift+q" = "kill";
-          "${mod}+d" = "exec ${menu}";
-          "${mod}+Shift+c" = "reload";
-          "${mod}+Shift+e" = "exec swaynag -t warning -m 'Exit sway?' -B 'Yes' 'swaymsg exit'";
-          "${mod}+Shift+s" =
-            ''exec sh -c 'mkdir -p ~/Pictures/Screenshots && file=~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png && grim -g "$(slurp)" "$file" && wl-copy -t image/png < "$file"' '';
-          "${mod}+Shift+v" =
-            "exec sh -c 'cliphist list | wmenu -i -l 20 ${wmenuColors} | cliphist decode | wl-copy' ";
+      # keybindings. The per-workspace half is generated from the `workspaces`
+      # table in the let block above.
+      keybindings = workspaceKeybindings // {
+        "${mod}+Return" = "exec ${terminal}";
+        "${mod}+Shift+q" = "kill";
+        "${mod}+d" = "exec ${menu}";
+        "${mod}+Shift+c" = "reload";
+        "${mod}+Shift+e" = "exec swaynag -t warning -m 'Exit sway?' -B 'Yes' 'swaymsg exit'";
+        "${mod}+Shift+s" =
+          ''exec sh -c 'mkdir -p ~/Pictures/Screenshots && file=~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png && grim -g "$(slurp)" "$file" && wl-copy -t image/png < "$file"' '';
+        "${mod}+Shift+v" =
+          "exec sh -c 'cliphist list | wmenu -i -l 20 ${wmenuColors} | cliphist decode | wl-copy' ";
 
-          "${mod}+${left}" = "focus left";
+        "${mod}+${left}" = "focus left";
+        "${mod}+${down}" = "focus down";
+        "${mod}+${up}" = "focus up";
+        "${mod}+${right}" = "focus right";
+        "${mod}+Left" = "focus left";
+        "${mod}+Down" = "focus down";
+        "${mod}+Up" = "focus up";
+        "${mod}+Right" = "focus right";
 
-          "${mod}+${down}" = "focus down";
-          "${mod}+${up}" = "focus up";
-          "${mod}+${right}" = "focus right";
-          "${mod}+Left" = "focus left";
-          "${mod}+Down" = "focus down";
-          "${mod}+Up" = "focus up";
-          "${mod}+Right" = "focus right";
+        "${mod}+Shift+${left}" = "move left";
+        "${mod}+Shift+${down}" = "move down";
+        "${mod}+Shift+${up}" = "move up";
+        "${mod}+Shift+${right}" = "move right";
+        "${mod}+Shift+Left" = "move left";
+        "${mod}+Shift+Down" = "move down";
+        "${mod}+Shift+Up" = "move up";
+        "${mod}+Shift+Right" = "move right";
 
-          "${mod}+Shift+${left}" = "move left";
-          "${mod}+Shift+${down}" = "move down";
-          "${mod}+Shift+${up}" = "move up";
-          "${mod}+Shift+${right}" = "move right";
-          "${mod}+Shift+Left" = "move left";
-          "${mod}+Shift+Down" = "move down";
-          "${mod}+Shift+Up" = "move up";
-          "${mod}+Shift+Right" = "move right";
-
-          "${mod}+1" = "workspace \"${ws1}\"";
-          "${mod}+2" = "workspace \"${ws2}\"";
-          "${mod}+3" = "workspace \"${ws3}\"";
-          "${mod}+4" = "workspace \"${ws4}\"";
-          "${mod}+5" = "workspace \"${ws5}\"";
-          "${mod}+6" = "workspace \"${ws6}\"";
-          "${mod}+7" = "workspace \"${ws7}\"";
-          "${mod}+8" = "workspace \"${ws8}\"";
-          "${mod}+9" = "workspace \"${ws9}\"";
-          "${mod}+0" = "workspace \"${ws10}\"";
-
-          "${mod}+Shift+1" = "move container to workspace \"${ws1}\"";
-          "${mod}+Shift+2" = "move container to workspace \"${ws2}\"";
-          "${mod}+Shift+3" = "move container to workspace \"${ws3}\"";
-          "${mod}+Shift+4" = "move container to workspace \"${ws4}\"";
-          "${mod}+Shift+5" = "move container to workspace \"${ws5}\"";
-          "${mod}+Shift+6" = "move container to workspace \"${ws6}\"";
-          "${mod}+Shift+7" = "move container to workspace \"${ws7}\"";
-          "${mod}+Shift+8" = "move container to workspace \"${ws8}\"";
-          "${mod}+Shift+9" = "move container to workspace \"${ws9}\"";
-          "${mod}+Shift+0" = "move container to workspace \"${ws10}\"";
-
-          "${mod}+b" = "splith";
-          "${mod}+v" = "splitv";
-          "${mod}+s" = "layout stacking";
-          "${mod}+w" = "layout tabbed";
-          "${mod}+e" = "layout toggle split";
-          "${mod}+f" = "fullscreen";
-          "${mod}+Shift+space" = "floating toggle";
-          "${mod}+space" = "focus mode_toggle";
-          "${mod}+a" = "focus parent";
-          "${mod}+Shift+minus" = "move scratchpad";
-          "${mod}+minus" = "scratchpad show";
-          "${mod}+r" = "mode resize";
-          # Toggle single-output "game mode" — see gameMode above.
-          "${mod}+g" = "exec ${gameMode}";
-        };
+        "${mod}+b" = "splith";
+        "${mod}+v" = "splitv";
+        "${mod}+s" = "layout stacking";
+        "${mod}+w" = "layout tabbed";
+        "${mod}+e" = "layout toggle split";
+        "${mod}+f" = "fullscreen";
+        "${mod}+Shift+space" = "floating toggle";
+        "${mod}+space" = "focus mode_toggle";
+        "${mod}+a" = "focus parent";
+        "${mod}+Shift+minus" = "move scratchpad";
+        "${mod}+minus" = "scratchpad show";
+        "${mod}+r" = "mode resize";
+        # Toggle single-output "game mode" — see gameMode above.
+        "${mod}+g" = "exec ${gameMode}";
+      };
 
       modes = {
         resize = {
@@ -382,30 +376,17 @@ in
       # desktop deliberately doesn't (its Wi-Fi/BT combo card shares one
       # antenna), so autostarting it there would just fail every login.
       startup = [
-        {
-          command = "wl-paste --type text --watch cliphist store";
-        }
-        {
-          command = "wl-paste --type image --watch cliphist store";
-        }
+        { command = "wl-paste --type text --watch cliphist store"; }
+        { command = "wl-paste --type image --watch cliphist store"; }
       ]
-      ++ lib.optional osConfig.hardware.bluetooth.enable {
-        command = "blueman-applet";
-      }
-      ++ [
-        {
-          command = "${xwaylandX0Symlink}";
-        }
-      ];
+      ++ lib.optional osConfig.hardware.bluetooth.enable { command = "blueman-applet"; }
+      ++ [ { command = "${xwaylandX0Symlink}"; } ];
 
       bars = [
         {
           position = "top";
           statusCommand = "${statusScript}";
-          fonts = {
-            names = [ "IosevkaTerm Nerd Font Mono" ];
-            size = 10.0;
-          };
+          fonts = uiFont;
           colors = {
             statusline = "#${c.fg}";
             background = "#${c.bg}";

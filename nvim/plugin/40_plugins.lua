@@ -1,6 +1,6 @@
 local add = vim.pack.add
-local now_if_args, later = Config.now_if_args, Config.later
-Config.now(function()
+local now, now_if_args, later = Config.now, Config.now_if_args, Config.later
+now(function()
 	-- Define hook to update tree-sitter parsers after plugin is updated
 	local ts_update = function()
 		vim.cmd("TSUpdate")
@@ -106,7 +106,7 @@ now_if_args(function()
 			vim.lsp.inline_completion.enable(true, { bufnr = ev.buf })
 		end
 	end
-	Config.new_autocmd("LspAttach", "*", enable_inline_completion, "Enable LSP inline completion")
+	Config.new_autocmd("LspAttach", nil, enable_inline_completion, "Enable LSP inline completion")
 
 	-- Buffer-local on/off switch behind `<Leader>lc`, for when the ghost text is
 	-- in the way (or when writing something that should stay Copilot-free).
@@ -211,12 +211,12 @@ later(function()
 	-- set". The re-link silently does nothing. Verified: raw nvim_set_hl applies,
 	-- diffview's hi_link does not. So do the link here, and again on ColorScheme
 	-- since loading a theme resets the groups.
-	local hl_group = vim.api.nvim_create_augroup("diffview_dim_delete", { clear = true })
-	local function dim_diff_delete()
+	local dim_augroup = vim.api.nvim_create_augroup("diffview_dim_delete", { clear = true })
+	local dim_diff_delete = function()
 		vim.api.nvim_set_hl(0, "DiffviewDiffDelete", { link = "DiffviewDiffDeleteDim" })
 	end
 	dim_diff_delete()
-	vim.api.nvim_create_autocmd("ColorScheme", { group = hl_group, callback = dim_diff_delete })
+	vim.api.nvim_create_autocmd("ColorScheme", { group = dim_augroup, callback = dim_diff_delete })
 
 	-- Auto-refresh on changes made outside this nvim instance.
 	--
@@ -228,18 +228,18 @@ later(function()
 	-- `:DiffviewRefresh`. Upstream: sindrets/diffview.nvim#567.
 	--
 	-- `refresh_files` is exactly what :DiffviewRefresh emits.
-	local group = vim.api.nvim_create_augroup("diffview_auto_refresh", { clear = true })
+	local refresh_augroup = vim.api.nvim_create_augroup("diffview_auto_refresh", { clear = true })
 	local timer
 
 	-- `checktime` reloads buffers whose file changed on disk ('autoread' is on).
 	-- Guarded: it throws inside the cmdline window.
-	local function check_disk()
+	local check_disk = function()
 		if vim.fn.getcmdwintype() == "" then
 			vim.cmd("silent! checktime")
 		end
 	end
 
-	local function refresh_panel()
+	local refresh_panel = function()
 		local ok, lib = pcall(require, "diffview.lib")
 		-- get_current_view() is tabpage-scoped, so this is nil unless the tab
 		-- you're on right now *is* a diffview. Never resurrects a background view.
@@ -252,7 +252,7 @@ later(function()
 	-- than on a blind interval: `checktime` fires FileChangedShellPost when it
 	-- actually reloads something.
 	vim.api.nvim_create_autocmd("FileChangedShellPost", {
-		group = group,
+		group = refresh_augroup,
 		callback = refresh_panel,
 	})
 
@@ -260,7 +260,7 @@ later(function()
 	-- unconditionally — an agent may also have added files that are in no buffer
 	-- yet, which checktime alone would miss.
 	vim.api.nvim_create_autocmd({ "FocusGained", "TermLeave", "TermClose" }, {
-		group = group,
+		group = refresh_augroup,
 		callback = function()
 			check_disk()
 			refresh_panel()
@@ -272,7 +272,7 @@ later(function()
 	-- view is actually open, and only `checktime` — the panel rebuild still goes
 	-- through FileChangedShellPost above.
 	vim.api.nvim_create_autocmd("User", {
-		group = group,
+		group = refresh_augroup,
 		pattern = "DiffviewViewOpened",
 		callback = function()
 			if timer then
@@ -285,7 +285,7 @@ later(function()
 	})
 
 	vim.api.nvim_create_autocmd("User", {
-		group = group,
+		group = refresh_augroup,
 		pattern = "DiffviewViewClosed",
 		callback = function()
 			if timer then
@@ -332,7 +332,7 @@ end
 Config.new_autocmd("FileType", "toml", setup_crates, "Set up 'crates.nvim'")
 
 -- Colorschemes ======
-Config.now(function()
+now(function()
 	add({
 		"https://github.com/vague-theme/vague.nvim",
 		"https://github.com/bluz71/vim-moonfly-colors",

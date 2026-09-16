@@ -6,14 +6,6 @@
     ../../modules/system/common.nix
   ];
 
-  # Bootloader. configurationLimit caps how many generations get a boot entry
-  # (and therefore a kernel + initrd on the 1 GB ESP); older generations stay
-  # in the store and are still rolled back to with `nixos-rebuild switch
-  # --rollback`, they just aren't listed in the boot menu.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.systemd-boot.configurationLimit = 5;
-  boot.loader.efi.canTouchEfiVariables = true;
-
   networking.hostName = "lenovo-yoga";
 
   # Cap battery charge at ~60% via ideapad EC conservation mode.
@@ -37,9 +29,7 @@
   # card for display. card1 = i915 on this machine (the NVIDIA card at PCI
   # 01:00.0 enumerates as card0). Cannot use the by-path identifier here
   # because WLR_DRM_DEVICES splits on ':' and PCI paths contain colons.
-  environment.sessionVariables = {
-    WLR_DRM_DEVICES = "/dev/dri/card1";
-  };
+  environment.sessionVariables.WLR_DRM_DEVICES = "/dev/dri/card1";
 
   # Sway hard-refuses to start when the proprietary NVIDIA driver is loaded;
   # this flag bypasses that check. The iGPU still drives the display via PRIME.

@@ -1,4 +1,11 @@
 { pkgs, theme, ... }:
+let
+  # Where this flake is checked out, as the *shell* sees it — the rebuild
+  # aliases below run inside zsh, so this stays a literal "$HOME/..." rather
+  # than the expanded home-manager path.
+  flakeDir = "$HOME/nixos-config";
+  rebuildSwitch = "sudo nixos-rebuild switch --flake ${flakeDir}";
+in
 {
   programs.zsh = {
     enable = true;
@@ -69,11 +76,11 @@
       # same alias does the right thing on every machine instead of applying
       # the laptop's config to the desktop.
       # Note: /etc/nixos is not a flake checkout here.
-      rebuild = "sudo nixos-rebuild switch --flake $HOME/nixos-config";
-      rebuild-test = "sudo nixos-rebuild test --flake $HOME/nixos-config";
-      rebuild-boot = "sudo nixos-rebuild boot --flake $HOME/nixos-config";
+      rebuild = rebuildSwitch;
+      rebuild-test = "sudo nixos-rebuild test --flake ${flakeDir}";
+      rebuild-boot = "sudo nixos-rebuild boot --flake ${flakeDir}";
 
-      rebuild-update = "nix flake update --flake $HOME/nixos-config && sudo nixos-rebuild switch --flake $HOME/nixos-config";
+      rebuild-update = "nix flake update --flake ${flakeDir} && ${rebuildSwitch}";
 
       playwright-shell = "nix shell github:pietdevries94/playwright-web-flake#playwright-test";
     };

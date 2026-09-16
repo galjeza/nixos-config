@@ -6,18 +6,20 @@ return {
 			runtime = { version = "LuaJIT" },
 			-- Recognize Neovim's `vim` global and this config's own globals.
 			diagnostics = {
+				-- Kept sorted; one entry per `MiniXxx` global this config touches.
 				globals = {
-					"vim",
 					"Config",
-					"MiniPick",
-					"MiniFiles",
-					"MiniDiff",
 					"MiniBufremove",
-					"MiniNotify",
-					"MiniMisc",
-					"MiniKeymap",
 					"MiniCompletion",
+					"MiniDiff",
+					"MiniExtra",
+					"MiniFiles",
 					"MiniIcons",
+					"MiniKeymap",
+					"MiniMisc",
+					"MiniNotify",
+					"MiniPick",
+					"vim",
 				},
 			},
 			-- Make the server aware of Neovim runtime files for completion.

@@ -1,21 +1,33 @@
 { pkgs, ... }:
 
 {
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
+  nix = {
+    settings.experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
 
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 30d";
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 30d";
+    };
+
+    optimise = {
+      automatic = true;
+      dates = [ "weekly" ];
+    };
   };
 
-  nix.optimise = {
-    automatic = true;
-    dates = [ "weekly" ];
-  };
+  # Bootloader. Identical on both hosts (UEFI + systemd-boot); a host that
+  # needs something else overrides it in its own file. configurationLimit caps
+  # how many generations get a boot entry (and therefore a kernel + initrd on
+  # the 1 GB ESP); older generations stay in the store and are still rolled
+  # back to with `nixos-rebuild switch --rollback`, they just aren't listed in
+  # the boot menu.
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.systemd-boot.configurationLimit = 5;
+  boot.loader.efi.canTouchEfiVariables = true;
 
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
@@ -52,12 +64,6 @@
     LC_TIME = "sl_SI.UTF-8";
   };
 
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
-  };
-
   # Define a user account. Don't forget to set a password with 'passwd'.
   users.users.galjeza = {
     isNormalUser = true;
@@ -67,7 +73,6 @@
       "wheel"
       "docker"
     ];
-    packages = with pkgs; [ ];
     shell = pkgs.zsh;
   };
 
@@ -121,7 +126,14 @@
   };
 
   # enable x11 for legacy desktop apps
-  services.xserver.enable = true;
+  services.xserver = {
+    enable = true;
+    # Configure keymap in X11
+    xkb = {
+      layout = "us";
+      variant = "";
+    };
+  };
 
   # Login via greetd + tuigreet instead of lightdm. lightdm runs its greeter on
   # a real X server (":0") and pam_systemd stamps that number onto the logind
@@ -142,9 +154,11 @@
   };
 
   # enable sway window manager
-  programs.sway.enable = true;
-  # enable extra features in the sway wrapper
-  programs.sway.wrapperFeatures.gtk = true;
+  programs.sway = {
+    enable = true;
+    # enable extra features in the sway wrapper
+    wrapperFeatures.gtk = true;
+  };
   # swaybar renders SNI tray icons through gdk-pixbuf, which can only decode SVG
   # if librsvg's loader module is registered. nixpkgs builds sway against librsvg
   # but never wires up the loader cache, and the gtk wrapper only sets
@@ -155,48 +169,50 @@
   programs.zsh.enable = true;
 
   # nix-ld: allow dynamically linked FHS binaries (e.g. prebuilt Electron) to run.
-  programs.nix-ld.enable = true;
-  programs.nix-ld.libraries = with pkgs; [
-    stdenv.cc.cc.lib
-    glibc
-    zlib
-    glib
-    nss
-    nspr
-    atk
-    at-spi2-atk
-    at-spi2-core
-    cups
-    dbus
-    expat
-    libdrm
-    libxkbcommon
-    mesa
-    libgbm
-    alsa-lib
-    cairo
-    pango
-    gdk-pixbuf
-    gtk3
-    fontconfig
-    freetype
-    libnotify
-    libsecret
-    systemd
-    libx11
-    libxcb
-    libxcomposite
-    libxcursor
-    libxdamage
-    libxext
-    libxfixes
-    libxi
-    libxrandr
-    libxrender
-    libxscrnsaver
-    libxtst
-    libxkbfile
-  ];
+  programs.nix-ld = {
+    enable = true;
+    libraries = with pkgs; [
+      stdenv.cc.cc.lib
+      glibc
+      zlib
+      glib
+      nss
+      nspr
+      atk
+      at-spi2-atk
+      at-spi2-core
+      cups
+      dbus
+      expat
+      libdrm
+      libxkbcommon
+      mesa
+      libgbm
+      alsa-lib
+      cairo
+      pango
+      gdk-pixbuf
+      gtk3
+      fontconfig
+      freetype
+      libnotify
+      libsecret
+      systemd
+      libx11
+      libxcb
+      libxcomposite
+      libxcursor
+      libxdamage
+      libxext
+      libxfixes
+      libxi
+      libxrandr
+      libxrender
+      libxscrnsaver
+      libxtst
+      libxkbfile
+    ];
+  };
 
   # Audio via PipeWire
   services.pulseaudio.enable = false;

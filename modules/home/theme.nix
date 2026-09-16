@@ -1,9 +1,10 @@
 { ... }:
-# Single source of truth for colours.
+# Single source of truth for colours and the UI font.
 #
 # Everything that paints chrome — sway, swaylock, wmenu, mako, the sway bar and
 # the zsh prompt — reads `theme.colors` from here, so re-theming the desktop is
 # the one-line `active` change below rather than a sweep through six files.
+# The terminals and every font-rendering chrome likewise read `theme.font`.
 #
 # Hex values are stored WITHOUT a leading '#': swaylock and wmenu take bare hex
 # on the command line, while sway/mako want '#rrggbb'. Consumers prefix with
@@ -98,12 +99,18 @@ let
   # ── The one switch ──────────────────────────────────────────────────────────
   # "vague" | "moonfly"
   active = "moonfly";
+
+  # Monospace family for every chrome that renders text: both terminals, the
+  # sway bar and window titles, swaylock and mako. Both Nerd Font packages are
+  # installed (see 'default.nix'), so swapping is this one line.
+  # "IosevkaTerm Nerd Font Mono" | "Terminess Nerd Font Mono"
+  font = "IosevkaTerm Nerd Font Mono";
 in
 {
   # Exposed to every other home-manager module as the `theme` argument.
   _module.args.theme = {
     name = active;
     colors = palettes.${active};
-    inherit palettes;
+    inherit palettes font;
   };
 }
