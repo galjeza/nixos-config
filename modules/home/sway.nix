@@ -2,10 +2,16 @@
   config,
   lib,
   pkgs,
-  osConfig ? null,
+  theme,
+  osConfig,
   ...
 }:
 let
+  c = theme.colors;
+
+  # wmenu takes bare hex (no '#') on the command line. Same palette as the rest
+  # of the desktop chrome — see 'theme.nix'.
+  wmenuColors = "-N ${c.bg} -n ${c.fg} -M ${c.surface} -m ${c.fg} -S ${c.blue} -s ${c.bg}";
   ws1 = "1: web"; # browser — daily web browsing, docs, GitHub PRs
   ws2 = "2: dev"; # zellij sessions — one per ticket (ticket PROJ-123)
   ws3 = "3: terminal"; # quick standalone terminals, one-off commands
@@ -39,7 +45,7 @@ let
   # or rtw89/RTL8852CE resume; both are common offenders and this host already
   # carries rtw89 ASPM workarounds. Until a *manual* `systemctl suspend`
   # round-trips cleanly there, the ladder stops at "screen off".
-  suspendOnIdle = osConfig == null || osConfig.networking.hostName != "desktop";
+  suspendOnIdle = osConfig.networking.hostName != "desktop";
 
   # Xwayland spans ONE X screen across the entire sway layout, and fullscreen
   # X11 games position themselves at that screen's origin. With two outputs
@@ -113,7 +119,7 @@ in
   programs.swaylock = {
     enable = true;
     settings = {
-      color = "141415";
+      color = c.bg;
       font = "IosevkaTerm Nerd Font Mono";
       font-size = 24;
       indicator-idle-visible = false;
@@ -165,7 +171,7 @@ in
       up = "k";
       right = "l";
       terminal = "ghostty";
-      menu = "wmenu-run -N 141415 -n cdcdcd -M 252530 -m cdcdcd -S 6e94b2 -s 141415";
+      menu = "wmenu-run ${wmenuColors}";
       fonts = {
         names = [ "IosevkaTerm Nerd Font Mono" ];
         size = 10.0;
@@ -192,47 +198,45 @@ in
 
       colors = {
         focused = {
-          border = "#80a0ff";
-          background = "#80a0ff";
-          text = "#080808";
-          indicator = "#e3c78a";
-          childBorder = "#80a0ff";
+          border = "#${c.blue}";
+          background = "#${c.blue}";
+          text = "#${c.bg}";
+          indicator = "#${c.gold}";
+          childBorder = "#${c.blue}";
         };
         focusedInactive = {
-          border = "#323437";
-          background = "#323437";
-          text = "#949494";
-          indicator = "#323437";
-          childBorder = "#323437";
+          border = "#${c.surface}";
+          background = "#${c.surface}";
+          text = "#${c.muted}";
+          indicator = "#${c.surface}";
+          childBorder = "#${c.surface}";
         };
         unfocused = {
-          border = "#080808";
-          background = "#080808";
-          text = "#949494";
-          indicator = "#080808";
-          childBorder = "#080808";
+          border = "#${c.bg}";
+          background = "#${c.bg}";
+          text = "#${c.muted}";
+          indicator = "#${c.bg}";
+          childBorder = "#${c.bg}";
         };
         urgent = {
-          border = "#ff5d5d";
-          background = "#ff5d5d";
-          text = "#080808";
-          indicator = "#ff5d5d";
-          childBorder = "#ff5d5d";
+          border = "#${c.red}";
+          background = "#${c.red}";
+          text = "#${c.bg}";
+          indicator = "#${c.red}";
+          childBorder = "#${c.red}";
         };
         placeholder = {
-          border = "#080808";
-          background = "#080808";
-          text = "#949494";
-          indicator = "#080808";
-          childBorder = "#080808";
+          border = "#${c.bg}";
+          background = "#${c.bg}";
+          text = "#${c.muted}";
+          indicator = "#${c.bg}";
+          childBorder = "#${c.bg}";
         };
-        background = "#080808";
+        background = "#${c.bg}";
       };
 
       output = {
-        "*".bg = "${config.home.homeDirectory}/.wallpaper.jpg fill #080808";
-
-        "Virtual-1".mode = "1920x1080@60Hz";
+        "*".bg = "${config.home.homeDirectory}/.wallpaper.jpg fill #${c.bg}";
 
         # The internal panel owns the layout origin (0,0); the external ASUS
         # sits to its right. This ordering matters for XWayland games:
@@ -284,9 +288,6 @@ in
           repeat_delay = "200";
           repeat_rate = "50";
         };
-        "type:tablet" = {
-          map_to_output = "Virtual-1";
-        };
       };
 
       # keybindings
@@ -303,7 +304,7 @@ in
           "${mod}+Shift+s" =
             ''exec sh -c 'mkdir -p ~/Pictures/Screenshots && file=~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png && grim -g "$(slurp)" "$file" && wl-copy -t image/png < "$file"' '';
           "${mod}+Shift+v" =
-            "exec sh -c 'cliphist list | wmenu -i -l 20 -N 141415 -n cdcdcd -M 252530 -m cdcdcd -S 6e94b2 -s 141415 | cliphist decode | wl-copy' ";
+            "exec sh -c 'cliphist list | wmenu -i -l 20 ${wmenuColors} | cliphist decode | wl-copy' ";
 
           "${mod}+${left}" = "focus left";
 
@@ -388,7 +389,7 @@ in
           command = "wl-paste --type image --watch cliphist store";
         }
       ]
-      ++ lib.optional (osConfig == null || osConfig.hardware.bluetooth.enable) {
+      ++ lib.optional osConfig.hardware.bluetooth.enable {
         command = "blueman-applet";
       }
       ++ [
@@ -406,22 +407,22 @@ in
             size = 10.0;
           };
           colors = {
-            statusline = "#bdbdbd";
-            background = "#080808";
+            statusline = "#${c.fg}";
+            background = "#${c.bg}";
             inactiveWorkspace = {
-              background = "#080808";
-              border = "#080808";
-              text = "#949494";
+              background = "#${c.bg}";
+              border = "#${c.bg}";
+              text = "#${c.muted}";
             };
             activeWorkspace = {
-              background = "#323437";
-              border = "#323437";
-              text = "#bdbdbd";
+              background = "#${c.surface}";
+              border = "#${c.surface}";
+              text = "#${c.fg}";
             };
             focusedWorkspace = {
-              background = "#80a0ff";
-              border = "#80a0ff";
-              text = "#080808";
+              background = "#${c.blue}";
+              border = "#${c.blue}";
+              text = "#${c.bg}";
             };
           };
         }

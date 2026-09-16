@@ -6,8 +6,12 @@
     ../../modules/system/common.nix
   ];
 
-  # Bootloader.
+  # Bootloader. configurationLimit caps how many generations get a boot entry
+  # (and therefore a kernel + initrd on the 1 GB ESP); older generations stay
+  # in the store and are still rolled back to with `nixos-rebuild switch
+  # --rollback`, they just aren't listed in the boot menu.
   boot.loader.systemd-boot.enable = true;
+  boot.loader.systemd-boot.configurationLimit = 5;
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = "lenovo-yoga";
@@ -61,15 +65,13 @@
   };
 
   # ── Gaming ──────────────────────────────────────────────────────────────────
-  programs.steam.enable = true;
-  # gamemode: CPU governor + priority tuning for games. Use per-game via
-  # Steam launch options: gamemoderun %command%
+  # Steam + gamemode are in common.nix.
+  #
   # NOTE: gamescope was tried to fix the XWayland mouse-offset ("can't click
   # buttons") issue, but nested gamescope is broken on this Intel+NVIDIA
   # hybrid (cross-GPU swapchain sharing fails, games die on the first frame).
   # Use the game's own Borderless Windowed mode instead — no resolution change
   # means no XWayland pointer offset, and clicks land correctly.
-  programs.gamemode.enable = true;
 
   # ── Waydroid: Android container (for Boom Beach etc.) ───────────────────────
   # Runs a full Android userspace in an LXC container on the host kernel via

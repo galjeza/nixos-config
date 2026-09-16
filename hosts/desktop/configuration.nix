@@ -6,8 +6,9 @@
     ../../modules/system/common.nix
   ];
 
-  # Bootloader.
+  # Bootloader. See the configurationLimit note in the yoga's config.
   boot.loader.systemd-boot.enable = true;
+  boot.loader.systemd-boot.configurationLimit = 5;
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = "desktop";
@@ -21,13 +22,10 @@
   hardware.amdgpu.initrd.enable = true;
 
   # ── Gaming ──────────────────────────────────────────────────────────────────
-  # Unlike the yoga there is no hybrid-GPU offload and no second output here,
-  # so none of the laptop's PRIME / XWayland-origin workarounds apply — the
-  # single Radeon drives everything and the ultrawide already owns (0,0).
-  programs.steam.enable = true;
-  # gamemode: CPU governor + priority tuning. Use per-game via Steam launch
-  # options: gamemoderun %command%
-  programs.gamemode.enable = true;
+  # Steam + gamemode are in common.nix. Unlike the yoga there is no hybrid-GPU
+  # offload and no second output here, so none of the laptop's PRIME /
+  # XWayland-origin workarounds apply — the single Radeon drives everything and
+  # the ultrawide already owns (0,0).
 
   # ── Wi-Fi: Realtek RTL8852CE (rtw89) ────────────────────────────────────────
   # This is a *combo* Wi-Fi 6E + Bluetooth chip: both radios share the same

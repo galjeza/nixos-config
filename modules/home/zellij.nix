@@ -1,18 +1,21 @@
-{ ... }:
+{ theme, ... }:
 let
-  # ── Single theme switch ──────────────────────────────────────────────
-  # Flip this one value to re-theme zellij. It feeds settings.theme, which
+  # ── Theme ────────────────────────────────────────────────────────────
+  # Follows the global palette from 'theme.nix'. It feeds settings.theme, which
   # colors both zellij's native UI and the compact-bar status line.
-  # Options: "vague" | "moonfly" | "solarized-light" | "solarized-dark".
-  # (vague + moonfly are custom themes defined in the `themes {}` block below;
-  # the solarized variants ship as zellij built-ins.)
+  # (vague + moonfly are custom themes defined in the `themes {}` block below.)
   #
   # Zellij's built-in "ansi" theme was tried and rejected: it paints only with
   # palette slots 0-15 so it inherits ghostty's colors for free, but it has no
   # way to name the terminal's background — the bar lands on palette 0
   # (#323437 under Moonfly) and reads as a grey strip instead of disappearing
   # into the #080808 background. The explicit block below is worth its length.
-  activeTheme = "moonfly";
+  #
+  # The blocks below are upstream KDL verbatim — per-widget emphasis colours
+  # that don't derive from a 7-colour palette — so only the *name* comes from
+  # 'theme.nix'. Add a matching block here before switching the global theme to
+  # anything but vague/moonfly.
+  activeTheme = theme.name;
 in
 {
   programs.zellij = {

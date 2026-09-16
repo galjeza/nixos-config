@@ -77,9 +77,9 @@
   # without this every androidenv derivation refuses to build.
   nixpkgs.config.android_sdk.accept_license = true;
 
-  # OpenGL/Vulkan for Wayland compositors. Needed everywhere Sway runs,
-  # including VMs (virtio-gpu / llvmpipe). Host-specific driver bits — Intel
-  # media drivers, NVIDIA PRIME, etc. — live in the per-host configuration.
+  # OpenGL/Vulkan for Wayland compositors, plus the 32-bit side for Steam.
+  # Host-specific driver bits — Intel media drivers, NVIDIA PRIME, amdgpu
+  # early-KMS — live in the per-host configuration.
   hardware.graphics = {
     enable = true;
     enable32Bit = true;
@@ -214,6 +214,17 @@
   # Firmware updates via LVFS. Run `fwupdmgr refresh` then `fwupdmgr update`
   # to pull and apply BIOS / Thunderbolt / SSD firmware updates.
   services.fwupd.enable = true;
+
+  # Gaming. Both remaining hosts are personal machines that play games, so this
+  # lives here rather than in a module only to be imported everywhere. Split it
+  # back out if a headless/server host ever joins the flake.
+  #
+  # gamemode: CPU governor + priority tuning. Use it per-game via the Steam
+  # launch options: `gamemoderun %command%`. Host-specific graphics
+  # workarounds do NOT belong here — see the PRIME / XWayland notes in
+  # 'hosts/lenovo-yoga/configuration.nix'.
+  programs.steam.enable = true;
+  programs.gamemode.enable = true;
 
   virtualisation.docker.enable = true;
   # enable policykit so that graphical programs can request elevated privileges

@@ -18,12 +18,14 @@ own flake attr name, so `nixos-rebuild` resolves `nixosConfigurations.<hostname>
 by itself and the same alias is correct on every machine. To build for a host
 you are *not* on, name it explicitly:
 ```sh
-sudo nixos-rebuild switch --flake ~/nixos-config#nixos-vm
+sudo nixos-rebuild switch --flake ~/nixos-config#desktop
 ```
 
-To format Nix files:
+To format Nix files (the flake's `formatter` output is `nixfmt-tree`, a treefmt
+wrapper around `nixfmt` — what used to be called `nixfmt-rfc-style`):
 ```sh
-nixfmt-rfc-style <file>
+nix fmt            # whole tree
+nixfmt <file>      # one file
 ```
 
 To check a flake for errors without building:
@@ -33,33 +35,34 @@ nix flake check
 
 ## Architecture
 
-This is a NixOS flake-based configuration managing four hosts (`lenovo-yoga`, `desktop`, `nixos-vm`, `arch-nixos-vm`) with a shared home-manager setup.
+This is a NixOS flake-based configuration managing two hosts (`lenovo-yoga`, `desktop`) with a shared home-manager setup.
 
-**`flake.nix`** — Entry point. Defines all `nixosConfigurations`, wires in `home-manager` and the `neovim-nightly-overlay`. All hosts share one `homeManagerModule` pointing to `modules/home/default.nix` for user `galjeza`.
+**`flake.nix`** — Entry point. Every host is built by the same `mkHost` helper over the `hosts` list, so adding a machine is one string plus a `hosts/<name>/` directory. Wires in `home-manager` and the `neovim-nightly-overlay`; all hosts share one `homeManagerModule` pointing to `modules/home/default.nix` for user `galjeza`. Also exposes `formatter` so `nix fmt` works.
 
-**`modules/system/common.nix`** — Config that is genuinely shared by **all** hosts: nix settings + GC/store optimise, locale, timezone (`Europe/Ljubljana`), user account, networking, Docker, Sway + X11, greetd/tuigreet login, PipeWire, nix-ld, polkit, XDG portals. **The display manager is deliberately greetd, not lightdm** — lightdm's X greeter owns `:0`, which pam_systemd stamps onto the logind session, while Sway's XWayland then lands on `:1`; anything reading logind's `Display` (AnyDesk does) talks to a dead display. See the comment in `common.nix` before switching back. Hardware- and machine-specific config lives in the host files, not here.
+**`modules/system/common.nix`** — Config that is genuinely shared by **all** hosts: nix settings + GC/store optimise, locale, timezone (`Europe/Ljubljana`), user account, networking, Docker, Sway + X11, greetd/tuigreet login, PipeWire, nix-ld, polkit, XDG portals, and gaming (Steam + gamemode — both hosts are personal machines; split it out again if a headless host ever joins). **The display manager is deliberately greetd, not lightdm** — lightdm's X greeter owns `:0`, which pam_systemd stamps onto the logind session, while Sway's XWayland then lands on `:1`; anything reading logind's `Display` (AnyDesk does) talks to a dead display. See the comment in `common.nix` before switching back. Hardware- and machine-specific config lives in the host files, not here.
 
-**`hosts/<name>/configuration.nix`** — Per-host config: bootloader, hostname, and anything hardware/machine-specific. `lenovo-yoga` (Intel + NVIDIA laptop) additionally carries NVIDIA/PRIME graphics, gaming (Steam + gamemode), Waydroid, the Yoga speaker fixup, lid-switch behaviour, bluetooth, and battery conservation. `desktop` (Ryzen 7 5800X + Radeon RX 7600 XT) carries amdgpu early-KMS, gaming, and the RTL8852CE Wi-Fi tuning — including a deliberate **bluetooth-off** stance, since that card's Wi-Fi and BT radios share one antenna. `desktop` also opts **out of idle auto-suspend** (guarded in `modules/home/sway.nix` via `suspendOnIdle`) — S3 resume hangs that machine hard; see the comment there before re-enabling it. The VM hosts carry the SPICE guest agent. Each imports `hardware-configuration.nix` and `../../modules/system/common.nix`.
+**`hosts/<name>/configuration.nix`** — Per-host config: bootloader, hostname, and anything hardware/machine-specific. `lenovo-yoga` (Intel + NVIDIA laptop) additionally carries NVIDIA/PRIME graphics, Waydroid, the Yoga speaker fixup, lid-switch behaviour, bluetooth, and battery conservation. `desktop` (Ryzen 7 5800X + Radeon RX 7600 XT) carries amdgpu early-KMS and the RTL8852CE Wi-Fi tuning — including a deliberate **bluetooth-off** stance, since that card's Wi-Fi and BT radios share one antenna. `desktop` also opts **out of idle auto-suspend** (guarded in `modules/home/sway.nix` via `suspendOnIdle`) — S3 resume hangs that machine hard; see the comment there before re-enabling it. Each imports `hardware-configuration.nix` and `../../modules/system/common.nix`, and caps the boot menu at 5 generations.
 
 **`modules/home/`** — Home-manager modules, all imported by `default.nix`:
-- `default.nix` — User packages, mako notifications (vague palette), wallpaper symlink
-- `foot.nix` — Foot terminal (no longer the default terminal — ghostty is); carries `vague`, `moonfly` and solarized palettes, switched via the `footTheme` selector (currently `solarized-light`)
+- `default.nix` — User packages, mako notifications, zoxide, wallpaper symlink
+- `theme.nix` — **The colour palette, for the whole desktop.** Defines `vague` and `moonfly` (semantic names + a 16-colour terminal palette each), picks one via `active`, and hands it to every other module as the `theme` argument. Re-theming sway, swaylock, wmenu, mako, foot, the bar and the zsh prompt is the one-line `active` change
+- `foot.nix` — Foot terminal (no longer the default terminal — ghostty is); follows the global palette from `theme.nix`
 - `ghostty.nix` — Ghostty terminal, the actual default (`terminal` in `sway.nix`); uses the built-in `Moonfly` theme
-- `sway.nix` — Full Sway WM config (keybindings, colors, bar, outputs, gaps) — moonfly palette
+- `sway.nix` — Full Sway WM config (keybindings, colors, bar, outputs, gaps); colours, swaylock and the wmenu flags all come from `theme.nix`
 - `neovim.nix` — Enables neovim-nightly; symlinks `nvim/` into `~/.config/nvim`
-- `zsh.nix` — Shell config, aliases, zoxide, PATH setup, prompt (moonfly palette)
+- `zsh.nix` — Shell config, aliases, PATH setup, prompt (colours from `theme.nix`; the zoxide hook is generated by `programs.zoxide` in `default.nix`)
 - `git.nix` — Git identity + diff/merge/rerere config
 - `meld.nix` — Meld graphical diff/merge tool (dconf settings)
 - `rust.nix` — Rust toolchain (`rustc`/`cargo`/`clippy`/`rustfmt`/`rust-analyzer`, from nixpkgs — no rustup), cargo helpers (`cargo-edit`, `cargo-nextest`, `cargo-watch`, `bacon`) and `taplo` for `Cargo.toml`
-- `zellij.nix` — Zellij terminal multiplexer (moonfly theme; vague + solarized also defined)
+- `zellij.nix` — Zellij terminal multiplexer. Takes its theme *name* from `theme.nix`; the `themes {}` KDL blocks are upstream verbatim (per-widget emphasis colours that don't derive from a 7-colour palette), so a new global theme needs a matching block added here
 
 **`nvim/`** — Neovim config (Lua). Uses `vim.pack` (built-in plugin manager, NixOS Neovim nightly). Loaded in order: `init.lua` → `plugin/10_options.lua` → `20_keymaps.lua` → `30_mini.lua` → `40_plugins.lua`. Powered by `mini.nvim`.
 
 ## Key Conventions
 
-- **Theme**: `moonfly` ([bluz71/vim-moonfly-colors](https://github.com/bluz71/vim-moonfly-colors)) is the active theme across `ghostty`, `zellij`, `sway`, `nvim` and the `zsh` prompt. moonfly palette: bg `#080808`, surface `#323437`, fg `#bdbdbd`, muted `#949494`, blue `#80a0ff`, gold `#e3c78a`, red `#ff5d5d`. `vague` ([vague-theme/vague.nvim](https://github.com/vague-theme/vague.nvim)) stays defined everywhere as an alternative — bg `#141415`, surface `#252530`, fg `#cdcdcd`, muted `#606079`, blue `#6e94b2`, gold `#f3be7c`, love `#d8647e`. Stragglers: `foot` is on `solarized-light`, `mako` still uses the older Rose Pine hex — migrate when convenient.
+- **Theme**: palettes live in `modules/home/theme.nix` and nowhere else — never hardcode hex in a home module, take the `theme` argument. `active` is `moonfly` ([bluz71/vim-moonfly-colors](https://github.com/bluz71/vim-moonfly-colors)): bg `#080808`, surface `#323437`, fg `#bdbdbd`, muted `#949494`, blue `#80a0ff`, gold `#e3c78a`, red `#ff5d5d`. `vague` ([vague-theme/vague.nvim](https://github.com/vague-theme/vague.nvim)) stays defined as the one alternative — bg `#141415`, surface `#252530`, fg `#cdcdcd`, muted `#606079`, blue `#6e94b2`, gold `#f3be7c`, love `#d8647e`. One thing opts out on purpose: `ghostty` uses its own built-in `Moonfly` theme. `nvim` is themed in `nvim/`, not here.
 - **`nixpkgs` channel**: `nixos-unstable` (rolling). `home-manager` follows the same nixpkgs to avoid duplicate copies.
 - **`stateVersion`**: `"25.11"` — do not change without reading the NixOS docs on state version migration.
 - **`networking.hostName` must equal the flake attr name** for that host. The `rebuild` aliases depend on it (see above); breaking the match makes `rebuild` either fail or apply the wrong machine's config.
-- **Shared home-manager modules must degrade on hosts that lack the hardware.** `modules/home/` is imported by every host, so anything hardware-dependent has to be guarded — the sway status bar tolerates a missing `BAT0`, and `blueman-applet` only autostarts when `osConfig.hardware.bluetooth.enable` is set.
+- **Shared home-manager modules must degrade on hosts that lack the hardware.** `modules/home/` is imported by both hosts, so anything hardware-dependent has to be guarded — the sway status bar tolerates a missing `BAT0`, and `blueman-applet` only autostarts when `osConfig.hardware.bluetooth.enable` is set.
 - **Neovim config** lives in `nvim/` (repo root) and is symlinked to `~/.config/nvim` via `xdg.configFile` in `neovim.nix`. Edit files here; changes take effect after `rebuild` or after re-sourcing home-manager.

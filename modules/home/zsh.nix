@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, theme, ... }:
 {
   programs.zsh = {
     enable = true;
@@ -37,11 +37,11 @@
       [[ -f $HOME/.config/secrets/env ]] && source $HOME/.config/secrets/env
     '';
 
+    # `zoxide init zsh` is emitted by programs.zoxide (default.nix), not here.
     initContent = ''
       setopt inc_append_history
-      eval "$(zoxide init zsh)"
 
-      # Prompt: ~/path on branch* ❯   (vague palette)
+      # Prompt: user@host:~/path on branch* >   (colours from 'theme.nix')
       autoload -Uz vcs_info
       precmd_vcs_info() { vcs_info }
       precmd_functions+=( precmd_vcs_info )
@@ -50,9 +50,9 @@
       zstyle ':vcs_info:git:*' check-for-changes true
       zstyle ':vcs_info:git:*' unstagedstr '*'
       zstyle ':vcs_info:git:*' stagedstr '+'
-      zstyle ':vcs_info:git:*' formats ' %F{#949494}on%f %F{#e3c78a}%b%F{#ff5d5d}%u%c%f'
-      zstyle ':vcs_info:git:*' actionformats ' %F{#949494}on%f %F{#e3c78a}%b|%a%F{#ff5d5d}%u%c%f'
-      PROMPT='%n@%m:%F{#80a0ff}%~/%f''${vcs_info_msg_0_}
+      zstyle ':vcs_info:git:*' formats ' %F{#${theme.colors.muted}}on%f %F{#${theme.colors.gold}}%b%F{#${theme.colors.red}}%u%c%f'
+      zstyle ':vcs_info:git:*' actionformats ' %F{#${theme.colors.muted}}on%f %F{#${theme.colors.gold}}%b|%a%F{#${theme.colors.red}}%u%c%f'
+      PROMPT='%n@%m:%F{#${theme.colors.blue}}%~/%f''${vcs_info_msg_0_}
       > '
 
     '';
@@ -65,9 +65,9 @@
 
       # NixOS rebuild helpers. No `#target` on purpose: nixos-rebuild defaults
       # to nixosConfigurations.<hostname>, and every host in this flake sets
-      # networking.hostName to its own attr name (lenovo-yoga, desktop,
-      # nixos-vm, arch-nixos-vm). So the same alias does the right thing on
-      # every machine instead of applying the laptop's config to the desktop.
+      # networking.hostName to its own attr name (lenovo-yoga, desktop). So the
+      # same alias does the right thing on every machine instead of applying
+      # the laptop's config to the desktop.
       # Note: /etc/nixos is not a flake checkout here.
       rebuild = "sudo nixos-rebuild switch --flake $HOME/nixos-config";
       rebuild-test = "sudo nixos-rebuild test --flake $HOME/nixos-config";

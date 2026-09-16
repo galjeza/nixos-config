@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, theme, ... }:
 {
   imports = [
     ./android.nix
@@ -10,6 +10,7 @@
     ./neovim.nix
     ./rust.nix
     ./sway.nix
+    ./theme.nix
     ./xdg.nix
     ./zellij.nix
     ./zsh.nix
@@ -38,27 +39,29 @@
 
   home.file.".wallpaper.jpg".source = ../../assets/wallpapers/grad.jpg;
 
-  # Notification colours — vague palette (matches sway/swaylock chrome).
+  # Notification colours — from 'theme.nix', same palette as sway/swaylock.
   services.mako = {
     enable = true;
     settings = {
       font = "IosevkaTerm Nerd Font Mono 10";
-      background-color = "#141415";
-      text-color = "#cdcdcd";
-      border-color = "#6e94b2";
-      progress-color = "#6e94b2";
+      background-color = "#${theme.colors.bg}";
+      text-color = "#${theme.colors.fg}";
+      border-color = "#${theme.colors.blue}";
+      progress-color = "#${theme.colors.blue}";
       default-timeout = 5000;
     };
   };
 
   services.polkit-gnome.enable = true;
 
+  # Installs zoxide *and* wires the `eval "$(zoxide init zsh)"` hook into zsh
+  # itself, so neither the package nor the init line has to be repeated here.
+  programs.zoxide.enable = true;
+
   # user-specific packages (things only you need, not system-wide)
   home.packages = with pkgs; [
     fastfetch
-    zellij
     wdisplays
-    zoxide
     nixfmt # nix formatter (wired into conform for .nix + nixd LSP)
     stylua
 
@@ -94,15 +97,9 @@
     thunar # gui file manager
     loupe # gnome image viewer — opens svg, png, jpg, etc.
     libreoffice # office suite — open/view/edit docx (with images), odt, xlsx, etc.
-    (anki.withAddons (with ankiAddons; [ anki-connect ]))
     claude-code
     opencode
     codex
-    # Agent-aware multiplexer: detects which pane is running an agent and whether
-    # it is working or blocked on you, so parallel agents don't need polling by
-    # hand. It *is* a terminal multiplexer, so it overlaps zellij rather than
-    # complementing it — both installed while trialling; drop one once decided.
-    herdr
     htop
     slack
     telegram-desktop
@@ -122,7 +119,6 @@
     file
     difftastic # `difft` — structural (syntax-tree) diff; wired into lazygit
     dbeaver-bin
-    beyond-all-reason
     wineWow64Packages.stable # 32+64-bit Wine for electron-builder --win on Linux
   ];
 }

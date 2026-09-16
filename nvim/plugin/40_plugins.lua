@@ -336,7 +336,6 @@ Config.now(function()
 	add({
 		"https://github.com/vague-theme/vague.nvim",
 		"https://github.com/bluz71/vim-moonfly-colors",
-		"https://github.com/maxmx03/solarized.nvim",
 		"https://github.com/rebelot/kanagawa.nvim",
 		"https://github.com/olivercederborg/poimandres.nvim",
 	})

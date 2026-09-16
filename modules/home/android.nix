@@ -1,10 +1,9 @@
-{
-  pkgs,
-  lib,
-  osConfig,
-  ...
-}:
+{ pkgs, ... }:
 # Android SDK for React Native / Expo development (lime-booking marketplace).
+#
+# Unconditional: both hosts in this flake are development machines. It is ~6.3 GB
+# of SDK, NDKs and toolchain, so guard it on `osConfig.networking.hostName` again
+# if a machine that never builds Android joins the flake.
 #
 # The versions below are NOT arbitrary — they are what the Expo SDK 57 /
 # React Native 0.86 project resolves to after `expo prebuild`, read from
@@ -30,14 +29,6 @@ let
   # on demand; the Nix store is read-only, so it has to be here up front or the
   # build dies with "The SDK directory is not writable".
   agpDefaultNdkVersion = "27.0.12077973";
-
-  # Only the two physical machines get this — the closure is ~6.3 GB of SDK,
-  # NDKs and toolchain, and the VMs never build Android.
-  androidHosts = [
-    "lenovo-yoga"
-    "desktop"
-  ];
-  enable = osConfig != null && builtins.elem osConfig.networking.hostName androidHosts;
 
   androidComposition = pkgs.androidenv.composeAndroidPackages {
     platformVersions = [
@@ -71,9 +62,9 @@ in
   # fastboot, which would shadow the system-wide android-tools (common.nix).
   # Gradle only needs ANDROID_HOME, so keeping one adb on PATH avoids the
   # "adb server version doesn't match this client" restart loop.
-  home.packages = lib.optional enable pkgs.jdk17;
+  home.packages = [ pkgs.jdk17 ];
 
-  home.sessionVariables = lib.optionalAttrs enable {
+  home.sessionVariables = {
     ANDROID_HOME = sdkRoot;
     ANDROID_SDK_ROOT = sdkRoot; # deprecated by Google, still read by some tools
     ANDROID_NDK_ROOT = "${sdkRoot}/ndk/${ndkVersion}";
