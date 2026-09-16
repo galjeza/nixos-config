@@ -28,10 +28,6 @@ in
     layouts.main = ''
       layout {
           default_tab_template {
-              // zellij's built-in compact-bar: tabs + mode/session on one
-              // line, no keybinding hints. Honours settings.simplified_ui and
-              // takes its colors from settings.theme, so there is nothing to
-              // hand-color.
               pane size=1 borderless=true {
                   plugin location="compact-bar"
               }
@@ -53,6 +49,10 @@ in
               pane command="claude" {
                   args "--dangerously-skip-permissions"
               }
+          }
+
+          tab name="git" {
+              pane command="lazygit" 
           }
       }
     '';
