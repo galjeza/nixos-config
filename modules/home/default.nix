@@ -3,6 +3,7 @@
   imports = [
     ./android.nix
     ./foot.nix
+    ./gh.nix
     ./git.nix
     ./lazygit.nix
     ./meld.nix
@@ -68,10 +69,11 @@
     # language servers + formatters (installed via nix, not mason)
     lua-language-server # lua_ls — Lua (this config)
     nixd # nixd — Nix
-    vtsls # vtsls — TypeScript/JavaScript
+    typescript
     prisma-language-server # prismals — Prisma
     tailwindcss-language-server # tailwindcss — Tailwind CSS class completion/hover
     prettierd # conform prettier daemon (global fallback outside projects)
+    biome # conform: JS/TS/CSS/JSON formatter, but only in repos with a biome config
     copilot-language-server # copilot — GitHub Copilot via LSP (unfree; needs `:LspCopilotSignIn`)
 
     tree-sitter
@@ -103,7 +105,6 @@
     slack
     telegram-desktop
     obsidian
-    gh
     ripgrep
     # Shell tooling coding agents reach for by default. rg covers text search;
     # these fill the rest — fd for file discovery, jq for every package.json /

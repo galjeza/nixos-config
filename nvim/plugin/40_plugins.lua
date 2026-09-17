@@ -71,7 +71,7 @@ now_if_args(function()
 	vim.lsp.enable({
 		"lua_ls",
 		"nixd",
-		"vtsls",
+		"tsc",
 		"prismals",
 		"rust_analyzer",
 		"taplo",
