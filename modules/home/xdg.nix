@@ -34,6 +34,8 @@ in
       "x-scheme-handler/tg" = [ "org.telegram.desktop.desktop" ];
       "x-scheme-handler/tonsite" = [ "org.telegram.desktop.desktop" ];
       "x-scheme-handler/slack" = [ "slack.desktop" ];
+      # tetrio:// room-join / spectate links (see tetrio.nix)
+      "x-scheme-handler/tetrio" = [ "TETR.IO.desktop" ];
       "x-scheme-handler/discord-409416265891971072" = [ "discord-409416265891971072.desktop" ];
 
       # svg is an image, not a web page — keep it in loupe rather than letting it

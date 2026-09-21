@@ -10,6 +10,7 @@
     ./neovim.nix
     ./rust.nix
     ./sway.nix
+    ./tetrio.nix
     ./theme.nix
     ./xdg.nix
     ./zellij.nix
