@@ -49,6 +49,15 @@
   hardware.wirelessRegulatoryDatabase = true;
   boot.kernelParams = [ "cfg80211.ieee80211_regdom=SI" ];
 
+  # Keep KERN_ERR off the framebuffer console (NixOS default is 4, which lets it
+  # through). Every resume on this hardware prints four harmless ACPI method
+  # errors and an iwlwifi "Not valid error log pointer" line; whenever the panel
+  # comes back under fbcon rather than the compositor, that is what fills the
+  # screen, and it reads like the machine failed to boot. 3 leaves emerg/alert/
+  # crit — a real panic still reaches the screen. Nothing is lost either way:
+  # the suppressed messages still go to the journal.
+  boot.consoleLogLevel = 3;
+
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
 

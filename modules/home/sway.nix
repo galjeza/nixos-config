@@ -154,10 +154,21 @@ in
   # last rung only on hosts where resume works (see suspendOnIdle above).
   # Also lock before any suspend (incl. lid close) and on systemd lock signal;
   # those stay wired up everywhere so a *manual* suspend still locks first.
+  #
+  # before-sleep deliberately powers the outputs back *on* after locking. The
+  # 10min rung leaves them DPMS-off, and suspending in that state is what makes
+  # the machine resume to the kernel framebuffer console instead of the desktop
+  # (2026-09-23 11:58): sway leaves the CRTC disabled across the suspend, so on
+  # resume fbcon's restore wins the panel and you come back to a screenful of
+  # the ACPI/iwlwifi KERN_ERR noise every resume prints — which reads exactly
+  # like a boot failure. swayidle's own resumeCommand can't cover this; it only
+  # fires on input, ~2.6s after resume. Powering the outputs on before we sleep
+  # means there is no DPMS-off state to recover from. swaylock is already up by
+  # then, so nothing is exposed.
   services.swayidle = {
     enable = true;
     events = {
-      before-sleep = "${swaylock} -f";
+      before-sleep = ''${swaylock} -f; ${swaymsg} "output * power on"'';
       lock = "${swaylock} -f";
     };
     timeouts = [
