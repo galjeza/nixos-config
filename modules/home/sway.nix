@@ -299,6 +299,14 @@ in
           scale = "1";
           pos = "1600 0";
         };
+        # LG 34" ultrawide, same slot as the ASUS. Unlisted, sway still put it
+        # at x=1600 — so with eDP-1 disabled by hand there was nothing at (0,0)
+        # and clicks missed. Play fullscreen games on it with Mod+g.
+        "LG Electronics LG ULTRAWIDE 311NTHMA1433" = {
+          mode = "3440x1440@100Hz";
+          scale = "1";
+          pos = "1600 0";
+        };
 
         # desktop: Xiaomi 34" ultrawide on HDMI-A-2. Its EDID marks the
         # 3440x1440@50Hz mode as *preferred*, so sway lands on 49.998Hz

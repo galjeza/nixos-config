@@ -1,4 +1,9 @@
-{ pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   nix = {
@@ -81,6 +86,9 @@
       "networkmanager"
       "wheel"
       "docker"
+      # gamemode's polkit rule only lets this group switch the CPU governor
+      # without an auth prompt; outside it `gamemoderun` silently does nothing.
+      "gamemode"
     ];
     shell = pkgs.zsh;
   };
@@ -244,12 +252,43 @@
   # lives here rather than in a module only to be imported everywhere. Split it
   # back out if a headless/server host ever joins the flake.
   #
-  # gamemode: CPU governor + priority tuning. Use it per-game via the Steam
-  # launch options: `gamemoderun %command%`. Host-specific graphics
+  # gamemode: CPU governor + priority tuning, applied to games through the
+  # launch options stamped in below. Host-specific graphics
   # workarounds do NOT belong here — see the PRIME / XWayland notes in
   # 'hosts/lenovo-yoga/configuration.nix'.
-  programs.steam.enable = true;
-  programs.gamemode.enable = true;
+  #
+  # Steam has no global launch option, so every installed game gets one
+  # stamped into its per-game setting each time Steam starts (see the script
+  # for the rules: fills blanks only, never overrides a hand-set option).
+  # Deliberately not done as `extraEnv` on Steam itself: that would put the
+  # Steam client's own Chromium on the dGPU (see the glvnd EGL notes in the
+  # lenovo-yoga host) and hold gamemode on for as long as Steam is open.
+  programs.steam = {
+    enable = true;
+    package = pkgs.steam.override {
+      extraPreBwrapCmds =
+        let
+          stamp = pkgs.writers.writePython3 "steam-launch-options" {
+            libraries = [ pkgs.python3Packages.vdf ];
+            flakeIgnore = [ "E501" ];
+          } (builtins.readFile ./steam-launch-options.py);
+          # nvidia-offload only exists on PRIME-offload hosts.
+          prefix = lib.optionalString config.hardware.nvidia.prime.offload.enableOffloadCmd "nvidia-offload ";
+        in
+        "${stamp} ${lib.escapeShellArg "${prefix}gamemoderun %command%"} || true";
+    };
+  };
+  programs.gamemode = {
+    enable = true;
+    settings = {
+      # Upstream default is 0, i.e. no priority bump at all.
+      general.renice = 10;
+      custom = {
+        start = "${pkgs.libnotify}/bin/notify-send 'GameMode on'";
+        end = "${pkgs.libnotify}/bin/notify-send 'GameMode off'";
+      };
+    };
+  };
 
   virtualisation.docker.enable = true;
   # enable policykit so that graphical programs can request elevated privileges
