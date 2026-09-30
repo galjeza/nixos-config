@@ -31,6 +31,10 @@
     # `Cargo.toml` language server + formatter (enabled in nvim as `taplo`)
     taplo
 
+    # Rust exercises. `rustlings init` writes them (and a `Cargo.toml`, so
+    # rust-analyzer works) into ./rustlings; progress lives in that folder.
+    rustlings
+
     # Most `*-sys` crates shell out to pkg-config to find system libs.
     # The linker (`gcc`) and `openssl` come from 'default.nix'.
     pkg-config
