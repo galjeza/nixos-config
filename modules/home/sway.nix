@@ -120,6 +120,33 @@ let
     notify-send -t 2000 "Game mode on" "$target is the only output, pinned to 0,0"
   '';
 
+  # The declared `pos` values can't cover every combination of outputs. When
+  # eDP-1 gets disabled at runtime (wdisplays, unplugging, a reload), the
+  # externals stay at x=1600 and nothing sits at (0,0), which brings the
+  # click bug above back. It happened on 2026-09-29: only the left part of a
+  # fullscreen game took clicks. This watcher runs on every output event and,
+  # when no active output is at the origin, shifts the layout back so one is.
+  # The layout keeps its shape; only the offset changes.
+  originGuard = pkgs.writeShellScript "sway-origin-guard" ''
+    PATH=${
+      lib.makeBinPath [
+        pkgs.sway
+        pkgs.jq
+      ]
+    }:$PATH
+    fix() {
+      swaymsg -t get_outputs | jq -r '
+        [.[] | select(.active)] as $o
+        | if ($o | length) == 0 or any($o[]; .rect.x == 0 and .rect.y == 0) then empty
+          else ($o | map(.rect.x) | min) as $x | ($o | map(.rect.y) | min) as $y
+            | $o[] | "\(.name) \(.rect.x - $x) \(.rect.y - $y)"
+          end' \
+        | while read -r name x y; do swaymsg output "$name" pos "$x" "$y" >/dev/null; done
+    }
+    fix
+    swaymsg -t subscribe -m '["output"]' | while read -r _; do fix; done
+  '';
+
   # AnyDesk hardcodes DISPLAY=:0 for its child processes. When sway's
   # Xwayland lands on :1 (or later), those children fail with "Cannot open
   # display" and AnyDesk auto-shuts-down. Point /tmp/.X11-unix/X0 at
@@ -301,7 +328,8 @@ in
         };
         # LG 34" ultrawide, same slot as the ASUS. Unlisted, sway still put it
         # at x=1600 — so with eDP-1 disabled by hand there was nothing at (0,0)
-        # and clicks missed. Play fullscreen games on it with Mod+g.
+        # and clicks missed. originGuard now shifts it to the origin when that
+        # happens. With both screens on, play fullscreen games with Mod+g.
         "LG Electronics LG ULTRAWIDE 311NTHMA1433" = {
           mode = "3440x1440@100Hz";
           scale = "1";
@@ -399,7 +427,10 @@ in
         { command = "wl-paste --type image --watch cliphist store"; }
       ]
       ++ lib.optional osConfig.hardware.bluetooth.enable { command = "blueman-applet"; }
-      ++ [ { command = "${xwaylandX0Symlink}"; } ];
+      ++ [
+        { command = "${xwaylandX0Symlink}"; }
+        { command = "${originGuard}"; }
+      ];
 
       bars = [
         {
