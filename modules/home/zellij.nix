@@ -67,6 +67,10 @@ in
       	// layout, not focus); `Ctrl h` is its only default route, so the mode
       	// becomes unreachable. Nothing here rearranges panes, so that's fine.
       	unbind "Ctrl h"
+      	// Claude Code uses `Ctrl g` (open the prompt in $EDITOR). In zellij it
+      	// only toggles Locked mode, and unbinding it everywhere leaves Locked
+      	// unreachable — so there is no way to get stuck in it either.
+      	unbind "Ctrl g"
       }
 
       // Upstream: https://github.com/vague-theme/vague-zellij/blob/main/vague.kdl

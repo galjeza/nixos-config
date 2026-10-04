@@ -48,6 +48,15 @@ in
     initContent = ''
       setopt inc_append_history
 
+      # Ctrl-X Ctrl-E: edit the current command line in $EDITOR (bash has
+      # this built in; zsh ships the widget but leaves it unbound). Bound in
+      # viins too, since zsh picks the vi keymap because EDITOR=nvim.
+      autoload -Uz edit-command-line
+      zle -N edit-command-line
+      bindkey -M emacs '^X^E' edit-command-line
+      bindkey -M viins '^X^E' edit-command-line
+      bindkey -M vicmd 'v' edit-command-line
+
       # Prompt: user@host:~/path on branch* >   (colours from 'theme.nix')
       autoload -Uz vcs_info
       precmd_vcs_info() { vcs_info }
