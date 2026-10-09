@@ -30,15 +30,13 @@
   # the 1 GB ESP); older generations stay in the store and are still rolled
   # back to with `nixos-rebuild switch --rollback`, they just aren't listed in
   # the boot menu.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.systemd-boot.configurationLimit = 5;
-  boot.loader.efi.canTouchEfiVariables = true;
-
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+  boot.loader = {
+    systemd-boot = {
+      enable = true;
+      configurationLimit = 5;
+    };
+    efi.canTouchEfiVariables = true;
+  };
 
   # Enable networking
   networking.networkmanager.enable = true;
@@ -92,12 +90,14 @@
     ];
     shell = pkgs.zsh;
   };
+  programs.zsh.enable = true;
 
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
-  # The Android SDK (modules/home/android.nix) is unfree *and* license-gated;
-  # without this every androidenv derivation refuses to build.
-  nixpkgs.config.android_sdk.accept_license = true;
+  nixpkgs.config = {
+    allowUnfree = true;
+    # The Android SDK (modules/home/android.nix) is unfree *and* license-gated;
+    # without this every androidenv derivation refuses to build.
+    android_sdk.accept_license = true;
+  };
 
   # OpenGL/Vulkan for Wayland compositors, plus the 32-bit side for Steam.
   # Host-specific driver bits — Intel media drivers, NVIDIA PRIME, amdgpu
@@ -106,9 +106,6 @@
     enable = true;
     enable32Bit = true;
   };
-
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
 
   # GUI apps (browsers, meld, etc.) live in home.packages; keep this list to
   # CLI tools + things tied to system services (pritunl).
@@ -143,14 +140,7 @@
   };
 
   # enable x11 for legacy desktop apps
-  services.xserver = {
-    enable = true;
-    # Configure keymap in X11
-    xkb = {
-      layout = "us";
-      variant = "";
-    };
-  };
+  services.xserver.enable = true;
 
   # Login via greetd + tuigreet instead of lightdm. lightdm runs its greeter on
   # a real X server (":0") and pam_systemd stamps that number onto the logind
@@ -183,7 +173,6 @@
   # built-in red ":(" placeholder. This cache is the merged one (all raster
   # loaders + svg), so pointing at it does not break PNG/JPEG loading.
   environment.sessionVariables.GDK_PIXBUF_MODULE_FILE = "${pkgs.librsvg}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache";
-  programs.zsh.enable = true;
 
   # nix-ld: allow dynamically linked FHS binaries (e.g. prebuilt Electron) to run.
   programs.nix-ld = {
@@ -253,8 +242,8 @@
   # back out if a headless/server host ever joins the flake.
   #
   # gamemode: CPU governor + priority tuning, applied to games through the
-  # launch options stamped in below. Host-specific graphics
-  # workarounds do NOT belong here — see the PRIME / XWayland notes in
+  # launch options stamped in below. Host-specific graphics workarounds do NOT
+  # belong here — see the PRIME / XWayland notes in
   # 'hosts/lenovo-yoga/configuration.nix'.
   #
   # Steam has no global launch option, so every installed game gets one
@@ -299,25 +288,6 @@
     wlr.enable = true;
     extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   };
-
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
-
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

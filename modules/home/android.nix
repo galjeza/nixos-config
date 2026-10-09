@@ -50,7 +50,7 @@ let
       "3.22.1"
     ];
     includeNDK = true;
-    includeEmulator = false; # Waydroid is the device on these hosts
+    includeEmulator = false; # devices are Waydroid (lenovo-yoga) or a real phone
     includeSystemImages = false;
     abiVersions = [ "x86_64" ];
   };

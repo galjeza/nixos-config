@@ -5,9 +5,7 @@
   programs.foot = {
     enable = true;
     settings = {
-      main = {
-        font = "${theme.font}:size=11";
-      };
+      main.font = "${theme.font}:size=11";
       colors-dark = theme.colors.terminal;
     };
   };

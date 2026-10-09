@@ -20,15 +20,13 @@
   home.username = "galjeza";
   home.homeDirectory = "/home/galjeza";
 
-  # this must match system.stateVersion in configuration.nix
+  # this must match system.stateVersion in 'modules/system/common.nix'
   home.stateVersion = "25.11";
 
   # Monospace family comes from 'theme.nix' along with the palette.
   fonts.fontconfig = {
     enable = true;
-    defaultFonts = {
-      monospace = [ theme.font ];
-    };
+    defaultFonts.monospace = [ theme.font ];
   };
 
   # let home-manager manage itself

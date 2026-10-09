@@ -297,14 +297,10 @@ in
         "*".bg = "${config.home.homeDirectory}/.wallpaper.jpg fill #${c.bg}";
 
         # The internal panel owns the layout origin (0,0); the external ASUS
-        # sits to its right. This ordering matters for XWayland games:
-        # Xwayland spans a single X screen over the whole sway layout, and
-        # fullscreen X11 games place themselves at that screen's origin. If
-        # no output occupies (0,0), the game's idea of its own position is
-        # offset from where sway actually draws it, so every click lands off
-        # the window while the keyboard keeps working (X routes keys by
-        # focus, not by coordinate) — the "can't click anything in the game"
-        # bug.
+        # sits to its right. This ordering matters for XWayland games: if no
+        # output occupies (0,0), fullscreen X11 games mis-place themselves and
+        # every click lands off the window — the "can't click anything in the
+        # game" bug (mechanism explained above `gameMode`).
         #
         # The origin therefore belongs to the output that is ALWAYS present.
         # Pinning the external monitor there instead left a phantom 1920px
@@ -350,11 +346,9 @@ in
         };
       };
 
-      input = {
-        "*" = {
-          repeat_delay = "200";
-          repeat_rate = "50";
-        };
+      input."*" = {
+        repeat_delay = "200";
+        repeat_rate = "50";
       };
 
       # keybindings. The per-workspace half is generated from the `workspaces`
@@ -404,19 +398,17 @@ in
         "${mod}+g" = "exec ${gameMode}";
       };
 
-      modes = {
-        resize = {
-          "${left}" = "resize shrink width 10px";
-          "${down}" = "resize grow height 10px";
-          "${up}" = "resize shrink height 10px";
-          "${right}" = "resize grow width 10px";
-          "Left" = "resize shrink width 10px";
-          "Down" = "resize grow height 10px";
-          "Up" = "resize shrink height 10px";
-          "Right" = "resize grow width 10px";
-          "Return" = "mode default";
-          "Escape" = "mode default";
-        };
+      modes.resize = {
+        "${left}" = "resize shrink width 10px";
+        "${down}" = "resize grow height 10px";
+        "${up}" = "resize shrink height 10px";
+        "${right}" = "resize grow width 10px";
+        "Left" = "resize shrink width 10px";
+        "Down" = "resize grow height 10px";
+        "Up" = "resize shrink height 10px";
+        "Right" = "resize grow width 10px";
+        "Return" = "mode default";
+        "Escape" = "mode default";
       };
 
       # blueman-applet is only installed on hosts that enable bluetooth. The

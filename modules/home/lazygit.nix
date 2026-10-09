@@ -4,19 +4,14 @@
     enable = true;
 
     settings = {
-      os = {
-        # `e` on a file opens it in the *parent* nvim as a tab, instead of
-        # starting a nested nvim inside lazygit's floating terminal.
-        #
-        # lazygit.nvim only wires up remote editing when `nvr` is on PATH
-        # (`g:lazygit_use_neovim_remote = executable('nvr') ? 1 : 0`), and it
-        # isn't. This preset needs no extra package: it uses $NVIM, the socket
-        # nvim exports inside any :terminal. When $NVIM is unset — lazygit
-        # launched straight from foot or a zellij pane — it falls back to a
-        # plain `nvim`, so both entry points behave sensibly. Invoked from the
-        # staging panel it also jumps to the right line.
-        editPreset = "nvim-remote";
-      };
+      # When lazygit runs inside an nvim :terminal, `e` on a file opens it in
+      # that *parent* nvim as a tab instead of starting a nested nvim. The
+      # preset needs no extra package (no `nvr`): it uses $NVIM, the socket
+      # nvim exports inside any :terminal. When $NVIM is unset — lazygit
+      # launched straight from foot or a zellij pane — it falls back to a
+      # plain `nvim`, so both entry points behave sensibly. Invoked from the
+      # staging panel it also jumps to the right line.
+      os.editPreset = "nvim-remote";
 
       # The version is pinned by the flake, so a self-update prompt is noise
       # you can't act on — `rebuild-update` is what actually moves it.
@@ -46,7 +41,7 @@
         mouseEvents = false;
 
         border = "single";
-        #get rid of icons
+        # No Nerd Font icons.
         nerdFontsVersion = "";
 
         # Fraction of the terminal width given to the whole left column

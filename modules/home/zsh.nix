@@ -1,10 +1,12 @@
 { pkgs, theme, ... }:
 let
+  c = theme.colors;
+
   # Where this flake is checked out, as the *shell* sees it — the rebuild
   # aliases below run inside zsh, so this stays a literal "$HOME/..." rather
   # than the expanded home-manager path.
   flakeDir = "$HOME/nixos-config";
-  rebuildSwitch = "sudo nixos-rebuild switch --flake ${flakeDir}";
+  nixosRebuild = action: "sudo nixos-rebuild ${action} --flake ${flakeDir}";
 in
 {
   programs.zsh = {
@@ -66,9 +68,9 @@ in
       zstyle ':vcs_info:git:*' check-for-changes true
       zstyle ':vcs_info:git:*' unstagedstr '*'
       zstyle ':vcs_info:git:*' stagedstr '+'
-      zstyle ':vcs_info:git:*' formats ' %F{#${theme.colors.muted}}on%f %F{#${theme.colors.gold}}%b%F{#${theme.colors.red}}%u%c%f'
-      zstyle ':vcs_info:git:*' actionformats ' %F{#${theme.colors.muted}}on%f %F{#${theme.colors.gold}}%b|%a%F{#${theme.colors.red}}%u%c%f'
-      PROMPT='%n@%m:%F{#${theme.colors.blue}}%~/%f''${vcs_info_msg_0_}
+      zstyle ':vcs_info:git:*' formats ' %F{#${c.muted}}on%f %F{#${c.gold}}%b%F{#${c.red}}%u%c%f'
+      zstyle ':vcs_info:git:*' actionformats ' %F{#${c.muted}}on%f %F{#${c.gold}}%b|%a%F{#${c.red}}%u%c%f'
+      PROMPT='%n@%m:%F{#${c.blue}}%~/%f''${vcs_info_msg_0_}
       > '
 
     '';
@@ -85,11 +87,11 @@ in
       # same alias does the right thing on every machine instead of applying
       # the laptop's config to the desktop.
       # Note: /etc/nixos is not a flake checkout here.
-      rebuild = rebuildSwitch;
-      rebuild-test = "sudo nixos-rebuild test --flake ${flakeDir}";
-      rebuild-boot = "sudo nixos-rebuild boot --flake ${flakeDir}";
+      rebuild = nixosRebuild "switch";
+      rebuild-test = nixosRebuild "test";
+      rebuild-boot = nixosRebuild "boot";
 
-      rebuild-update = "nix flake update --flake ${flakeDir} && ${rebuildSwitch}";
+      rebuild-update = "nix flake update --flake ${flakeDir} && ${nixosRebuild "switch"}";
 
       playwright-shell = "nix shell github:pietdevries94/playwright-web-flake#playwright-test";
     };

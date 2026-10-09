@@ -5,9 +5,6 @@
 -- This file defines Neovim's built-in behavior. The goal is to improve overall
 -- usability in a way that works best with MINI.
 
--- Option values can be customized on a per buffer or window basis.
--- See 'after/ftplugin/' for common example.
-
 -- stylua: ignore start
 -- The next part (until `-- stylua: ignore end`) is aligned manually for easier
 -- reading. Consider preserving this or remove `-- stylua` lines to autoformat.
@@ -95,9 +92,7 @@ Config.new_autocmd('FileType', nil, f, "Proper 'formatoptions'")
 -- There are other autocommands created by 'mini.basics'. See 'plugin/30_mini.lua'.
 
 -- Diff =======================================================================
-vim.opt.diffopt:append("algorithm:histogram")
-vim.opt.diffopt:append("indent-heuristic")
-vim.opt.diffopt:append("linematch:60")
+vim.opt.diffopt:append({ 'algorithm:histogram', 'indent-heuristic', 'linematch:60' })
 
 -- Diagnostics ================================================================
 

@@ -17,7 +17,8 @@
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
   };
 
-  # outputs is what this flake produces - in our case a NixOS system
+  # outputs is what this flake produces - one NixOS system per host, plus the
+  # `nix fmt` formatter
   outputs =
     {
       nixpkgs,
@@ -29,11 +30,11 @@
       system = "x86_64-linux";
 
       # shared home-manager config used by all machines
-      homeManagerModule = {
-        home-manager.useGlobalPkgs = true;
-        home-manager.useUserPackages = true;
-        home-manager.users.galjeza = import ./modules/home/default.nix;
-        home-manager.backupFileExtension = "bak";
+      homeManagerModule.home-manager = {
+        useGlobalPkgs = true;
+        useUserPackages = true;
+        users.galjeza = import ./modules/home/default.nix;
+        backupFileExtension = "bak";
       };
 
       neovimNightlyModule = {
@@ -42,9 +43,10 @@
 
       # Every host is the same recipe: its own 'hosts/<name>/configuration.nix'
       # (which pulls in that host's hardware config + modules/system/common.nix)
-      # plus the three shared modules above. `networking.hostName` is set inside
-      # each host file and MUST equal the attr name here — the `rebuild` aliases
-      # rely on nixos-rebuild resolving nixosConfigurations.<hostname> itself.
+      # plus the shared neovim overlay and home-manager modules.
+      # `networking.hostName` is set inside each host file and MUST equal the
+      # attr name here — the `rebuild` aliases rely on nixos-rebuild resolving
+      # nixosConfigurations.<hostname> itself.
       mkHost =
         name:
         nixpkgs.lib.nixosSystem {

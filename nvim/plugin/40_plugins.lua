@@ -119,6 +119,7 @@ end)
 -- Formatting =================================================================
 later(function()
 	add({ "https://github.com/stevearc/conform.nvim" })
+	local biome_or_prettierd = { "biome", "prettierd", stop_after_first = true }
 	require("conform").setup({
 		default_format_opts = {
 			-- Allow formatting from LSP server if no dedicated formatter is available
@@ -134,12 +135,12 @@ later(function()
 			biome = { require_cwd = true },
 		},
 		formatters_by_ft = {
-			css = { "biome", "prettierd", stop_after_first = true },
+			css = biome_or_prettierd,
 			html = { "prettierd" },
-			javascript = { "biome", "prettierd", stop_after_first = true },
-			javascriptreact = { "biome", "prettierd", stop_after_first = true },
-			json = { "biome", "prettierd", stop_after_first = true },
-			jsonc = { "biome", "prettierd", stop_after_first = true },
+			javascript = biome_or_prettierd,
+			javascriptreact = biome_or_prettierd,
+			json = biome_or_prettierd,
+			jsonc = biome_or_prettierd,
 			less = { "prettierd" },
 			lua = { "stylua" },
 			markdown = { "prettierd" },
@@ -147,8 +148,8 @@ later(function()
 			rust = { "rustfmt" },
 			scss = { "prettierd" },
 			toml = { "taplo" },
-			typescript = { "biome", "prettierd", stop_after_first = true },
-			typescriptreact = { "biome", "prettierd", stop_after_first = true },
+			typescript = biome_or_prettierd,
+			typescriptreact = biome_or_prettierd,
 			yaml = { "prettierd" },
 		},
 	})
@@ -211,12 +212,11 @@ later(function()
 	-- set". The re-link silently does nothing. Verified: raw nvim_set_hl applies,
 	-- diffview's hi_link does not. So do the link here, and again on ColorScheme
 	-- since loading a theme resets the groups.
-	local dim_augroup = vim.api.nvim_create_augroup("diffview_dim_delete", { clear = true })
 	local dim_diff_delete = function()
 		vim.api.nvim_set_hl(0, "DiffviewDiffDelete", { link = "DiffviewDiffDeleteDim" })
 	end
 	dim_diff_delete()
-	vim.api.nvim_create_autocmd("ColorScheme", { group = dim_augroup, callback = dim_diff_delete })
+	Config.new_autocmd("ColorScheme", nil, dim_diff_delete, "Dim DiffviewDiffDelete")
 
 	-- Auto-refresh on changes made outside this nvim instance.
 	--
@@ -228,7 +228,6 @@ later(function()
 	-- `:DiffviewRefresh`. Upstream: sindrets/diffview.nvim#567.
 	--
 	-- `refresh_files` is exactly what :DiffviewRefresh emits.
-	local refresh_augroup = vim.api.nvim_create_augroup("diffview_auto_refresh", { clear = true })
 	local timer
 
 	-- `checktime` reloads buffers whose file changed on disk ('autoread' is on).
@@ -251,50 +250,38 @@ later(function()
 	-- Only rebuild the file panel when a file genuinely changed on disk, rather
 	-- than on a blind interval: `checktime` fires FileChangedShellPost when it
 	-- actually reloads something.
-	vim.api.nvim_create_autocmd("FileChangedShellPost", {
-		group = refresh_augroup,
-		callback = refresh_panel,
-	})
+	Config.new_autocmd("FileChangedShellPost", nil, refresh_panel, "Refresh Diffview panel")
 
 	-- Coming back to nvim is a natural point to resync, and cheap enough to do
 	-- unconditionally — an agent may also have added files that are in no buffer
 	-- yet, which checktime alone would miss.
-	vim.api.nvim_create_autocmd({ "FocusGained", "TermLeave", "TermClose" }, {
-		group = refresh_augroup,
-		callback = function()
-			check_disk()
-			refresh_panel()
-		end,
-	})
+	local resync = function()
+		check_disk()
+		refresh_panel()
+	end
+	Config.new_autocmd({ "FocusGained", "TermLeave", "TermClose" }, nil, resync, "Resync Diffview")
 
 	-- FocusGained needs the terminal to report focus and the multiplexer to
 	-- forward it, which is not guaranteed. Poll as a fallback, but only while a
 	-- view is actually open, and only `checktime` — the panel rebuild still goes
 	-- through FileChangedShellPost above.
-	vim.api.nvim_create_autocmd("User", {
-		group = refresh_augroup,
-		pattern = "DiffviewViewOpened",
-		callback = function()
-			if timer then
-				timer:stop()
-			else
-				timer = vim.uv.new_timer()
-			end
-			timer:start(2000, 2000, vim.schedule_wrap(check_disk))
-		end,
-	})
-
-	vim.api.nvim_create_autocmd("User", {
-		group = refresh_augroup,
-		pattern = "DiffviewViewClosed",
-		callback = function()
-			if timer then
-				timer:stop()
-				timer:close()
-				timer = nil
-			end
-		end,
-	})
+	local start_polling = function()
+		if timer then
+			timer:stop()
+		else
+			timer = vim.uv.new_timer()
+		end
+		timer:start(2000, 2000, vim.schedule_wrap(check_disk))
+	end
+	local stop_polling = function()
+		if timer then
+			timer:stop()
+			timer:close()
+			timer = nil
+		end
+	end
+	Config.new_autocmd("User", "DiffviewViewOpened", start_polling, "Poll disk while Diffview is open")
+	Config.new_autocmd("User", "DiffviewViewClosed", stop_polling, "Stop Diffview disk polling")
 end)
 
 -- Cargo.toml helper. Shows the latest/available version of each dependency
@@ -331,7 +318,7 @@ local setup_crates = function(ev)
 end
 Config.new_autocmd("FileType", "toml", setup_crates, "Set up 'crates.nvim'")
 
--- Colorschemes ======
+-- Colorschemes ===============================================================
 now(function()
 	add({
 		"https://github.com/vague-theme/vague.nvim",

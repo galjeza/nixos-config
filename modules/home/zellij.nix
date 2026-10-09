@@ -3,7 +3,6 @@ let
   # ── Theme ────────────────────────────────────────────────────────────
   # Follows the global palette from 'theme.nix'. It feeds settings.theme, which
   # colors both zellij's native UI and the compact-bar status line.
-  # (vague + moonfly are custom themes defined in the `themes {}` block below.)
   #
   # Zellij's built-in "ansi" theme was tried and rejected: it paints only with
   # palette slots 0-15 so it inherits the terminal's colors for free, but it
@@ -11,10 +10,10 @@ let
   # (#323437 under Moonfly) and reads as a grey strip instead of disappearing
   # into the #080808 background. The explicit block below is worth its length.
   #
-  # The blocks below are upstream KDL verbatim — per-widget emphasis colours
-  # that don't derive from a 7-colour palette — so only the *name* comes from
-  # 'theme.nix'. Add a matching block here before switching the global theme to
-  # anything but vague/moonfly.
+  # vague + moonfly are defined in the `themes {}` block below, as upstream KDL
+  # verbatim — per-widget emphasis colours that don't derive from a 7-colour
+  # palette — so only the *name* comes from 'theme.nix'. Add a matching block
+  # here before switching the global theme to anything but vague/moonfly.
   activeTheme = theme.name;
 in
 {

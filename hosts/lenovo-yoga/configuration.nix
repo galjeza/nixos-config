@@ -37,8 +37,10 @@
 
   hardware.nvidia = {
     modesetting.enable = true;
-    powerManagement.enable = true;
-    powerManagement.finegrained = true;
+    powerManagement = {
+      enable = true;
+      finegrained = true;
+    };
     open = false;
     nvidiaSettings = true;
     package = config.boot.kernelPackages.nvidiaPackages.stable;
@@ -70,15 +72,18 @@
   #   sudo systemctl start waydroid-container
   #   waydroid session start &         # then: waydroid show-full-ui
   # See the notes at the bottom of this section for getting Boom Beach on.
-  virtualisation.waydroid.enable = true;
+  virtualisation.waydroid = {
+    enable = true;
 
-  # This kernel ships ONLY the nftables netfilter backend — the legacy
-  # ip_tables.ko modules don't exist. Waydroid's default waydroid-net.sh
-  # hard-prefers the `iptables-legacy` binary, so the container's network
-  # setup dies with "can't initialize iptables table `filter'". The package's
-  # `withNftables` flag builds the script to drive `nft` directly (and puts it
-  # on the script's PATH), which works with the nft_tables module we do have.
-  virtualisation.waydroid.package = pkgs.waydroid.override { withNftables = true; };
+    # This kernel ships ONLY the nftables netfilter backend — the legacy
+    # ip_tables.ko modules don't exist. Waydroid's default waydroid-net.sh
+    # hard-prefers the `iptables-legacy` binary, so the container's network
+    # setup dies with "can't initialize iptables table `filter'". The package's
+    # `withNftables` flag builds the script to drive `nft` directly (and puts
+    # it on the script's PATH), which works with the nft_tables module we do
+    # have.
+    package = pkgs.waydroid.override { withNftables = true; };
+  };
 
   # Boom Beach is online-only, so the container must reach the internet. The
   # NixOS firewall would otherwise drop forwarded traffic on Waydroid's bridge.

@@ -8,9 +8,8 @@
 
 -- Use this section to add custom general mappings. See `:h vim.keymap.set()`.
 
--- An example helper to create a Normal mode mapping
+-- Helper to create a Normal mode mapping
 local nmap = function(lhs, rhs, desc)
-	-- See `:h vim.keymap.set()`
 	vim.keymap.set("n", lhs, rhs, { desc = desc })
 end
 
@@ -153,9 +152,8 @@ nmap_leader("gH", "<Cmd>DiffviewFileHistory<CR>", "File history (branch)")
 -- - `<Leader>ls` - navigate to source definition of symbol under cursor
 -- - `<Leader>lc` - toggle Copilot ghost text in the current buffer
 --
--- NOTE: most LSP mappings represent a more structured way of replacing built-in
--- LSP mappings (like `:h gra` and others). This is needed because `gr` is mapped
--- by an "replace" operator in 'mini.operators' (which is more commonly used).
+-- NOTE: most LSP mappings mirror built-in LSP mappings (like `:h gra` and
+-- others), grouped under `<Leader>l` so 'mini.clue' can list them together.
 nmap_leader("la", "<Cmd>lua vim.lsp.buf.code_action()<CR>", "Actions")
 nmap_leader("lc", "<Cmd>lua Config.toggle_inline_completion()<CR>", "Copilot ghost text toggle")
 nmap_leader("ld", "<Cmd>lua vim.diagnostic.open_float()<CR>", "Diagnostic popup")

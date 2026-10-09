@@ -186,7 +186,6 @@ later(function()
 		-- Although this works in most cases, some are confusing. It is more robust to
 		-- always try to search only covering textobject and explicitly ask to search
 		-- for next (`an`/`in`) or last (`al`/`il`).
-		-- Try this. If you don't like it - delete next line and this comment.
 		search_method = "cover",
 	})
 end)
@@ -204,15 +203,6 @@ end)
 later(function()
 	require("mini.align").setup()
 end)
-
--- Animate common Neovim actions. Like cursor movement, scroll, window resize,
--- window open, window close. Animations are done based on Neovim events and
--- don't require custom mappings.
---
--- It is not enabled by default because its effects are a matter of taste.
--- Also scroll and resize have some unwanted side effects (see `:h mini.animate`).
--- Uncomment next line (use `gcc`) to enable.
--- later(function() require('mini.animate').setup() end)
 
 -- Go forward/backward with square brackets. Implements consistent sets of mappings
 -- for selected targets (like buffers, diagnostic, quickfix list entries, etc.).
