@@ -151,11 +151,17 @@
   # with the logind number, that process dies on "Cannot open display", and the
   # whole app exits without ever showing a window. greetd starts no X server, so
   # XWayland gets ":0" and the two agree. Keep it that way.
+  #
+  # The session goes through systemd-cat so sway's log (and everything it
+  # execs) lands in the journal — `journalctl -t sway`. Launched bare, greetd
+  # hands sway /dev/tty1 as stdout/stderr, where nothing records it; lightdm
+  # used to capture it, and without it a hung lock screen leaves no trace. A
+  # wrapper script, not `--cmd "systemd-cat … sway"`, so tuigreet gets one word.
   services.xserver.displayManager.lightdm.enable = false;
   services.greetd = {
     enable = true;
     settings.default_session = {
-      command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd sway";
+      command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd ${pkgs.writeShellScript "sway-session" "exec ${pkgs.systemd}/bin/systemd-cat --identifier=sway sway"}";
       user = "greeter";
     };
   };

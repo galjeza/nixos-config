@@ -1,4 +1,9 @@
-{ config, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   imports = [
@@ -55,6 +60,32 @@
       nvidiaBusId = "PCI:1:0:0";
     };
   };
+
+  # powerManagement.enable wraps every suspend in nvidia-sleep.sh, which does
+  # `chvt 63` before sleeping and switches back on resume so an X server on the
+  # NVIDIA card lets go of it. Nothing here displays on that card (sway is
+  # pinned to the iGPU above), so all the round-trip does is make sway drop and
+  # re-take its VT, DRM master and every input device while swaylock holds the
+  # lock. It is the prime suspect for the "dead lock screen" resumes — dark
+  # screen, keys do nothing, power button the only way out — which began with
+  # the move to greetd (sway on VT1, 2026-09-15): none in the month before,
+  # near-daily after. Keep the driver notification (it is what saves VRAM
+  # under PreserveVideoMemoryAllocations), drop the VT switch.
+  systemd.services =
+    let
+      nvidiaSleep =
+        state:
+        lib.mkForce (
+          pkgs.writeShellScript "nvidia-${state}" ''
+            [ -e /proc/driver/nvidia/suspend ] || exit 0
+            echo ${state} > /proc/driver/nvidia/suspend
+          ''
+        );
+    in
+    {
+      nvidia-suspend.serviceConfig.ExecStart = nvidiaSleep "suspend";
+      nvidia-resume.serviceConfig.ExecStart = nvidiaSleep "resume";
+    };
 
   # ── Gaming ──────────────────────────────────────────────────────────────────
   # Steam + gamemode are in common.nix.
