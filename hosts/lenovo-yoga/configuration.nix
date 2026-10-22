@@ -18,74 +18,118 @@
     "w /sys/devices/pci0000:00/0000:00:1f.0/PNP0C09:00/VPC2004:00/conservation_mode - - - - 1"
   ];
 
-  # ── Graphics: Intel iGPU + NVIDIA PRIME ─────────────────────────────────────
-  # Intel iGPU drives the display, NVIDIA RTX 4070 stays asleep until a CUDA
-  # workload (or an explicit `nvidia-offload <cmd>`) wakes it. The shared
-  # `hardware.graphics.enable` lives in common.nix; only the Intel driver bits
-  # are host-specific.
+  # ── Graphics: Intel iGPU; the RTX 4070 only in the "nvidia" boot entry ─────
+  # The proprietary driver hard-froze this machine ten times between
+  # 2026-08-26 and 2026-10-21, mostly while idle on the lock screen. The
+  # firmware sends the card ACPI `Notify(NPCF, 0xC0)` power-budget events, and
+  # the driver's handler (`rm_acpi_nvpcf_notify`) page-faults on the
+  # kacpi_notify workqueue with IRQs off. The panel keeps its last frame lit,
+  # keys and a power-button tap do nothing because the kernel is gone, and on
+  # 10-21 not even a 10 s hold cut the power: it sat there until the battery
+  # was flat. Newer drivers and kernels didn't fix it, and no module parameter
+  # turns the handler off (NVIDIA forum t/385856, open-gpu-kernel-modules#860).
+  #
+  # So the default boot never loads the driver and takes the card off the PCI
+  # bus. The desktop loses nothing: eDP-1 and HDMI-A-1 both hang off the Intel
+  # card, and the NVIDIA card's only connector (eDP-2) is never connected.
+  # For games, pick "nvidia" in the boot menu. That entry brings PRIME offload
+  # back, and the freeze risk with it, so use it only for gaming sessions.
+  #
+  # The shared `hardware.graphics.enable` lives in common.nix; only the Intel
+  # driver bits are host-specific.
   hardware.graphics.extraPackages = with pkgs; [
     intel-media-driver # VAAPI for Meteor Lake
     vpl-gpu-rt # Intel Quick Sync runtime
   ];
 
-  services.xserver.videoDrivers = [ "nvidia" ];
-
-  # Pin Sway/wlroots to the Intel iGPU so it doesn't try to use the NVIDIA
-  # card for display. card1 = i915 on this machine (the NVIDIA card at PCI
-  # 01:00.0 enumerates as card0). Cannot use the by-path identifier here
-  # because WLR_DRM_DEVICES splits on ':' and PCI paths contain colons.
-  environment.sessionVariables.WLR_DRM_DEVICES = "/dev/dri/card1";
-
-  # Sway hard-refuses to start when the proprietary NVIDIA driver is loaded;
-  # this flag bypasses that check. The iGPU still drives the display via PRIME.
-  programs.sway.extraOptions = [ "--unsupported-gpu" ];
-
-  hardware.nvidia = {
-    modesetting.enable = true;
-    powerManagement = {
+  # Inert in the default boot: the whole nvidia module sits behind
+  # `hardware.nvidia.enabled`, which only the "nvidia" entry turns on. It lives
+  # out here so `enableOffloadCmd` reads true in both boots, and common.nix
+  # stamps `nvidia-offload` into Steam launch options whichever one Steam
+  # first sees a game in.
+  hardware.nvidia.prime = {
+    offload = {
       enable = true;
-      finegrained = true;
+      enableOffloadCmd = true;
     };
-    open = false;
-    nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
-
-    prime = {
-      offload = {
-        enable = true;
-        enableOffloadCmd = true;
-      };
-      # Bus IDs verified from /sys: Intel 00:02.0, NVIDIA 01:00.0
-      intelBusId = "PCI:0:2:0";
-      nvidiaBusId = "PCI:1:0:0";
-    };
+    # Bus IDs verified from /sys: Intel 00:02.0, NVIDIA 01:00.0
+    intelBusId = "PCI:0:2:0";
+    nvidiaBusId = "PCI:1:0:0";
   };
 
-  # powerManagement.enable wraps every suspend in nvidia-sleep.sh, which does
-  # `chvt 63` before sleeping and switches back on resume so an X server on the
-  # NVIDIA card lets go of it. Nothing here displays on that card (sway is
-  # pinned to the iGPU above), so all the round-trip does is make sway drop and
-  # re-take its VT, DRM master and every input device while swaylock holds the
-  # lock. It is the prime suspect for the "dead lock screen" resumes — dark
-  # screen, keys do nothing, power button the only way out — which began with
-  # the move to greetd (sway on VT1, 2026-09-15): none in the month before,
-  # near-daily after. Keep the driver notification (it is what saves VRAM
-  # under PreserveVideoMemoryAllocations), drop the VT switch.
-  systemd.services =
-    let
-      nvidiaSleep =
-        state:
-        lib.mkForce (
-          pkgs.writeShellScript "nvidia-${state}" ''
-            [ -e /proc/driver/nvidia/suspend ] || exit 0
-            echo ${state} > /proc/driver/nvidia/suspend
-          ''
-        );
-    in
-    {
-      nvidia-suspend.serviceConfig.ExecStart = nvidiaSleep "suspend";
-      nvidia-resume.serviceConfig.ExecStart = nvidiaSleep "resume";
+  # Default boot: remove the card from the PCI bus as soon as udev sees it, so
+  # nothing can bind to it and its root port is free to drop it into D3cold. A
+  # driverless card left on the bus sits in D0 and keeps the port awake. The
+  # blacklist covers a later PCI rescan bringing it back.
+  boot.blacklistedKernelModules = lib.mkIf (!config.hardware.nvidia.enabled) [
+    "nouveau"
+    "nova_core"
+    "nvidiafb"
+  ];
+  services.udev.extraRules = lib.mkIf (!config.hardware.nvidia.enabled) ''
+    ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{power/control}="auto", ATTR{remove}="1"
+  '';
+  # Steam launch options already say `nvidia-offload gamemoderun %command%`.
+  # Without the driver, the command still has to exist; the game simply runs
+  # on the Intel GPU.
+  environment.systemPackages = lib.mkIf (!config.hardware.nvidia.enabled) [
+    (pkgs.writeShellScriptBin "nvidia-offload" ''exec "$@"'')
+  ];
+
+  specialisation.nvidia.configuration = {
+    system.nixos.tags = [ "nvidia" ];
+
+    services.xserver.videoDrivers = [ "nvidia" ];
+
+    # Pin Sway/wlroots to the Intel iGPU so it doesn't try to use the NVIDIA
+    # card for display. With the driver loaded, card1 = i915 (the NVIDIA card
+    # at PCI 01:00.0 enumerates as card0). In the default boot there is only
+    # one card, so nothing is pinned there. Cannot use the by-path identifier
+    # because WLR_DRM_DEVICES splits on ':' and PCI paths contain colons.
+    environment.sessionVariables.WLR_DRM_DEVICES = "/dev/dri/card1";
+
+    # Sway hard-refuses to start when the proprietary NVIDIA driver is loaded;
+    # this flag bypasses that check. The iGPU still drives the display via PRIME.
+    programs.sway.extraOptions = [ "--unsupported-gpu" ];
+
+    hardware.nvidia = {
+      modesetting.enable = true;
+      powerManagement = {
+        enable = true;
+        finegrained = true;
+      };
+      open = false;
+      nvidiaSettings = true;
+      package = config.boot.kernelPackages.nvidiaPackages.stable;
     };
+
+    # powerManagement.enable wraps every suspend in nvidia-sleep.sh, which does
+    # `chvt 63` before sleeping and switches back on resume so an X server on
+    # the NVIDIA card lets go of it. Nothing here displays on that card (sway
+    # is pinned to the iGPU above), so all the round-trip does is make sway
+    # drop and re-take its VT, DRM master and every input device while
+    # swaylock holds the lock. It is the prime suspect for the "dead lock
+    # screen" resumes — dark screen, keys do nothing, power button the only way
+    # out — which began with the move to greetd (sway on VT1, 2026-09-15): none
+    # in the month before, near-daily after. Keep the driver notification (it
+    # is what saves VRAM under PreserveVideoMemoryAllocations), drop the VT
+    # switch.
+    systemd.services =
+      let
+        nvidiaSleep =
+          state:
+          lib.mkForce (
+            pkgs.writeShellScript "nvidia-${state}" ''
+              [ -e /proc/driver/nvidia/suspend ] || exit 0
+              echo ${state} > /proc/driver/nvidia/suspend
+            ''
+          );
+      in
+      {
+        nvidia-suspend.serviceConfig.ExecStart = nvidiaSleep "suspend";
+        nvidia-resume.serviceConfig.ExecStart = nvidiaSleep "resume";
+      };
+  };
 
   # ── Gaming ──────────────────────────────────────────────────────────────────
   # Steam + gamemode are in common.nix.
