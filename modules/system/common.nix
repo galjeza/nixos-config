@@ -2,10 +2,15 @@
   config,
   lib,
   pkgs,
+  theme,
   ...
 }:
 
 {
+  # The palette is plain `_module.args`, so the system shares home-manager's:
+  # the console colours (and with them the greeter) follow `active` too.
+  imports = [ ../home/theme.nix ];
+
   nix = {
     settings.experimental-features = [
       "nix-command"
@@ -40,6 +45,13 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
+
+  # /etc/hosts as a real, writable file instead of a symlink into the read-only
+  # store. Lime's `clime db-tunnel --hosts` points the RDS hostname at 127.0.0.1
+  # with `sudo tee /etc/hosts` while the tunnel runs (so TLS hostname checks
+  # pass), and drops the line again on exit. Every switch rewrites the file from
+  # `networking.hosts`, which also clears a line a crashed tunnel left behind.
+  environment.etc.hosts.mode = "0644";
 
   # Set your time zone.
   time.timeZone = "Europe/Ljubljana";
@@ -157,14 +169,41 @@
   # hands sway /dev/tty1 as stdout/stderr, where nothing records it; lightdm
   # used to capture it, and without it a hung lock screen leaves no trace. A
   # wrapper script, not `--cmd "systemd-cat … sway"`, so tuigreet gets one word.
+  #
+  # The --theme names ANSI slots, not hex: tuigreet draws on the Linux console,
+  # which can only show its 16-colour palette — set from theme.nix just below.
+  # Blue borders and gold keys, as sway's focus colour and split indicator.
   services.xserver.displayManager.lightdm.enable = false;
   services.greetd = {
     enable = true;
     settings.default_session = {
-      command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd ${pkgs.writeShellScript "sway-session" "exec ${pkgs.systemd}/bin/systemd-cat --identifier=sway sway"}";
+      command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --theme 'border=blue;prompt=blue;time=magenta;button=yellow' --cmd ${pkgs.writeShellScript "sway-session" "exec ${pkgs.systemd}/bin/systemd-cat --identifier=sway sway"}";
       user = "greeter";
     };
   };
+
+  # Every virtual console's palette, from theme.nix. Slot 0 is also the console
+  # background, so it takes the theme bg rather than the terminal's `regular0`.
+  # NixOS sets it as vt.default_* kernel params: a change shows after a reboot,
+  # not after a switch.
+  console.colors = with theme.colors.terminal; [
+    background
+    regular1
+    regular2
+    regular3
+    regular4
+    regular5
+    regular6
+    regular7
+    bright0
+    bright1
+    bright2
+    bright3
+    bright4
+    bright5
+    bright6
+    bright7
+  ];
 
   # enable sway window manager
   programs.sway = {

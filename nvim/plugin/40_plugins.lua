@@ -325,9 +325,12 @@ now(function()
 		"https://github.com/bluz71/vim-moonfly-colors",
 		"https://github.com/rebelot/kanagawa.nvim",
 		"https://github.com/olivercederborg/poimandres.nvim",
+		"https://github.com/EdenEast/nightfox.nvim",
 	})
 
 	-- Default on startup; try others live with `:colorscheme <name>`.
 	-- Kanagawa ships: `kanagawa-wave`, `kanagawa-dragon`, `kanagawa-lotus` (light).
-	vim.cmd("colorscheme moonfly")
+	-- Nightfox ships: `nightfox`, `carbonfox`, `duskfox`, `nordfox`, `terafox`,
+	-- `dayfox` and `dawnfox` (light).
+	vim.cmd("colorscheme duskfox")
 end)

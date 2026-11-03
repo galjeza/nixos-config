@@ -82,6 +82,10 @@
     openssl
     prisma-engines
     pnpm
+    # Lime's DB tunnel (`clime db-tunnel`, ~/Projects/lime-booking/docs/db-tunnel-setup.md)
+    # runs `aws ssm start-session`, which needs the session-manager-plugin.
+    awscli2
+    ssm-session-manager-plugin
     grim
     slurp
     wl-clipboard
@@ -94,6 +98,7 @@
     nerd-fonts.terminess-ttf
     google-chrome
     firefox
+    tor-browser # bundles its own tor daemon; no services.tor needed
     thunar # gui file manager
     loupe # gnome image viewer — opens svg, png, jpg, etc.
     libreoffice # office suite — open/view/edit docx (with images), odt, xlsx, etc.

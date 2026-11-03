@@ -24,6 +24,9 @@ in
 
     sessionVariables = {
       PNPM_HOME = "$HOME/.local/share/pnpm";
+      # npm's default global prefix is the nodejs store path (read-only), so
+      # `npm install -g` (e.g. Lime's `pnpm run install-clime`) needs its own.
+      NPM_CONFIG_PREFIX = "$HOME/.local/share/npm";
       PRISMA_QUERY_ENGINE_LIBRARY = "${pkgs.prisma-engines}/lib/libquery_engine.node";
       PRISMA_QUERY_ENGINE_BINARY = "${pkgs.prisma-engines}/bin/query-engine";
       PRISMA_SCHEMA_ENGINE_BINARY = "${pkgs.prisma-engines}/bin/schema-engine";
@@ -37,6 +40,7 @@ in
         $HOME/go/bin
         $HOME/.cargo/bin
         $HOME/.local/share/pnpm
+        $HOME/.local/share/npm/bin
         $path
       )
 
@@ -94,6 +98,11 @@ in
       rebuild-update = "nix flake update --flake ${flakeDir} && ${nixosRebuild "switch"}";
 
       playwright-shell = "nix shell github:pietdevries94/playwright-web-flake#playwright-test";
+
+      # Lime DB tunnels (~/Projects/lime-booking/docs/db-tunnel-setup.md): the
+      # RDS host on 127.0.0.1:3307 until Ctrl+C; one at a time, same port.
+      db-prod = "clime db-tunnel --hosts --local-port 3307";
+      db-sharkfin = "clime db-tunnel --hosts --profile sharkfin-account --env sharkfin --local-port 3307";
     };
   };
 }

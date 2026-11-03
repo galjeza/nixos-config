@@ -12,8 +12,9 @@ let
   #
   # vague + moonfly are defined in the `themes {}` block below, as upstream KDL
   # verbatim — per-widget emphasis colours that don't derive from a 7-colour
-  # palette — so only the *name* comes from 'theme.nix'. Add a matching block
-  # here before switching the global theme to anything but vague/moonfly.
+  # palette — so only the *name* comes from 'theme.nix'. duskfox has no
+  # upstream block in this format; its comment says how it was derived. Add a
+  # matching block here before switching the global theme to anything else.
   activeTheme = theme.name;
 in
 {
@@ -314,6 +315,129 @@ in
       			player_5 121 218 200
       			player_6 0
       			player_7 230 94 114
+      			player_8 0
+      			player_9 0
+      			player_10 0
+      		}
+      	}
+      	// zellij ships no duskfox. Generated from the legacy duskfox palette in
+      	// nightfox.nvim's extra/zellij/nightfox.kdl with the slot mapping of
+      	// zellij's built-in nightfox theme, except `black` is swapped for the
+      	// terminal bg (35 33 54), as in moonfly's block, so the bar blends into
+      	// the background, and selected rows sit on sel0 (67 60 89).
+      	duskfox {
+      		text_unselected {
+      			base 205 203 224
+      			background 35 33 54
+      			emphasis_0 234 154 151
+      			emphasis_1 156 207 216
+      			emphasis_2 163 190 140
+      			emphasis_3 196 167 231
+      		}
+      		text_selected {
+      			base 205 203 224
+      			background 67 60 89
+      			emphasis_0 234 154 151
+      			emphasis_1 156 207 216
+      			emphasis_2 163 190 140
+      			emphasis_3 196 167 231
+      		}
+      		ribbon_selected {
+      			base 35 33 54
+      			background 163 190 140
+      			emphasis_0 235 111 146
+      			emphasis_1 234 154 151
+      			emphasis_2 196 167 231
+      			emphasis_3 86 159 186
+      		}
+      		ribbon_unselected {
+      			base 35 33 54
+      			background 224 222 244
+      			emphasis_0 235 111 146
+      			emphasis_1 205 203 224
+      			emphasis_2 86 159 186
+      			emphasis_3 196 167 231
+      		}
+      		table_title {
+      			base 163 190 140
+      			background 0
+      			emphasis_0 234 154 151
+      			emphasis_1 156 207 216
+      			emphasis_2 163 190 140
+      			emphasis_3 196 167 231
+      		}
+      		table_cell_selected {
+      			base 205 203 224
+      			background 67 60 89
+      			emphasis_0 234 154 151
+      			emphasis_1 156 207 216
+      			emphasis_2 163 190 140
+      			emphasis_3 196 167 231
+      		}
+      		table_cell_unselected {
+      			base 205 203 224
+      			background 35 33 54
+      			emphasis_0 234 154 151
+      			emphasis_1 156 207 216
+      			emphasis_2 163 190 140
+      			emphasis_3 196 167 231
+      		}
+      		list_selected {
+      			base 205 203 224
+      			background 67 60 89
+      			emphasis_0 234 154 151
+      			emphasis_1 156 207 216
+      			emphasis_2 163 190 140
+      			emphasis_3 196 167 231
+      		}
+      		list_unselected {
+      			base 205 203 224
+      			background 35 33 54
+      			emphasis_0 234 154 151
+      			emphasis_1 156 207 216
+      			emphasis_2 163 190 140
+      			emphasis_3 196 167 231
+      		}
+      		frame_selected {
+      			base 163 190 140
+      			background 0
+      			emphasis_0 234 154 151
+      			emphasis_1 156 207 216
+      			emphasis_2 196 167 231
+      			emphasis_3 0
+      		}
+      		frame_highlight {
+      			base 234 154 151
+      			background 0
+      			emphasis_0 196 167 231
+      			emphasis_1 234 154 151
+      			emphasis_2 234 154 151
+      			emphasis_3 234 154 151
+      		}
+      		exit_code_success {
+      			base 163 190 140
+      			background 0
+      			emphasis_0 156 207 216
+      			emphasis_1 35 33 54
+      			emphasis_2 196 167 231
+      			emphasis_3 86 159 186
+      		}
+      		exit_code_error {
+      			base 235 111 146
+      			background 0
+      			emphasis_0 246 193 119
+      			emphasis_1 0
+      			emphasis_2 0
+      			emphasis_3 0
+      		}
+      		multiplayer_user_colors {
+      			player_1 196 167 231
+      			player_2 86 159 186
+      			player_3 0
+      			player_4 246 193 119
+      			player_5 156 207 216
+      			player_6 0
+      			player_7 235 111 146
       			player_8 0
       			player_9 0
       			player_10 0

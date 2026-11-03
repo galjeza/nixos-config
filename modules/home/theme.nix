@@ -2,8 +2,9 @@
 # Single source of truth for colours and the UI font.
 #
 # Everything that paints chrome — sway, swaylock, wmenu, mako, foot, the sway
-# bar and the zsh prompt — reads `theme.colors` from here, so re-theming the
-# desktop is the one-line `active` change below rather than a sweep through
+# bar and the zsh prompt — reads `theme.colors` from here, as does the console
+# palette the greeter draws with ('modules/system/common.nix' imports this file
+# too), so re-theming the desktop is the one-line `active` change below rather than a sweep through
 # every module. Foot and every font-rendering chrome likewise read `theme.font`.
 #
 # Hex values are stored WITHOUT a leading '#': swaylock and wmenu take bare hex
@@ -94,11 +95,50 @@ let
         selection-foreground = "080808";
       };
     };
+
+    # duskfox — https://github.com/EdenEast/nightfox.nvim (extra/duskfox/)
+    duskfox = {
+      bg = "232136";
+      surface = "433c59";
+      fg = "e0def4";
+      muted = "817c9c";
+      blue = "569fba";
+      gold = "f6c177";
+      red = "eb6f92";
+      green = "a3be8c";
+
+      terminal = {
+        background = "232136";
+        foreground = "e0def4";
+
+        regular0 = "393552";
+        regular1 = "eb6f92";
+        regular2 = "a3be8c";
+        regular3 = "f6c177";
+        regular4 = "569fba";
+        regular5 = "c4a7e7";
+        regular6 = "9ccfd8";
+        regular7 = "e0def4";
+
+        bright0 = "47407d";
+        bright1 = "f083a2";
+        bright2 = "b1d196";
+        bright3 = "f9cb8c";
+        bright4 = "65b1cd";
+        bright5 = "ccb1ed";
+        bright6 = "a6dae3";
+        bright7 = "e2e0f7";
+
+        cursor = "232136 e0def4";
+        selection-background = "433c59";
+        selection-foreground = "e0def4";
+      };
+    };
   };
 
   # ── The one switch ──────────────────────────────────────────────────────────
-  # "vague" | "moonfly"
-  active = "moonfly";
+  # "vague" | "moonfly" | "duskfox"
+  active = "duskfox";
 
   # Monospace family for every chrome that renders text: foot, the sway bar and
   # window titles, swaylock and mako. Both Nerd Font packages are installed
@@ -107,7 +147,8 @@ let
   font = "IosevkaTerm Nerd Font Mono";
 in
 {
-  # Exposed to every other home-manager module as the `theme` argument.
+  # Exposed to every other home-manager module, and to the system modules, as
+  # the `theme` argument.
   _module.args.theme = {
     name = active;
     colors = palettes.${active};
