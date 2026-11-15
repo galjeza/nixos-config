@@ -1,4 +1,9 @@
-{ pkgs, theme, ... }:
+{
+  pkgs,
+  osConfig,
+  theme,
+  ...
+}:
 {
   imports = [
     ./android.nix
@@ -53,6 +58,13 @@
   };
 
   services.polkit-gnome.enable = true;
+
+  # KDE Connect daemon + swaybar tray indicator, only on hosts that enable
+  # `programs.kdeconnect` (the laptop), which also opens the firewall ports.
+  services.kdeconnect = {
+    enable = osConfig.programs.kdeconnect.enable;
+    indicator = osConfig.programs.kdeconnect.enable;
+  };
 
   # Installs zoxide *and* wires the `eval "$(zoxide init zsh)"` hook into zsh
   # itself, so neither the package nor the init line has to be repeated here.

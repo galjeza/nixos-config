@@ -165,12 +165,148 @@
   networking.firewall.trustedInterfaces = [ "waydroid0" ];
 
   # ── Audio: Yoga Pro 9 16IMH9 speaker workaround ─────────────────────────────
-  # Force the ALC287 fixup that wires the TAS2781 i2c amps as speaker output.
-  # The kernel doesn't have a quirk for PCI SSID 17aa:3811, so we hint the
-  # model explicitly.
+  # The speakers hang off TAS2781 i2c smart amps, which only get their firmware
+  # and DSP profile when the ALC287 codec is given ALC287_FIXUP_TAS2781_I2C.
+  # The kernel has that quirk under this machine's *codec* SSID (17aa:38d6),
+  # but PCI SSIDs are matched first, and the PCI SSID here (17aa:3811) collides
+  # with the "Legion S7 15IMH05" entry — so the wrong fixup wins, the amps are
+  # never bound, and the speakers come out quiet with no bass.
+  #
+  # "17aa:38d6" is an SSID alias: it tells the fixup lookup to behave as if that
+  # were the ID, since the TAS2781 fixup has no model name of its own. The
+  # option goes to the SOF driver because SOF owns this card (it has DMICs);
+  # 'snd-hda-intel model=' is never read here.
+  #
+  # Working: 'journalctl -k -b | grep -E "picked fixup|TIAS2781"' shows the
+  # codec line "for alias SSID 17aa:38d6" and then "bound i2c-TIAS2781:00".
   boot.extraModprobeConfig = ''
-    options snd-hda-intel model=yoga9-bass-spk-pin
+    options snd-sof-intel-hda-generic hda_model=17aa:38d6
   '';
+
+  # Binding is necessary but not sufficient. The amp driver's first setup at
+  # boot leaves the two woofer amps dead — it reports no error, the mixer
+  # controls appear, and only the tweeters play. Reloading the driver once the
+  # user's PipeWire has the speaker sink open sets them up properly (reloading
+  # earlier does not), so that is what this service does, at boot and again
+  # after every resume. Known bug on this model, no upstream fix yet; approach
+  # from https://github.com/Reidafesta/yoga-pro-9-speaker-fix.
+  #
+  # Two things keep it working afterwards:
+  #  - 'Speaker Force Firmware Load': without it, each time the sink reopens
+  #    after going idle the driver only switches the amps on, without their DSP
+  #    program, and the woofers are gone again. With it, every reopen is a full
+  #    setup — which takes ~2.5 s, during which there is no bass.
+  #  - hence the WirePlumber rule below: keep the sink open for 5 min of
+  #    silence instead of 5 s, so that delay is rare.
+  #
+  # Check: 'journalctl -t yoga-speaker-fix -b' should end in "done".
+  systemd.services.yoga-speaker-fix =
+    let
+      sleepTargets = [
+        "suspend.target"
+        "hibernate.target"
+        "suspend-then-hibernate.target"
+      ];
+    in
+    {
+      description = "Reload the TAS2781 woofer amp driver once user audio is up";
+      wantedBy = [ "multi-user.target" ] ++ sleepTargets;
+      after = sleepTargets;
+      serviceConfig = {
+        # "exec", not "oneshot": the script waits for a login, boot must not.
+        Type = "exec";
+        SyslogIdentifier = "yoga-speaker-fix";
+        ExecStart = lib.getExe (
+          pkgs.writeShellApplication {
+            name = "yoga-speaker-fix";
+            runtimeInputs = with pkgs; [
+              alsa-utils
+              coreutils
+              gawk
+              gnugrep
+              kmod
+              pulseaudio # pactl
+              systemd
+              util-linux # runuser
+            ];
+            text = ''
+              mod=snd_hda_scodec_tas2781_i2c
+              amp=/sys/bus/i2c/devices/i2c-TIAS2781:00
+
+              # pactl as the given uid: root can't reach a user's PipeWire.
+              upactl() {
+                local uid=$1
+                shift
+                runuser -u "$(id -nu "$uid")" -- \
+                  env XDG_RUNTIME_DIR="/run/user/$uid" pactl "$@"
+              }
+
+              # "uid sink" for every logged-in user whose PipeWire has the speakers.
+              speaker_sinks() {
+                local sock uid sink
+                for sock in /run/user/*/pulse/native; do
+                  [ -S "$sock" ] || continue
+                  uid=$(stat -c %u "$sock")
+                  [ "$uid" -ge 1000 ] || continue
+                  sink=$(upactl "$uid" list short sinks 2>/dev/null |
+                    awk '/Speaker__sink/ { print $2; exit }') || true
+                  [ -n "$sink" ] && echo "$uid $sink"
+                done
+                return 0
+              }
+
+              # 1. The codec has to have picked the amps up at all (hda_model above).
+              for _ in $(seq 120); do
+                journalctl -k -b -o cat | grep -q 'bound i2c-TIAS2781' && break
+                sleep 0.5
+              done
+              journalctl -k -b -o cat | grep -q 'bound i2c-TIAS2781' || {
+                echo "amps never bound to the codec, giving up"
+                exit 1
+              }
+
+              # 2. Wait, however long, for a login whose PipeWire shows the speakers.
+              until [ -n "$(speaker_sinks)" ]; do sleep 1; done
+
+              # 3. Reload. Right after boot the module can still be busy loading
+              #    firmware, so retry for a while.
+              for _ in $(seq 60); do
+                modprobe -r "$mod" 2>/dev/null && break
+                sleep 0.5
+              done
+              modprobe "$mod"
+              sleep 2
+
+              # Keep the amps out of runtime suspend.
+              [ -w "$amp/power/control" ] && echo on > "$amp/power/control"
+
+              # 4. Full amp setup on every sink reopen. A reload resets this switch.
+              for card in /proc/asound/card[0-9]*; do
+                amixer -q -c "''${card##*card}" \
+                  cset iface=CARD,name='Speaker Force Firmware Load' on 2>/dev/null || true
+              done
+
+              # 5. Close and reopen the sink so the setup happens now.
+              speaker_sinks | while read -r uid sink; do
+                upactl "$uid" suspend-sink "$sink" 1 || true
+                sleep 1
+                upactl "$uid" suspend-sink "$sink" 0 || true
+              done
+              echo "done"
+            '';
+          }
+        );
+      };
+    };
+
+  services.pipewire.wireplumber.extraConfig."51-yoga-speaker-suspend" = {
+    "monitor.alsa.rules" = [
+      {
+        matches = [ { "node.name" = "~alsa_output.*Speaker__sink"; } ];
+        actions.update-props."session.suspend-timeout-seconds" = 300;
+      }
+    ];
+  };
 
   # ── Laptop: lid switch + bluetooth ──────────────────────────────────────────
   # Lid close → suspend. Docked (external monitor connected) → ignore so the
@@ -188,4 +324,10 @@
     settings.General.Experimental = true; # battery % reporting for some devices
   };
   services.blueman.enable = true;
+
+  # ── KDE Connect: phone ↔ laptop (notifications, files, clipboard) ───────────
+  # Installs kdeconnect-kde and opens its ports (TCP+UDP 1714–1764). The daemon
+  # and tray indicator are home-manager user services keyed off this option
+  # (see 'modules/home/default.nix'), because sway ignores XDG autostart.
+  programs.kdeconnect.enable = true;
 }
