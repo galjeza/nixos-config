@@ -77,6 +77,23 @@ in
       PROMPT='%n@%m:%F{#${c.blue}}%~/%f''${vcs_info_msg_0_}
       > '
 
+      # Strix (AI pentest agent; `uv tool install strix-agent`, model + key in
+      # ~/.strix/cli-config.json) runs on the OpenCode Go subscription, which
+      # rejects requests lacking a per-conversation `x-opencode-session` and
+      # wants a client-specific User-Agent. Strix only sends static extra
+      # headers, so mint a fresh session ID per run here.
+      strix() {
+        LLM_EXTRA_HEADERS="{\"x-opencode-session\":\"$(</proc/sys/kernel/random/uuid)\",\"User-Agent\":\"strix-agent\"}" \
+          command strix "$@"
+        local rc=$?
+        # Strix persists every env var it saw into ~/.strix/cli-config.json, which
+        # would bake in this run's one-off session header: a stale value that also
+        # crashes a bare (non-wrapped) `strix`, since the loader won't re-parse the
+        # JSON string. Drop it again so the file only ever holds real settings.
+        python3 -c 'import json, os; p = os.path.expanduser("~/.strix/cli-config.json"); d = json.load(open(p)); (json.dump(d, open(p, "w"), indent=2) if d.get("env", {}).pop("LLM_EXTRA_HEADERS", None) is not None else None)' 2>/dev/null
+        return $rc
+      }
+
     '';
 
     shellAliases = {

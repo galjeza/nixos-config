@@ -91,6 +91,7 @@
     gcc
     nodejs_24
     python3
+    uv # `uv tool install strix-agent` (not in nixpkgs); `uv tool upgrade strix-agent`
     openssl
     prisma-engines
     pnpm
@@ -116,6 +117,7 @@
     libreoffice # office suite — open/view/edit docx (with images), odt, xlsx, etc.
     opencode
     codex
+    github-copilot-cli # `copilot` — GitHub Copilot's agentic CLI (unfree)
     htop
     slack
     telegram-desktop

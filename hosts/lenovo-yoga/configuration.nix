@@ -69,6 +69,39 @@
   services.udev.extraRules = lib.mkIf (!config.hardware.nvidia.enabled) ''
     ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{power/control}="auto", ATTR{remove}="1"
   '';
+  # ── Local LLM for opencode ────────────────────────────────────────────────
+  # Ollama on 127.0.0.1:11434; opencode talks to its OpenAI-compatible /v1
+  # endpoint (provider block in ~/.config/opencode/opencode.jsonc).
+  #
+  # The Vulkan build, not ollama-cuda: it is free, so it comes from
+  # cache.nixos.org instead of a long local CUDA build. It uses the RTX 4070
+  # in the "nvidia" entry; in the default boot (card off the bus) it runs on
+  # the CPU, since Ollama ignores integrated GPUs unless OLLAMA_IGPU_ENABLE=1.
+  #
+  # qwen3.6:35b-a3b-coding is a MoE with ~3B active parameters, so it is usable
+  # with only 8 GB of VRAM. The VRAM/RAM split needs no setting: Ollama leaves
+  # -ngl unset, and its bundled llama-server's `--fit` (default on) keeps the
+  # attention/dense weights and KV cache in VRAM and spills MoE expert weights
+  # to system RAM until it fits. Forcing `LLAMA_ARG_N_CPU_MOE` would override
+  # that. It is tagged for tool calling, which opencode's agent loop needs.
+  services.ollama = {
+    enable = true;
+    package = pkgs.ollama-vulkan;
+    loadModels = [ "qwen3.6:35b-a3b-coding" ];
+    environmentVariables = {
+      # Ollama's default context is too small for opencode, whose system prompt
+      # and tool definitions alone use ~10k tokens. Only 10 of the model's 42
+      # layers keep a KV cache (the rest are linear-attention), so 128k at q8_0
+      # is ~1.3 GB of VRAM (32k at f16 was 0.64 GB). The model goes to 256k,
+      # but prefill runs at ~170 tok/s with the experts in RAM, so re-reading a
+      # full 256k context would take ~25 min. Must match `limit.context` in
+      # ~/.config/opencode/opencode.jsonc.
+      OLLAMA_CONTEXT_LENGTH = "131072";
+      OLLAMA_KV_CACHE_TYPE = "q8_0"; # needs flash attention
+      OLLAMA_FLASH_ATTENTION = "1";
+    };
+  };
+
   # Steam launch options already say `nvidia-offload gamemoderun %command%`.
   # Without the driver, the command still has to exist; the game simply runs
   # on the Intel GPU.

@@ -46,6 +46,15 @@
   # Enable networking
   networking.networkmanager.enable = true;
 
+  # Mullvad VPN: the daemon + `mullvad` CLI, plus the desktop app. The module
+  # also turns on systemd-resolved (mkDefault), which Mullvad uses to push its
+  # DNS servers; NetworkManager hands its DNS to resolved on its own. LAN
+  # traffic (KDE Connect, phones, printers) needs `mullvad lan set allow`.
+  services.mullvad-vpn = {
+    enable = true;
+    gui.enable = true;
+  };
+
   # /etc/hosts as a real, writable file instead of a symlink into the read-only
   # store. Lime's `clime db-tunnel --hosts` points the RDS hostname at 127.0.0.1
   # with `sudo tee /etc/hosts` while the tunnel runs (so TLS hostname checks
